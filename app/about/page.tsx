@@ -8,10 +8,9 @@ const teamMembers = [
   { name: 'Ezra Yego', role: 'Chief Executive Officer', image: '/team-member-1.jpg' },
   { name: 'Lynn Sugut', role: 'Chief Technology Officer', image: '/team-member-2.jpg' },
   { name: 'Geoffrey Aldwin Audia', role: 'Junior Configuration Analyst', image: '/team-member-3.jpg' },
-  { name: 'Lovell ', role: 'Junior Configuration Analyst', image: '/team-member-3.jpg' },
-  { name: 'Ian Mosonik', role: 'Junior Configuration Analyst', image: '/team-member-3.jpg' },
-  { name: 'Victor', role: 'Junior Configuration Analyst', image: '/team-member-3.jpg' },
-
+  { name: 'Lovell ', role: 'Junior Configuration Analyst', image: '/team-member-4.jpg' },
+  { name: 'Ian Mosonik', role: 'Junior Configuration Analyst', image: '/team-member-5.jpg' },
+  { name: 'Victor', role: 'Junior Configuration Analyst', image: '/team-member-6.jpg' },
 ]
 
 const expertise = [
@@ -21,8 +20,21 @@ const expertise = [
 ]
 
 export default function AboutPage() {
+  const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 }
+  };
+
   return (
-    <main className="container mx-auto px-4 py-16 mt-20">
+    <motion.main 
+      className="container mx-auto px-4 py-16 mt-20"
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={pageVariants}
+      transition={{ duration: 0.5 }}
+    >
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -111,6 +123,6 @@ export default function AboutPage() {
           </motion.button>
         </div>
       </motion.section>
-    </main>
+    </motion.main>
   )
 }

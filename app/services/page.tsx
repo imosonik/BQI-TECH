@@ -25,8 +25,21 @@ const services = [
 ]
 
 export default function ServicesPage() {
+  const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 }
+  };
+
   return (
-    <main className="container mx-auto px-4 py-8 mt-20">
+    <motion.main 
+      className="container mx-auto px-4 py-8 mt-20"
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={pageVariants}
+      transition={{ duration: 0.5 }}
+    >
       <motion.h1 
         className="text-4xl font-bold mb-8 text-center"
         initial={{ opacity: 0, y: 20 }}
@@ -51,14 +64,15 @@ export default function ServicesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
+            whileHover={{ scale: 1.03 }}
           >
-            <service.icon className="w-12 h-12 text-blue-600 mb-4" />
+            <service.icon className="w-12 h-12 text-teal-500 mb-4" />
             <h2 className="text-2xl font-semibold mb-2">{service.title}</h2>
             <p className="text-gray-600 mb-4">{service.desc}</p>
             <p className="text-gray-700 mb-4">{service.details}</p>
             <motion.a
               href="#"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800"
+              className="inline-flex items-center text-teal-500 hover:text-teal-600"
               whileHover={{ x: 5 }}
             >
               Learn more <ArrowRight className="ml-2 h-4 w-4" />
@@ -66,6 +80,6 @@ export default function ServicesPage() {
           </motion.div>
         ))}
       </div>
-    </main>
+    </motion.main>
   )
 }

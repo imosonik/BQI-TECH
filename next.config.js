@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['your-domain.com'], // Add your domain if you're using external images
+    domains: ['your-domain.com', 'another-domain.com', 'new-domain.com'], // Add any new domains here
   },
   webpack(config) {
     config.module.rules.push({

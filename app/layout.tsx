@@ -1,8 +1,9 @@
-'use client'
+"use client";
 
 import localFont from "next/font/local";
 import "./globals.css";
-import ClientLayout from '@/components/ClientLayout'
+import ClientLayout from "@/components/ClientLayout";
+import { CookieConsentBanner } from '@/components/CookieConsentBanner';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,11 +19,14 @@ const geistMono = localFont({
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <ClientLayout>{children}</ClientLayout>
+      <ClientLayout>
+        {children}
+        <CookieConsentBanner />
+      </ClientLayout>
     </html>
   );
 }
