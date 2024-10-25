@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Search, Globe, Menu, X } from "lucide-react";
+import { SignInButton, useAuth } from "@clerk/nextjs";
 
 function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -35,7 +36,7 @@ function Header() {
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
     >
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="container mx-auto px-4 py-7 flex justify-between items-center ">
         <Link href="/">
           <Image
             src="/bqilogo.png"
@@ -71,6 +72,7 @@ function Header() {
             <Globe size={18} className="mr-1" />
             <span>EN</span>
           </div>
+          <AuthButton />
           <button
             className="md:hidden bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -102,6 +104,29 @@ function Header() {
         </motion.div>
       )}
     </motion.header>
+  );
+}
+
+function AuthButton() {
+  const { isSignedIn } = useAuth();
+
+  if (isSignedIn) {
+    return (
+      <Link
+        href="/dashboard"
+        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+      >
+        Dashboard
+      </Link>
+    );
+  }
+
+  return (
+    <SignInButton mode="modal">
+      <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+        Sign In
+      </button>
+    </SignInButton>
   );
 }
 

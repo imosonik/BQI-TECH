@@ -27,6 +27,9 @@ export default function ClientLayout({
         <Loader />
       ) : (
         <>
+          {/* <div className="bg-teal-600 text-white text-center py-2">
+            Welcome to the new BQI website!
+          </div> */}
           <Header />
           <main className="flex-grow">{children}</main>
           <Footer />

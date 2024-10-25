@@ -1,9 +1,12 @@
 "use client";
 
+import { usePathname } from 'next/navigation';
 import localFont from "next/font/local";
 import "./globals.css";
+import "./clerk-overrides.css"; // Add this line
 import ClientLayout from "@/components/ClientLayout";
 import { CookieConsentBanner } from '@/components/CookieConsentBanner';
+import { ClerkProvider } from '@clerk/nextjs';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,12 +24,22 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith('/admin');
+  const isDashboardRoute = pathname?.startsWith('/dashboard');
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <ClientLayout>
-        {children}
-        <CookieConsentBanner />
-      </ClientLayout>
+      <ClerkProvider>
+        {isAdminRoute || isDashboardRoute ? (
+          <body>{children}</body>
+        ) : (
+          <ClientLayout>
+            {children}
+            <CookieConsentBanner />
+          </ClientLayout>
+        )}
+      </ClerkProvider>
     </html>
   );
 }

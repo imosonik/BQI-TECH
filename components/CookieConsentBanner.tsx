@@ -1,33 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { X } from 'lucide-react'
 
 export function CookieConsentBanner() {
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const checkConsent = async () => {
+      const response = await fetch('/api/cookie-consent')
+      const { hasConsent } = await response.json()
+      setIsVisible(!hasConsent)
+    }
+    checkConsent()
+  }, [])
 
   if (!isVisible) return null
 
   const handleManageChoices = () => {
-    // Implement logic to open preferences management
     console.log('Manage choices clicked')
-    // You might want to open a modal or navigate to a preferences page here
   }
 
-  const handleAgreeAndProceed = () => {
-    // Implement logic to accept all cookies
-    console.log('Agreed and proceeded')
-    // Set a cookie or localStorage item to remember user's choice
-    localStorage.setItem('cookieConsent', 'agreed')
-    setIsVisible(false)
+  const handleAgreeAndProceed = async () => {
+    try {
+      await fetch('/api/cookie-consent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consent: true }),
+      })
+      setIsVisible(false)
+    } catch (error) {
+      console.error('Failed to set cookie consent:', error)
+    }
   }
 
-  const handleRejectAll = () => {
-    // Implement logic to reject all non-essential cookies
-    console.log('Rejected all')
-    // Set a cookie or localStorage item to remember user's choice
-    localStorage.setItem('cookieConsent', 'rejected')
-    setIsVisible(false)
+  const handleRejectAll = async () => {
+    try {
+      await fetch('/api/cookie-consent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consent: false }),
+      })
+      setIsVisible(false)
+    } catch (error) {
+      console.error('Failed to set cookie consent:', error)
+    }
   }
 
   return (

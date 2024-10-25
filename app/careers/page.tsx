@@ -1,103 +1,91 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Loader from '@/components/Loader'
-
-const openPositions = [
-  { title: 'Software Engineer', department: 'Engineering' },
-  { title: 'Product Manager', department: 'Product' },
-  { title: 'UX/UI Designer', department: 'Design' },
-  { title: 'Data Scientist', department: 'Data Science' },
-];
+import Link from "next/link";
+import { motion } from 'framer-motion';
+import { JobPosting } from "@/types/jobPosting";
+import { Briefcase, MapPin, Calendar, Loader2 } from 'lucide-react';
 
 export default function CareersPage() {
-  const [isLoading, setIsLoading] = useState(true)
+  const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate loading time (remove this in production and use real loading logic)
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
+    async function fetchJobPostings() {
+      try {
+        const response = await fetch("/api/job-postings");
+        if (!response.ok) {
+          throw new Error("Failed to fetch job postings");
+        }
+        const data = await response.json();
+        setJobPostings(data);
+      } catch (err) {
+        setError("Failed to load job postings. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-    return () => clearTimeout(timer)
-  }, [])
+    fetchJobPostings();
+  }, []);
 
-  const pageVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 }
-  };
-
-  if (isLoading) {
-    return <Loader />
-  }
+  if (isLoading) return <Loader2 className="animate-spin" />;
+  if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
-    <motion.main 
-      className="container mx-auto px-4 py-8 mt-32"
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageVariants}
-      transition={{ duration: 0.5 }}
-    >
+    <div className="container mx-auto px-4 py-36">
       <motion.h1 
-        className="text-4xl font-bold mb-6"
-        initial={{ opacity: 0, y: 20 }}
+        className="text-4xl font-bold mb-8 text-center"
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         Careers at BQI Tech
       </motion.h1>
       <motion.p 
-        className="text-lg mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        Join our team of innovators and make a difference in the world of technology.
-      </motion.p>
-      <motion.h2 
-        className="text-2xl font-semibold mb-4"
-        initial={{ opacity: 0, y: 20 }}
+        className="text-xl text-gray-600 mb-12 text-center max-w-2xl mx-auto"
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        Open Positions
-      </motion.h2>
-      <motion.div 
-        className="grid md:grid-cols-2 gap-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
-        {openPositions.map((position, index) => (
+        Join our team and help shape the future of technology!
+      </motion.p>
+      
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {jobPostings.map((job, index) => (
           <motion.div 
-            key={position.title}
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-            whileHover={{ scale: 1.03 }}
+            key={job.id} 
+            className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <h3 className="text-xl font-semibold mb-2">{position.title}</h3>
-            <p className="text-gray-600 mb-4">{position.department}</p>
-            <a href="#" className="text-teal-500 hover:text-teal-600">View Details</a>
+            <div className="p-6">
+              <h2 className="text-2xl font-semibold mb-2">{job.title}</h2>
+              <div className="flex items-center text-gray-600 mb-4">
+                <Briefcase className="w-4 h-4 mr-2" />
+                <span>{job.department}</span>
+              </div>
+              <div className="flex items-center text-gray-600 mb-4">
+                <MapPin className="w-4 h-4 mr-2" />
+                <span>{job.location}</span>
+              </div>
+              <div className="flex items-center text-gray-600 mb-4">
+                <Calendar className="w-4 h-4 mr-2" />
+                <span>{new Date(job.postedDate).toLocaleDateString()}</span>
+              </div>
+              <p className="text-gray-700 mb-6">{job.description.substring(0, 150)}...</p>
+              <Link 
+                href={`/careers/apply/${job.id}`}
+                className="inline-block bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300"
+              >
+                Apply Now
+              </Link>
+            </div>
           </motion.div>
         ))}
-      </motion.div>
-      <motion.p 
-        className="mt-8 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
-        To apply, please send your resume and cover letter to{' '}
-        <a href="mailto:careers@bqitech.com" className="text-teal-500 hover:underline">
-          careers@bqitech.com
-        </a>
-      </motion.p>
-    </motion.main>
-  )
+      </div>
+    </div>
+  );
 }
