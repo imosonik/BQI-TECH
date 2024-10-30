@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { JobPosting } from "@/types/jobPosting";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/ui/Modal";
-import { Edit, Trash2 } from "lucide-react";
 
 export default function JobPostingsPage() {
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);

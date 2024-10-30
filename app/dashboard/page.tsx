@@ -4,17 +4,13 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Briefcase, Clock, CheckCircle, XCircle, Calendar } from "lucide-react";
 import DashboardOverview from "../../components/user/DashboardOverview";
+import Loader from "@/components/Loader";
 
 // Assuming you have a type for the application status
 interface ApplicationStatus {
   id: string;
   jobTitle: string;
-  status:
-    | "Applied"
-    | "Under Review"
-    | "Interview Scheduled"
-    | "Offer Extended"
-    | "Rejected";
+  status: string; // Adjust this if you have specific statuses
   appliedDate: string;
   lastUpdated: string;
 }
@@ -24,50 +20,33 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch application statuses here
-    // For now, we'll use mock data
-    const mockApplications: ApplicationStatus[] = [
-      {
-        id: "1",
-        jobTitle: "Software Engineer",
-        status: "Applied",
-        appliedDate: "2023-05-01",
-        lastUpdated: "2023-05-01",
-      },
-      {
-        id: "2",
-        jobTitle: "Product Manager",
-        status: "Under Review",
-        appliedDate: "2023-04-15",
-        lastUpdated: "2023-04-20",
-      },
-      {
-        id: "3",
-        jobTitle: "Data Scientist",
-        status: "Interview Scheduled",
-        appliedDate: "2023-04-10",
-        lastUpdated: "2023-05-02",
-      },
-      {
-        id: "4",
-        jobTitle: "UX Designer",
-        status: "Offer Extended",
-        appliedDate: "2023-03-25",
-        lastUpdated: "2023-05-03",
-      },
-      {
-        id: "5",
-        jobTitle: "Marketing Specialist",
-        status: "Rejected",
-        appliedDate: "2023-04-05",
-        lastUpdated: "2023-04-25",
-      },
-    ];
-    setApplications(mockApplications);
-    setIsLoading(false);
+    const fetchApplications = async () => {
+      try {
+        const response = await fetch('/api/admin/applications');
+        if (!response.ok) {
+          throw new Error('Failed to fetch applications');
+        }
+        const data = await response.json();
+        
+        // Ensure data is an array
+        if (Array.isArray(data)) {
+          setApplications(data);
+        } else {
+          console.error('Expected an array but got:', data);
+          setApplications([]); // Set to empty array if not an array
+        }
+      } catch (error) {
+        console.error(error);
+        setApplications([]); // Set to empty array on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchApplications();
   }, []);
 
-  const statusColor = (status: ApplicationStatus["status"]) => {
+  const statusColor = (status: string) => {
     switch (status) {
       case "Applied":
         return "bg-blue-100 text-blue-800";
@@ -79,14 +58,16 @@ export default function Dashboard() {
         return "bg-green-100 text-green-800";
       case "Rejected":
         return "bg-red-100 text-red-800";
+      default:
+        return "";
     }
   };
 
-  const statusIcon = (status: ApplicationStatus["status"]) => {
+  const statusIcon = (status: string) => {
     switch (status) {
       case "Applied":
         return <Briefcase className="w-5 h-5" />;
-      case "Under Review":
+      case "Shortlisted":
         return <Clock className="w-5 h-5" />;
       case "Interview Scheduled":
         return <Calendar className="w-5 h-5" />;
@@ -94,12 +75,14 @@ export default function Dashboard() {
         return <CheckCircle className="w-5 h-5" />;
       case "Rejected":
         return <XCircle className="w-5 h-5" />;
+      default:
+        return null;
     }
   };
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center h-full">Loading...</div>
+      <Loader/>
     );
 
   return (

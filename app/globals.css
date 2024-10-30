@@ -83,3 +83,7 @@
 .cl-card {
   margin-bottom: 0 !important;
 }
+
+.clerk-container {
+  display: none !important;
+}

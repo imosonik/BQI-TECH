@@ -13,9 +13,10 @@ interface DataTableProps {
   onView?: (id: string) => void;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onApply?: (job: any) => void;
 }
 
-export default function DataTable({ columns, data, onView, onEdit, onDelete }: DataTableProps) {
+export default function DataTable({ columns, data, onView, onEdit, onDelete, onApply }: DataTableProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -78,6 +79,16 @@ export default function DataTable({ columns, data, onView, onEdit, onDelete }: D
                       className="w-4 mr-2 transform hover:text-red-500 hover:scale-110"
                     >
                       <Trash2 size={16} />
+                    </motion.button>
+                  )}
+                  {onApply && (
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => onApply(row)}
+                      className="w-4 transform hover:text-green-500 hover:scale-110"
+                    >
+                      Apply
                     </motion.button>
                   )}
                 </div>

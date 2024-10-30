@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
 import { Dropbox } from 'dropbox';
 import fetch from 'node-fetch';
-import { refreshDropboxToken } from '@/utils/dropboxAuth/route'; // Create this utility function
+import { refreshDropboxToken } from '@/utils/dropboxAuth/route'; // Ensure this utility function is correctly imported
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_FILE_TYPES = [
@@ -28,17 +28,17 @@ const submitApplicationSchema = z.object({
   salary: z.string().min(1, "Salary expectation is required"),
 });
 
-// Initialize Dropbox with environment variables and fetch implementation
-const dbx = new Dropbox({
-  accessToken: process.env.DROPBOX_ACCESS_TOKEN,
-  clientId: process.env.DROPBOX_APP_KEY,
-  clientSecret: process.env.DROPBOX_APP_SECRET,
-  fetch: fetch // Provide the fetch implementation
-});
+// Function to create a new Dropbox instance
+const createDropboxInstance = (accessToken: string) => {
+  return new Dropbox({
+    accessToken,
+    clientId: process.env.DROPBOX_APP_KEY,
+    clientSecret: process.env.DROPBOX_APP_SECRET,
+    fetch: fetch // Provide the fetch implementation
+  });
+};
 
-export async function submitApplication(
-  formData: FormData
-): Promise<ActionResponse> {
+export async function submitApplication(formData: FormData): Promise<ActionResponse> {
   try {
     const resumeFile = formData.get("resume") as File | null;
 
@@ -56,12 +56,21 @@ export async function submitApplication(
     });
 
     let resume = "";
+    const accessToken = process.env.DROPBOX_ACCESS_TOKEN; // Get the access token
+
+    // Check if accessToken is defined
+    if (!accessToken) {
+      throw new Error("Dropbox access token is not defined.");
+    }
+
     if (resumeFile && resumeFile instanceof File) {
       if (resumeFile.type !== "application/pdf") {
         throw new Error("Please upload a PDF file.");
       }
       try {
         const buffer = await resumeFile.arrayBuffer();
+        const dbx = createDropboxInstance(accessToken); // Now this should work
+
         const uploadResponse = await dbx.filesUpload({
           path: `/resumes/${parsedData.name.replace(/\s+/g, "_")}_${Date.now()}.pdf`,
           contents: buffer,
@@ -81,8 +90,39 @@ export async function submitApplication(
 
         resume = linkResponse.result.url.replace('?dl=0', '?dl=1'); // Direct download link
       } catch (uploadError) {
-        console.error("Dropbox upload error:", uploadError);
-        throw new Error("Failed to upload resume. Please try again.");
+        const error = uploadError as { status?: number; message?: string }; // Type assertion
+
+        if (error.status === 401) {
+          const newAccessToken = await refreshDropboxToken(); // Refresh the Dropbox token
+          if (newAccessToken) {
+            const dbx = createDropboxInstance(newAccessToken);
+            // Retry the upload with the new access token
+            const buffer = await resumeFile.arrayBuffer();
+            const uploadResponse = await dbx.filesUpload({
+              path: `/resumes/${parsedData.name.replace(/\s+/g, "_")}_${Date.now()}.pdf`,
+              contents: buffer,
+              mode: { '.tag': 'add' },
+              autorename: true,
+              mute: false
+            });
+
+            const path = uploadResponse.result.path_lower;
+            if (!path) {
+              throw new Error("Failed to get the file path from Dropbox.");
+            }
+
+            const linkResponse = await dbx.sharingCreateSharedLinkWithSettings({
+              path: path
+            });
+
+            resume = linkResponse.result.url.replace('?dl=0', '?dl=1'); // Direct download link
+          } else {
+            throw new Error("Failed to refresh Dropbox token.");
+          }
+        } else {
+          console.error("Dropbox upload error:", error.message);
+          throw new Error("Failed to upload resume. Please try again.");
+        }
       }
     }
 

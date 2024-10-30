@@ -3,6 +3,7 @@
 import { useState } from "react";
 import UserDashboardSidebar from "@/components/user/UserDashboardSidebar";
 import { Menu } from "lucide-react";
+import '../../styles/globals.css'; // Ensure this line is present
 
 export default function DashboardLayout({
   children,
