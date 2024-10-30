@@ -3,16 +3,17 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { JobPosting } from "@/types/jobPosting";
 import DataTable from "@/components/admin/DataTable";
+import Modal from "@/components/ui/Modal";
 import { Edit, Trash2 } from "lucide-react";
 
 export default function JobPostingsPage() {
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -39,50 +40,35 @@ export default function JobPostingsPage() {
     { header: "Department", accessor: "department" },
     { header: "Location", accessor: "location" },
     { header: "Posted Date", accessor: "postedDate" },
-    {
-      header: "Actions",
-      accessor: "actions",
-      Cell: ({ row }: { row: JobPosting }) => (
-        <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleEdit(row.id)}
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Edit
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4 mr-2" />
-            Delete
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Requirements", accessor: "requirements" },
   ];
 
   const handleEdit = (id: string) => {
     router.push(`/admin/job-postings/${id}/edit`);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this job posting?")) {
+  const handleDelete = async () => {
+    if (deleteId) {
       try {
-        const response = await fetch(`/api/admin/job-postings/${id}`, {
+        const response = await fetch(`/api/admin/job-postings/${deleteId}`, {
           method: "DELETE",
         });
         if (!response.ok) {
           throw new Error("Failed to delete job posting");
         }
-        setJobPostings(jobPostings.filter((posting) => posting.id !== id));
+        setJobPostings(jobPostings.filter((posting) => posting.id !== deleteId));
       } catch (err) {
         setError("Failed to delete job posting. Please try again.");
+      } finally {
+        setIsModalOpen(false);
+        setDeleteId(null);
       }
     }
+  };
+
+  const openModal = (id: string) => {
+    setDeleteId(id);
+    setIsModalOpen(true);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -96,7 +82,19 @@ export default function JobPostingsPage() {
       <Button onClick={() => router.push("/admin/job-postings/new")}>
         Add New Job Posting
       </Button>
-      <DataTable columns={columns} data={jobPostings} />
+      <DataTable
+        columns={columns}
+        data={jobPostings}
+        onEdit={handleEdit}
+        onDelete={openModal}
+      />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Delete Job Posting"
+        message="Are you sure you want to delete this job posting?"
+      />
     </div>
   );
 }
