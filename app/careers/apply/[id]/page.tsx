@@ -215,7 +215,7 @@ function ApplicationForm() {
             htmlFor="cv"
                   className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Upload CV/Resume (Optional)
+            Upload CV/Resume
           </label>
           <input
             type="file"
