@@ -4,29 +4,48 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { JobPosting } from "@/types/jobPosting";
+import dynamic from "next/dynamic";
+import toast from "react-hot-toast";
+
+// Dynamically import Quill to avoid SSR issues
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
 
 export default function AddJobPostingPage() {
   const router = useRouter();
-  const [jobPosting, setJobPosting] = useState<Omit<JobPosting, 'id' | 'postedDate'>>({
+  const [jobPosting, setJobPosting] = useState({
     title: "",
     department: "",
     location: "",
     description: "",
-    requirements: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setJobPosting((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleDescriptionChange = (value: string) => {
+    setJobPosting((prev) => ({ ...prev, description: value }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Custom validation
+    if (
+      !jobPosting.title ||
+      !jobPosting.department ||
+      !jobPosting.location ||
+      !jobPosting.description
+    ) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    setIsLoading(true); // Set loading state
 
     try {
       const response = await fetch("/api/admin/job-postings", {
@@ -39,9 +58,13 @@ export default function AddJobPostingPage() {
         throw new Error("Failed to create job posting");
       }
 
+      toast.success("Job posting created successfully!"); // Success toast
       router.push("/admin/job-postings");
     } catch (err) {
       setError("Failed to create job posting. Please try again.");
+      toast.error("Failed to create job posting. Please try again."); // Error toast
+    } finally {
+      setIsLoading(false); // Reset loading state
     }
   };
 
@@ -51,7 +74,10 @@ export default function AddJobPostingPage() {
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="title"
+            className="block text-sm font-medium text-gray-700"
+          >
             Job Title
           </label>
           <Input
@@ -64,7 +90,10 @@ export default function AddJobPostingPage() {
           />
         </div>
         <div>
-          <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="department"
+            className="block text-sm font-medium text-gray-700"
+          >
             Department
           </label>
           <Input
@@ -77,7 +106,10 @@ export default function AddJobPostingPage() {
           />
         </div>
         <div>
-          <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="location"
+            className="block text-sm font-medium text-gray-700"
+          >
             Location
           </label>
           <Input
@@ -90,38 +122,25 @@ export default function AddJobPostingPage() {
           />
         </div>
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium text-gray-700"
+          >
             Job Description
           </label>
-          <Textarea
-            id="description"
-            name="description"
+          <ReactQuill
             value={jobPosting.description}
-            onChange={handleInputChange}
+            onChange={handleDescriptionChange}
             className="mt-1"
-            rows={5}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="requirements" className="block text-sm font-medium text-gray-700">
-            Requirements
-          </label>
-          <Textarea
-            id="requirements"
-            name="requirements"
-            value={jobPosting.requirements}
-            onChange={handleInputChange}
-            className="mt-1"
-            rows={5}
-            required
           />
         </div>
         <div className="flex justify-end space-x-3">
           <Button type="button" variant="outline" onClick={() => router.back()}>
             Cancel
           </Button>
-          <Button type="submit">Create Job Posting</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Creating..." : "Create Job Posting"}
+          </Button>
         </div>
       </form>
     </div>

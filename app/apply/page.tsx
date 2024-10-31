@@ -22,8 +22,15 @@ export default function ApplicationForm() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Custom validation
+    if (!formData.name || !formData.email || !formData.position || !formData.resume) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
     setIsSubmitting(true);
     setError('');
 
@@ -66,7 +73,6 @@ export default function ApplicationForm() {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            required
             className="w-full px-3 py-2 border rounded-lg"
           />
         </div>
@@ -78,7 +84,6 @@ export default function ApplicationForm() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            required
             className="w-full px-3 py-2 border rounded-lg"
           />
         </div>
@@ -89,7 +94,6 @@ export default function ApplicationForm() {
             name="position"
             value={formData.position}
             onChange={handleChange}
-            required
             className="w-full px-3 py-2 border rounded-lg"
           >
             <option value="">Select a position</option>
@@ -107,7 +111,6 @@ export default function ApplicationForm() {
             name="resume"
             value={formData.resume}
             onChange={handleChange}
-            required
             className="w-full px-3 py-2 border rounded-lg"
             placeholder="https://example.com/your-resume.pdf"
           />

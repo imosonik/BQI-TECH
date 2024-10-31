@@ -19,13 +19,23 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const data: Omit<JobPosting, "id" | "postedDate"> = await request.json();
+    const {
+      title,
+      department,
+      location,
+      description,
+    }: Omit<JobPosting, "id" | "postedDate"> = await request.json();
+
     const newJobPosting = await prisma.jobPosting.create({
       data: {
-        ...data,
+        title,
+        department,
+        location,
+        description,
         postedDate: new Date(),
       },
     });
+
     return NextResponse.json(newJobPosting, { status: 201 });
   } catch (error) {
     console.error("Failed to create job posting:", error);

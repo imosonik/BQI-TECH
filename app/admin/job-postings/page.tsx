@@ -13,7 +13,7 @@ interface JobPosting {
   department: string;
   location: string;
   description: string;
-  requirements: string;
+
   postedDate: string;
 }
 
@@ -42,22 +42,14 @@ export default function JobPostingsPage() {
     fetchJobPostings();
   }, []);
 
-  const truncateRequirements = (requirements: string) => {
-    const words = requirements.split(" ");
-    return words.length > 5
-      ? words.slice(0, 5).join(" ") + "..."
-      : requirements;
-  };
+
 
   const columns = [
     { header: "Title", accessor: "title" },
     { header: "Department", accessor: "department" },
     { header: "Location", accessor: "location" },
     { header: "Posted Date", accessor: "postedDate" },
-    {
-      header: "Requirements",
-      accessor: (row: JobPosting) => truncateRequirements(row.requirements),
-    },
+
   ];
 
   const handleEdit = (id: string) => {
