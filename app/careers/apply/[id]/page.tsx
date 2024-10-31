@@ -86,6 +86,7 @@ function ApplicationForm() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const {
     register,
@@ -108,8 +109,8 @@ function ApplicationForm() {
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
-        if (key === 'cv' && value instanceof FileList && value.length > 0) {
-          formData.append('resume', value[0]);
+        if (key === 'cv' && uploadedFile) {
+          formData.append('resume', uploadedFile);
         } else if (typeof value === 'string' && value.trim() !== '') {
           formData.append(key, value);
         } else if (value !== null && value !== undefined) {
@@ -151,14 +152,21 @@ function ApplicationForm() {
 
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
   const renderStep = () => {
     switch (step) {
       case 1:
-  return (
-    <motion.div
+        return (
+          <motion.div
             key="step1"
             initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
+            animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.3 }}
           >
@@ -166,36 +174,36 @@ function ApplicationForm() {
             <div className="space-y-4">
               <InputField
                 label="First Name"
-            id="firstName"
+                id="firstName"
                 register={register}
                 error={errors.firstName}
               />
               <InputField
                 label="Last Name"
-            id="lastName"
+                id="lastName"
                 register={register}
                 error={errors.lastName}
               />
               <InputField
                 label="Email"
                 id="email"
-            type="email"
+                type="email"
                 register={register}
                 error={errors.email}
               />
               <InputField
                 label="Phone Number"
                 id="phone"
-            type="tel"
+                type="tel"
                 register={register}
                 error={errors.phone}
-          />
+              />
             </div>
-        </motion.div>
+          </motion.div>
         );
       case 2:
         return (
-        <motion.div
+          <motion.div
             key="step2"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -206,62 +214,55 @@ function ApplicationForm() {
             <div className="space-y-4">
               <InputField
                 label="Location (City)"
-            id="location"
+                id="location"
                 register={register}
                 error={errors.location}
               />
               <div>
-          <label
-            htmlFor="cv"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Upload CV/Resume
-          </label>
-          <input
-            type="file"
-            id="cv"
-            accept=".pdf,.doc,.docx"
-            {...register("cv")}
-                  className="mt-1 block w-full text-sm text-gray-500
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-blue-50 file:text-blue-700
-                    hover:file:bg-blue-100"
+                <label htmlFor="cv" className="block text-sm font-medium text-gray-700 mb-1">
+                  Upload CV/Resume (Optional)
+                </label>
+                <input
+                  type="file"
+                  id="cv"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleFileChange}
+                  className="mt-1 block w-full text-sm text-gray-500"
                 />
+                {uploadedFile && <p>Uploaded: {uploadedFile.name}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-            Where did you hear about BQI Tech?
-          </label>
-          {hearAboutOptions.map((option) => (
-            <div key={option} className="mt-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  {...register("hearAbout")}
-                  value={option}
-                  className="form-radio h-4 w-4 text-blue-600"
-                />
-                <span className="ml-2">{option}</span>
-              </label>
-            </div>
-          ))}
-          {hearAbout === "Other" && (
-            <input
-              type="text"
-              {...register("otherSource")}
-              placeholder="Please specify"
-              className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-            />
-          )}
+                  Where did you hear about BQI Tech?
+                </label>
+                {hearAboutOptions.map((option) => (
+                  <div key={option} className="mt-2">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        {...register("hearAbout")}
+                        value={option}
+                        className="form-radio h-4 w-4 text-blue-600"
+                      />
+                      <span className="ml-2">{option}</span>
+                    </label>
+                  </div>
+                ))}
+                {hearAbout === "Other" && (
+                  <input
+                    type="text"
+                    {...register("otherSource")}
+                    placeholder="Please specify"
+                    className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  />
+                )}
               </div>
             </div>
-        </motion.div>
+          </motion.div>
         );
       case 3:
         return (
-        <motion.div
+          <motion.div
             key="step3"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -271,28 +272,28 @@ function ApplicationForm() {
             <h2 className="text-2xl font-semibold mb-4">Final Details</h2>
             <div className="space-y-4">
               <div>
-          <label
-            htmlFor="experience"
+                <label
+                  htmlFor="experience"
                   className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            How many years of full-time work experience do you have?
-          </label>
-          <select
-            id="experience"
-            {...register("experience")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-          >
-            {experienceOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          {errors.experience && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.experience.message}
-            </p>
-          )}
+                >
+                  How many years of full-time work experience do you have?
+                </label>
+                <select
+                  id="experience"
+                  {...register("experience")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                >
+                  {experienceOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                {errors.experience && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.experience.message}
+                  </p>
+                )}
               </div>
               <InputField
                 label="Salary Expectation"
@@ -301,16 +302,16 @@ function ApplicationForm() {
                 error={errors.salary}
               />
             </div>
-        </motion.div>
+          </motion.div>
         );
     }
   };
 
   return (
-        <motion.div
+    <motion.div
       className="container mx-auto px-4 py-8 mt-32"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       <Toaster position="top-center" reverseOrder={false} />
@@ -363,14 +364,14 @@ function ApplicationForm() {
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
           ) : (
-          <button
-            type="submit"
-            disabled={isSubmitting}
+            <button
+              type="submit"
+              disabled={isSubmitting}
               className="flex items-center px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300 ml-auto disabled:bg-green-400"
-          >
-            {isSubmitting ? "Submitting..." : "Submit Application"}
+            >
+              {isSubmitting ? "Submitting..." : "Submit Application"}
               <Send className="ml-2 h-5 w-5" />
-          </button>
+            </button>
           )}
         </div>
       </form>
