@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 // Dynamically import Quill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import Loader from "@/components/Loader";
 
 export default function EditJobPostingPage() {
   const { id } = useParams();
@@ -98,7 +99,7 @@ export default function EditJobPostingPage() {
     }
   };
 
-  if (!jobPosting) return <div>Loading...</div>;
+  if (!jobPosting) return <Loader/> ;
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
