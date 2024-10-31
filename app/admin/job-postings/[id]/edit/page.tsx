@@ -4,14 +4,19 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { JobPosting } from "@/types/jobPosting";
+import dynamic from "next/dynamic";
+import toast from "react-hot-toast";
+
+// Dynamically import Quill to avoid SSR issues
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
 
 export default function EditJobPostingPage() {
   const { id } = useParams();
   const router = useRouter();
   const [jobPosting, setJobPosting] = useState<JobPosting | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -23,10 +28,8 @@ export default function EditJobPostingPage() {
           department: "",
           location: "",
           description: "",
-          requirements: "",
           postedDate: new Date().toISOString(),
         });
-        setIsLoading(false);
         return;
       }
 
@@ -39,27 +42,40 @@ export default function EditJobPostingPage() {
         setJobPosting(data);
       } catch (err) {
         setError("Failed to load job posting. Please try again.");
-      } finally {
-        setIsLoading(false);
       }
     }
 
     fetchJobPosting();
   }, [id]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setJobPosting((prev) => ({ ...prev!, [name]: value }));
+  };
+
+  const handleDescriptionChange = (value: string) => {
+    if (jobPosting) {
+      setJobPosting((prev) => ({ ...prev!, description: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!jobPosting) return;
 
+    // Custom validation
+    if (!jobPosting.title || !jobPosting.department || !jobPosting.location || !jobPosting.description) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    setIsLoading(true); // Set loading state
+
     try {
-      const url = id === "new" ? "/api/admin/job-postings" : `/api/admin/job-postings/${id}`;
+      const url =
+        id === "new"
+          ? "/api/admin/job-postings"
+          : `/api/admin/job-postings/${id}`;
       const method = id === "new" ? "POST" : "PUT";
 
       const response = await fetch(url, {
@@ -72,15 +88,18 @@ export default function EditJobPostingPage() {
         throw new Error("Failed to save job posting");
       }
 
+      toast.success("Job posting saved successfully!"); // Success toast
       router.push("/admin/job-postings");
     } catch (err) {
       setError("Failed to save job posting. Please try again.");
+      toast.error("Failed to save job posting. Please try again."); // Error toast
+    } finally {
+      setIsLoading(false); // Reset loading state
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (!jobPosting) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
-  if (!jobPosting) return <div>Job posting not found</div>;
 
   return (
     <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
@@ -89,7 +108,10 @@ export default function EditJobPostingPage() {
       </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="title"
+            className="block text-sm font-medium text-gray-700"
+          >
             Job Title
           </label>
           <Input
@@ -98,11 +120,13 @@ export default function EditJobPostingPage() {
             value={jobPosting.title}
             onChange={handleInputChange}
             className="mt-1"
-            required
           />
         </div>
         <div>
-          <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="department"
+            className="block text-sm font-medium text-gray-700"
+          >
             Department
           </label>
           <Input
@@ -111,11 +135,13 @@ export default function EditJobPostingPage() {
             value={jobPosting.department}
             onChange={handleInputChange}
             className="mt-1"
-            required
           />
         </div>
         <div>
-          <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="location"
+            className="block text-sm font-medium text-gray-700"
+          >
             Location
           </label>
           <Input
@@ -124,42 +150,28 @@ export default function EditJobPostingPage() {
             value={jobPosting.location}
             onChange={handleInputChange}
             className="mt-1"
-            required
           />
         </div>
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium text-gray-700"
+          >
             Job Description
           </label>
-          <Textarea
-            id="description"
-            name="description"
+          <ReactQuill
             value={jobPosting.description}
-            onChange={handleInputChange}
+            onChange={handleDescriptionChange}
             className="mt-1"
-            rows={5}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="requirements" className="block text-sm font-medium text-gray-700">
-            Requirements
-          </label>
-          <Textarea
-            id="requirements"
-            name="requirements"
-            value={jobPosting.requirements}
-            onChange={handleInputChange}
-            className="mt-1"
-            rows={5}
-            required
           />
         </div>
         <div className="flex justify-end space-x-3">
           <Button type="button" variant="outline" onClick={() => router.back()}>
             Cancel
           </Button>
-          <Button type="submit">Save Job Posting</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save Job Posting"}
+          </Button>
         </div>
       </form>
     </div>

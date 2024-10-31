@@ -3,16 +3,23 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { JobPosting } from "@/types/jobPosting";
 import DataTable from "@/components/admin/DataTable";
-import Modal from "@/components/ui/Modal";
+import { Edit, Trash2 } from "lucide-react";
+
+interface JobPosting {
+  id: string;
+  title: string;
+  department: string;
+  location: string;
+  description: string;
+  requirements: string;
+  postedDate: string;
+}
 
 export default function JobPostingsPage() {
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,40 +41,42 @@ export default function JobPostingsPage() {
     fetchJobPostings();
   }, []);
 
+  const truncateRequirements = (requirements: string) => {
+    const words = requirements.split(" ");
+    return words.length > 5
+      ? words.slice(0, 5).join(" ") + "..."
+      : requirements;
+  };
+
   const columns = [
     { header: "Title", accessor: "title" },
     { header: "Department", accessor: "department" },
     { header: "Location", accessor: "location" },
     { header: "Posted Date", accessor: "postedDate" },
-    { header: "Requirements", accessor: "requirements" },
+    {
+      header: "Requirements",
+      accessor: (row: JobPosting) => truncateRequirements(row.requirements),
+    },
   ];
 
   const handleEdit = (id: string) => {
     router.push(`/admin/job-postings/${id}/edit`);
   };
 
-  const handleDelete = async () => {
-    if (deleteId) {
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this job posting?")) {
       try {
-        const response = await fetch(`/api/admin/job-postings/${deleteId}`, {
+        const response = await fetch(`/api/admin/job-postings/${id}`, {
           method: "DELETE",
         });
         if (!response.ok) {
           throw new Error("Failed to delete job posting");
         }
-        setJobPostings(jobPostings.filter((posting) => posting.id !== deleteId));
+        setJobPostings(jobPostings.filter((posting) => posting.id !== id));
       } catch (err) {
         setError("Failed to delete job posting. Please try again.");
-      } finally {
-        setIsModalOpen(false);
-        setDeleteId(null);
       }
     }
-  };
-
-  const openModal = (id: string) => {
-    setDeleteId(id);
-    setIsModalOpen(true);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -85,14 +94,7 @@ export default function JobPostingsPage() {
         columns={columns}
         data={jobPostings}
         onEdit={handleEdit}
-        onDelete={openModal}
-      />
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleDelete}
-        title="Delete Job Posting"
-        message="Are you sure you want to delete this job posting?"
+        onDelete={handleDelete}
       />
     </div>
   );

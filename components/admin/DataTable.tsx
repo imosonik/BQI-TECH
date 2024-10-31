@@ -4,7 +4,7 @@ import { Edit, Trash2, Eye } from 'lucide-react';
 
 interface Column {
   header: string;
-  accessor: string;
+  accessor: string | ((row: any) => string);
 }
 
 interface DataTableProps {
@@ -13,7 +13,7 @@ interface DataTableProps {
   onView?: (id: string) => void;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
-  onApply?: (job: any) => void;
+  onApply?: (jobId: string) => void;
 }
 
 export default function DataTable({ columns, data, onView, onEdit, onDelete, onApply }: DataTableProps) {
@@ -45,7 +45,9 @@ export default function DataTable({ columns, data, onView, onEdit, onDelete, onA
               {columns.map((column, colIndex) => (
                 <td key={colIndex} className="py-3 px-6 text-left whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="font-medium">{row[column.accessor]}</span>
+                    {typeof column.accessor === 'function'
+                      ? column.accessor(row)
+                      : row[column.accessor]}
                   </div>
                 </td>
               ))}
@@ -85,8 +87,8 @@ export default function DataTable({ columns, data, onView, onEdit, onDelete, onA
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => onApply(row)}
-                      className="w-4 transform hover:text-green-500 hover:scale-110"
+                      onClick={() => onApply(row.id)}
+                      className="w-4 mr-2 transform hover:text-green-500 hover:scale-110"
                     >
                       Apply
                     </motion.button>
