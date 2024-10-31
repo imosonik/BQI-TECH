@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import JobModal from '@/components/JobModal' // Import the JobModal component
 
 export default function CareersPage() {
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([])
@@ -24,6 +25,7 @@ export default function CareersPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [departmentFilter, setDepartmentFilter] = useState('all')
   const [locationFilter, setLocationFilter] = useState('all')
+  const [selectedJob, setSelectedJob] = useState<JobPosting | null>(null)
 
   useEffect(() => {
     async function fetchJobPostings() {
@@ -162,9 +164,12 @@ export default function CareersPage() {
                   <span>{new Date(job.postedDate).toLocaleDateString()}</span>
                 </div>
                 <p className="text-gray-700 mb-6">{job.description.substring(0, 150)}...</p>
-                <Link href={`/careers/apply/${job.id}`}>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700">Apply Now</Button>
-                </Link>
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700" 
+                  onClick={() => setSelectedJob(job)} // Open the job modal
+                >
+                  View Job
+                </Button>
               </div>
             </motion.div>
           ))}
@@ -181,6 +186,13 @@ export default function CareersPage() {
           No job postings found. Please try different search criteria.
         </motion.p>
       )}
+
+      {/* Job Modal */}
+      <AnimatePresence>
+        {selectedJob && (
+          <JobModal job={selectedJob} onClose={() => setSelectedJob(null)} />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
