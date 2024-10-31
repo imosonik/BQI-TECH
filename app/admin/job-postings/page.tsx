@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import DataTable from "@/components/admin/DataTable";
 import { Edit, Trash2 } from "lucide-react";
+import Loader from "@/components/Loader";
 
 interface JobPosting {
   id: string;
@@ -79,7 +80,7 @@ export default function JobPostingsPage() {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loader/>;
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
