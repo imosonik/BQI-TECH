@@ -37,7 +37,7 @@ export function Hero() {
   }
 
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative h-screen overflow-hidden -z-20"> {/* Set z-index to -20 */}
       <Slider {...settings} className="h-full">
         {videos.map((video, index) => (
           <div key={index} className="h-screen">

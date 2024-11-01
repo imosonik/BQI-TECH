@@ -10,6 +10,7 @@ import { useActionState } from "@/hooks/useActionState";
 import { submitApplication } from "@/actions/submitApplication";
 import toast, { Toaster } from 'react-hot-toast';
 import { ArrowLeft, ArrowRight, Send } from "lucide-react";
+import React from "react";
 
 const hearAboutOptions = ["LinkedIn", "Internet search", "Other"] as const;
 const experienceOptions = ["Entry Level", "Mid Level", "Senior"] as const;
@@ -127,6 +128,11 @@ function ApplicationForm() {
       Object.entries(data).forEach(([key, value]) => {
         if (key === 'cv' && value instanceof FileList && value.length > 0) {
           formData.append('resume', value[0]);
+        } else if (key === 'position') {
+          const selectedPosition = positions.find(pos => pos.id === value);
+          if (selectedPosition) {
+            formData.append('position', selectedPosition.title);
+          }
         } else if (typeof value === 'string' && value.trim() !== '') {
           formData.append(key, value);
         } else if (value !== null && value !== undefined) {
@@ -135,9 +141,8 @@ function ApplicationForm() {
       });
 
       formData.append('name', `${data.firstName} ${data.lastName}`);
-      formData.append('position', data.position);
       formData.append('phoneNumber', data.phone);
-      formData.append('location', data.location); // Add this line
+      formData.append('location', data.location);
 
       const result = await execute(formData);
 

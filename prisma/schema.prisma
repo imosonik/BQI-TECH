@@ -7,6 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id          String       @id @default(cuid())
+  email       String       @unique
+  name        String
+  phoneNumber String?
+  applications Application[]
+}
+
 model Application {
   id                 String   @id @default(cuid())
   name               String
@@ -21,15 +29,8 @@ model Application {
   salary             String
   status             String
   appliedDate        DateTime @default(now())
-  shortlistedDate    DateTime?
-  assessmentDate     DateTime?
-  assessmentScore    Float?
-  interviewDate      DateTime?
-  interviewer        String?
-  hireDate           DateTime?
-  startDate          DateTime?
-  disqualifiedDate   DateTime?
-  disqualifiedReason String?
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
 }
 
 model JobPosting {

@@ -9,34 +9,19 @@ import fetch from 'node-fetch';
 import { refreshDropboxToken } from '@/utils/dropboxAuth/route'; // Ensure this utility function is correctly imported
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_FILE_TYPES = [
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-];
 
 const submitApplicationSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string(),
   email: z.string().email("Invalid email address"),
-  phoneNumber: z.string().nullable(),
-  position: z.string().min(1, "Position is required"),
-  location: z.string().min(1, "Location is required"),
-  resume: z.any(),
-  hearAbout: z.enum(["LinkedIn", "Internet search", "Other"]),
-  otherSource: z.string().optional().nullable(),
-  experience: z.enum(["Entry Level", "Mid Level", "Senior"]),
-  salary: z.string().min(1, "Salary expectation is required"),
+  phoneNumber: z.string().optional(),
+  position: z.string(),
+  location: z.string(),
+  resume: z.instanceof(File).optional(),
+  hearAbout: z.string(),
+  otherSource: z.string().optional(),
+  experience: z.string(),
+  salary: z.string(),
 });
-
-// Function to create a new Dropbox instance
-const createDropboxInstance = (accessToken: string) => {
-  return new Dropbox({
-    accessToken,
-    clientId: process.env.DROPBOX_APP_KEY,
-    clientSecret: process.env.DROPBOX_APP_SECRET,
-    fetch: fetch // Provide the fetch implementation
-  });
-};
 
 export async function submitApplication(formData: FormData): Promise<ActionResponse> {
   try {
@@ -55,22 +40,18 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
       salary: formData.get("salary"),
     });
 
-    let resume = "";
-    const accessToken = process.env.DROPBOX_ACCESS_TOKEN; // Get the access token
+    let resumeUrl = "";
+    const accessToken = process.env.DROPBOX_ACCESS_TOKEN;
 
-    // Check if accessToken is defined
     if (!accessToken) {
       throw new Error("Dropbox access token is not defined.");
     }
 
-    if (resumeFile && resumeFile instanceof File) {
-      if (resumeFile.type !== "application/pdf") {
-        throw new Error("Please upload a PDF file.");
-      }
-      try {
-        const buffer = await resumeFile.arrayBuffer();
-        const dbx = createDropboxInstance(accessToken); // Now this should work
+    if (resumeFile && resumeFile.size <= MAX_FILE_SIZE) {
+      const dbx = createDropboxInstance(accessToken);
+      const buffer = await resumeFile.arrayBuffer();
 
+      try {
         const uploadResponse = await dbx.filesUpload({
           path: `/resumes/${parsedData.name.replace(/\s+/g, "_")}_${Date.now()}.pdf`,
           contents: buffer,
@@ -81,23 +62,23 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
 
         const path = uploadResponse.result.path_lower;
         if (!path) {
-          throw new Error("Failed to get the file path from Dropbox.");
+          throw new Error('Upload path is undefined')
         }
-
-        const linkResponse = await dbx.sharingCreateSharedLinkWithSettings({
-          path: path
-        });
-
-        resume = linkResponse.result.url.replace('?dl=0', '?dl=1'); // Direct download link
+        const linkResponse = await dbx.sharingCreateSharedLinkWithSettings({ path });
+        if (linkResponse.result.url) {
+          resumeUrl = linkResponse.result.url.replace('?dl=0', '?dl=1'); // Direct download link
+        } else {
+          throw new Error('Failed to create shared link: URL is undefined');
+        }
       } catch (uploadError) {
-        const error = uploadError as { status?: number; message?: string }; // Type assertion
+        const error = uploadError as { status?: number; message?: string };
 
         if (error.status === 401) {
-          const newAccessToken = await refreshDropboxToken(); // Refresh the Dropbox token
+          const newAccessToken = await refreshDropboxToken();
           if (newAccessToken) {
             const dbx = createDropboxInstance(newAccessToken);
-            // Retry the upload with the new access token
             const buffer = await resumeFile.arrayBuffer();
+
             const uploadResponse = await dbx.filesUpload({
               path: `/resumes/${parsedData.name.replace(/\s+/g, "_")}_${Date.now()}.pdf`,
               contents: buffer,
@@ -108,14 +89,14 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
 
             const path = uploadResponse.result.path_lower;
             if (!path) {
-              throw new Error("Failed to get the file path from Dropbox.");
+              throw new Error('Upload path is undefined')
             }
-
-            const linkResponse = await dbx.sharingCreateSharedLinkWithSettings({
-              path: path
-            });
-
-            resume = linkResponse.result.url.replace('?dl=0', '?dl=1'); // Direct download link
+            const linkResponse = await dbx.sharingCreateSharedLinkWithSettings({ path });
+            if (linkResponse.result.url) {
+              resumeUrl = linkResponse.result.url.replace('?dl=0', '?dl=1'); // Direct download link
+            } else {
+              throw new Error('Failed to create shared link: URL is undefined');
+            }
           } else {
             throw new Error("Failed to refresh Dropbox token.");
           }
@@ -133,7 +114,7 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
         phoneNumber: parsedData.phoneNumber || null,
         position: parsedData.position,
         location: parsedData.location,
-        resumeUrl: resume,
+        resumeUrl, // Store the resume URL
         hearAbout: parsedData.hearAbout,
         otherSource: parsedData.otherSource || null,
         experience: parsedData.experience,
@@ -198,3 +179,13 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
     };
   }
 }
+
+// Function to create a new Dropbox instance
+const createDropboxInstance = (accessToken: string) => {
+  return new Dropbox({
+    accessToken,
+    clientId: process.env.DROPBOX_APP_KEY,
+    clientSecret: process.env.DROPBOX_APP_SECRET,
+    fetch: fetch // Provide the fetch implementation
+  });
+};

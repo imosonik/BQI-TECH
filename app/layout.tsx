@@ -7,6 +7,7 @@ import "./clerk-overrides.css"; // Add this line
 import ClientLayout from "@/components/ClientLayout";
 import { CookieConsentBanner } from '@/components/CookieConsentBanner';
 import { ClerkProvider } from '@clerk/nextjs';
+import { Toaster } from 'react-hot-toast'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,6 +41,7 @@ export default function RootLayout({
           </ClientLayout>
         )}
       </ClerkProvider>
+      <Toaster position="top-right" />
     </html>
   );
 }

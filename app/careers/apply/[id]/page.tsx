@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useParams, useRouter } from "next/navigation";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useActionState } from "@/hooks/useActionState";
-import { submitApplication } from "@/actions/submitApplication";
-import toast, { Toaster } from 'react-hot-toast';
-import { ArrowLeft, ArrowRight, Send } from "lucide-react";
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useParams, useRouter } from "next/navigation"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { useActionState } from "@/hooks/useActionState"
+import { submitApplication } from "@/actions/submitApplication"
+import toast, { Toaster } from 'react-hot-toast'
+import { ArrowLeft, ArrowRight, Send } from "lucide-react"
 
-const hearAboutOptions = ["LinkedIn", "Internet search", "Other"] as const;
-const experienceOptions = ["Entry Level", "Mid Level", "Senior"] as const;
+const hearAboutOptions = ["LinkedIn", "Internet search", "Other"] as const
+const experienceOptions = ["Entry Level", "Mid Level", "Senior"] as const
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -20,14 +20,15 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone number is required"),
   location: z.string().min(1, "Location is required"),
+  position: z.string().min(1, "Position is required"),
   cv: z.any().optional(),
   hearAbout: z.enum(hearAboutOptions),
   otherSource: z.string().optional(),
   experience: z.enum(experienceOptions),
   salary: z.string().min(1, "Salary expectation is required"),
-});
+})
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof formSchema>
 
 function AdvancedLoader() {
   return (
@@ -77,16 +78,17 @@ function AdvancedLoader() {
         </motion.div>
       </div>
     </div>
-  );
+  )
 }
 
 function ApplicationForm() {
-  const { id } = useParams();
-  const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const { id } = useParams()
+  const router = useRouter()
+  const [step, setStep] = useState(1)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [positions, setPositions] = useState<{ id: string; title: string }[]>([])
 
   const {
     register,
@@ -97,67 +99,89 @@ function ApplicationForm() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
-  });
+  })
 
-  const { execute, isLoading, error } = useActionState(submitApplication);
-  const hearAbout = watch("hearAbout");
+  const { execute, isLoading, error } = useActionState(submitApplication)
+  const hearAbout = watch("hearAbout")
+
+  useEffect(() => {
+    const fetchPositions = async () => {
+      try {
+        const response = await fetch("/api/job-postings")
+        if (!response.ok) throw new Error("Failed to fetch job postings")
+        const data = await response.json()
+        setPositions(data)
+      } catch (error) {
+        console.error("Error fetching positions:", error)
+      }
+    }
+
+    fetchPositions()
+  }, [])
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    setIsSubmitting(true);
-    setSubmitError(null);
+    setIsSubmitting(true)
+    setSubmitError(null)
 
     try {
-      const formData = new FormData();
+      const formData = new FormData()
       Object.entries(data).forEach(([key, value]) => {
         if (key === 'cv' && uploadedFile) {
-          formData.append('resume', uploadedFile);
+          formData.append('resume', uploadedFile)
         } else if (typeof value === 'string' && value.trim() !== '') {
-          formData.append(key, value);
+          formData.append(key, value)
         } else if (value !== null && value !== undefined) {
-          formData.append(key, JSON.stringify(value));
+          formData.append(key, JSON.stringify(value))
         }
-      });
+      })
 
-      formData.append('name', `${data.firstName} ${data.lastName}`);
-      formData.append('position', id as string);
-      formData.append('phoneNumber', data.phone);
-      formData.append('location', data.location); // Add this line
+      // Send the position title instead of the ID
+      const selectedPosition = positions.find(pos => pos.id === data.position)
+      if (selectedPosition) {
+        formData.append('position', selectedPosition.title)
+      }
 
-      const result = await execute(formData);
+      formData.append('name', `${data.firstName} ${data.lastName}`)
+      formData.append('phoneNumber', data.phone)
+      formData.append('location', data.location)
+
+      const result = await execute(formData)
 
       if (result.success) {
-        toast.success('Application submitted successfully');
-        router.push('/careers/apply/thank-you');
+        toast.success('Application submitted successfully')
+        router.push('/careers/apply/thank-you')
       } else {
-        setSubmitError(result.message || "An error occurred during submission");
-        toast.error(result.message || "An error occurred during submission");
+        setSubmitError(result.message || "An error occurred during submission")
+        toast.error(result.message || "An error occurred during submission")
       }
     } catch (error) {
-      setSubmitError("An unexpected error occurred");
-      toast.error("An unexpected error occurred");
-      console.error(error);
+      setSubmitError("An unexpected error occurred")
+      toast.error("An unexpected error occurred")
+      console.error(error)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const nextStep = async () => {
     const isStepValid = await trigger(
       step === 1
         ? ["firstName", "lastName", "email", "phone"]
-        : ["location", "cv", "hearAbout", "otherSource"]
-    );
-    if (isStepValid) setStep((prev) => Math.min(prev + 1, 3));
-  };
+        : step === 2
+        ? ["location", "cv", "hearAbout", "otherSource"]
+        : ["position", "experience", "salary"]
+    )
+    if (isStepValid) setStep((prev) => Math.min(prev + 1, 3))
+  }
 
-  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1))
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0]
     if (file) {
-      setUploadedFile(file);
+      setUploadedFile(file)
     }
-  };
+  }
 
   const renderStep = () => {
     switch (step) {
@@ -200,7 +224,7 @@ function ApplicationForm() {
               />
             </div>
           </motion.div>
-        );
+        )
       case 2:
         return (
           <motion.div
@@ -219,7 +243,27 @@ function ApplicationForm() {
                 error={errors.location}
               />
               <div>
-                <label htmlFor="cv" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
+                  Position
+                </label>
+                <select
+                  id="position"
+                  {...register("position")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                >
+                  <option value="">Select a position</option>
+                  {positions.map((pos) => (
+                    <option key={pos.id} value={pos.id}>
+                      {pos.title}
+                    </option>
+                  ))}
+                </select>
+                {errors.position && (
+                  <p className="text-red-500 text-sm mt-1">{errors.position.message}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Upload CV/Resume (Optional)
                 </label>
                 <input
@@ -259,7 +303,7 @@ function ApplicationForm() {
               </div>
             </div>
           </motion.div>
-        );
+        )
       case 3:
         return (
           <motion.div
@@ -303,9 +347,9 @@ function ApplicationForm() {
               />
             </div>
           </motion.div>
-        );
+        )
     }
-  };
+  }
 
   return (
     <motion.div
@@ -378,15 +422,15 @@ function ApplicationForm() {
       {error && <p className="text-red-500 mt-4">{error}</p>}
       {isSubmitting && <AdvancedLoader />}
     </motion.div>
-  );
+  )
 }
 
 interface InputFieldProps {
-  label: string;
-  id: string;
-  register: any;
-  error: any;
-  type?: string;
+  label: string
+  id: string
+  register: any
+  error: any
+  type?: string
 }
 
 function InputField({ label, id, register, error, type = "text" }: InputFieldProps) {
@@ -405,7 +449,7 @@ function InputField({ label, id, register, error, type = "text" }: InputFieldPro
         <p className="text-red-500 text-sm mt-1">{error.message}</p>
       )}
     </div>
-  );
+  )
 }
 
-export default ApplicationForm;
+export default ApplicationForm
