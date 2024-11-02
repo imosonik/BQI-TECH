@@ -1,6 +1,16 @@
+
+interface User {
+  id: string
+  email: string
+  name: string
+  phoneNumber?: string
+}
+
 export interface Application {
     id: string
     name: string
+    userId: string
+    user: User
     email: string
     phoneNumber?: string
     location: string
