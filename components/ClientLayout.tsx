@@ -13,7 +13,6 @@ export default function ClientLayout({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading time (remove this in production and use real loading logic)
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 2000);
@@ -22,19 +21,16 @@ export default function ClientLayout({
   }, []);
 
   return (
-    <body className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
       {isLoading ? (
         <Loader />
       ) : (
         <>
-          {/* <div className="bg-teal-600 text-white text-center py-2">
-            Welcome to the new BQI website!
-          </div> */}
           <Header />
           <main className="flex-grow">{children}</main>
           <Footer />
         </>
       )}
-    </body>
+    </div>
   );
 }

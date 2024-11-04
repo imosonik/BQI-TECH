@@ -31,6 +31,15 @@ model Application {
   appliedDate        DateTime @default(now())
   userId             String
   user               User     @relation(fields: [userId], references: [id])
+  shortlistedDate    DateTime?
+  assessmentDate     DateTime?
+  assessmentScore    Int?
+  interviewDate      DateTime?
+  interviewer        String?
+  hireDate          DateTime?
+  startDate         DateTime?
+  disqualifiedDate   DateTime?
+  disqualifiedReason String?
 }
 
 model JobPosting {

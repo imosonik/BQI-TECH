@@ -114,13 +114,20 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
         phoneNumber: parsedData.phoneNumber || null,
         position: parsedData.position,
         location: parsedData.location,
-        resumeUrl, // Store the resume URL
+        resumeUrl,
         hearAbout: parsedData.hearAbout,
         otherSource: parsedData.otherSource || null,
         experience: parsedData.experience,
         salary: parsedData.salary,
         status: "New",
         appliedDate: new Date(),
+        user: {
+          create: {
+            name: parsedData.name,
+            email: parsedData.email,
+            phoneNumber: parsedData.phoneNumber || null,
+          }
+        }
       },
     });
 

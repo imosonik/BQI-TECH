@@ -4,5 +4,6 @@ export interface JobPosting {
   department: string;
   location: string;
   description: string;
+  requirements?: string;
   postedDate: string;
 }

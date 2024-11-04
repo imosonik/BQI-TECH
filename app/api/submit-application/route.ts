@@ -23,7 +23,16 @@ export async function POST(request: Request) {
     const validatedData = applicationSchema.parse(body);
 
     const newApplication = await prisma.application.create({
-      data: validatedData,
+      data: {
+        ...validatedData,
+        user: {
+          create: {
+            name: validatedData.name,
+            email: validatedData.email,
+            phoneNumber: null
+          }
+        }
+      },
     });
 
     return NextResponse.json({ success: true, application: newApplication });

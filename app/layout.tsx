@@ -31,17 +31,21 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <ClerkProvider>
-        {isAdminRoute || isDashboardRoute ? (
-          <body>{children}</body>
-        ) : (
-          <ClientLayout>
-            {children}
-            <CookieConsentBanner />
-          </ClientLayout>
-        )}
-      </ClerkProvider>
-      <Toaster position="top-right" />
+      <body>
+        <ClerkProvider>
+          {isAdminRoute || isDashboardRoute ? (
+            children
+          ) : (
+            <>
+              <ClientLayout>
+                {children}
+              </ClientLayout>
+              <CookieConsentBanner />
+            </>
+          )}
+        </ClerkProvider>
+        <Toaster position="top-right" />
+      </body>
     </html>
   );
 }
