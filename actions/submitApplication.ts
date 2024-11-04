@@ -11,16 +11,16 @@ import { refreshDropboxToken } from '@/utils/dropboxAuth/route'; // Ensure this 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const submitApplicationSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
-  phoneNumber: z.string().optional(),
-  position: z.string(),
-  location: z.string(),
+  phoneNumber: z.string().nullable(),
+  position: z.string().min(1, "Position is required"),
+  location: z.string().min(1, "Location is required"),
   resume: z.instanceof(File).optional(),
-  hearAbout: z.string(),
-  otherSource: z.string().optional(),
-  experience: z.string(),
-  salary: z.string(),
+  hearAbout: z.string().min(1, "How you heard about us is required"),
+  otherSource: z.string().optional().nullable(),
+  experience: z.string().min(1, "Experience level is required"),
+  salary: z.string().min(1, "Salary expectation is required"),
 });
 
 export async function submitApplication(formData: FormData): Promise<ActionResponse> {

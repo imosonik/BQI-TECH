@@ -125,25 +125,31 @@ function ApplicationForm() {
 
     try {
       const formData = new FormData()
-      Object.entries(data).forEach(([key, value]) => {
-        if (key === 'cv' && uploadedFile) {
-          formData.append('resume', uploadedFile)
-        } else if (typeof value === 'string' && value.trim() !== '') {
-          formData.append(key, value)
-        } else if (value !== null && value !== undefined) {
-          formData.append(key, JSON.stringify(value))
-        }
-      })
-
-      // Send the position title instead of the ID
+      
+      // Basic form fields
+      formData.append('name', `${data.firstName} ${data.lastName}`)
+      formData.append('email', data.email)
+      formData.append('phoneNumber', data.phone)
+      formData.append('location', data.location)
+      formData.append('hearAbout', data.hearAbout)
+      formData.append('experience', data.experience)
+      formData.append('salary', data.salary)
+      
+      // Handle position
       const selectedPosition = positions.find(pos => pos.id === data.position)
       if (selectedPosition) {
         formData.append('position', selectedPosition.title)
       }
-
-      formData.append('name', `${data.firstName} ${data.lastName}`)
-      formData.append('phoneNumber', data.phone)
-      formData.append('location', data.location)
+      
+      // Handle optional fields
+      if (data.otherSource) {
+        formData.append('otherSource', data.otherSource)
+      }
+      
+      // Handle file upload
+      if (uploadedFile) {
+        formData.append('resume', uploadedFile)
+      }
 
       const result = await execute(formData)
 
