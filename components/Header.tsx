@@ -14,12 +14,22 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@clerk/nextjs"
 
 export default function Header() {
+  const { userId, isSignedIn } = useAuth()
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
+
+  const handleClick = () => {
+    if (isSignedIn) {
+      router.push("/dashboard")
+    } else {
+      router.push("/sign-in")
+    }
+  }
 
   return (
     <>
@@ -34,16 +44,15 @@ export default function Header() {
               <button className="p-2.5 hover:bg-gray-100 rounded-full transition-colors">
                 <Phone className="h-[18px] w-[18px] text-gray-700" />
               </button>
-              <Link href="/login">
-                <Button 
-                  variant="secondary" 
-                  size="sm" 
-                  className="flex items-center gap-1 rounded-[20px] bg-gray-100 hover:bg-gray-200 text-[14px] font-medium px-4 h-[36px]"
-                >
-                  <User className="h-4 w-4" />
-                  User Login
-                </Button>
-              </Link>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                className="flex items-center gap-1 rounded-[20px] bg-gray-100 hover:bg-gray-200 text-[14px] font-medium px-4 h-[36px]"
+                onClick={handleClick}
+              >
+                <User className="h-4 w-4" />
+                {isSignedIn ? "Dashboard" : "User Login"}
+              </Button>
             </div>
           </div>
         </div>
