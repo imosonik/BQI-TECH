@@ -16,7 +16,7 @@ const submitApplicationSchema = z.object({
   phoneNumber: z.string().nullable(),
   position: z.string().min(1, "Position is required"),
   location: z.string().min(1, "Location is required"),
-  resume: z.instanceof(File).optional(),
+  resume: z.any(),
   hearAbout: z.string().min(1, "How you heard about us is required"),
   otherSource: z.string().optional().nullable(),
   experience: z.string().min(1, "Experience level is required"),

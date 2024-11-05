@@ -126,46 +126,56 @@ function ApplicationForm() {
     try {
       const formData = new FormData()
       
-      // Basic form fields
-      formData.append('name', `${data.firstName} ${data.lastName}`)
-      formData.append('email', data.email)
-      formData.append('phoneNumber', data.phone)
-      formData.append('location', data.location)
-      formData.append('hearAbout', data.hearAbout)
-      formData.append('experience', data.experience)
-      formData.append('salary', data.salary)
+      // Basic form fields with trimming
+      formData.append('name', `${data.firstName.trim()} ${data.lastName.trim()}`);
+      formData.append('email', data.email.trim());
+      formData.append('phoneNumber', data.phone.trim());
+      formData.append('location', data.location.trim());
+      formData.append('hearAbout', data.hearAbout);
+      formData.append('experience', data.experience);
+      formData.append('salary', data.salary.trim());
       
       // Handle position
-      const selectedPosition = positions.find(pos => pos.id === data.position)
-      if (selectedPosition) {
-        formData.append('position', selectedPosition.title)
+      const selectedPosition = positions.find(pos => pos.id === data.position);
+      if (!selectedPosition) {
+        throw new Error('Invalid position selected');
       }
+      formData.append('position', selectedPosition.title);
       
       // Handle optional fields
-      if (data.otherSource) {
-        formData.append('otherSource', data.otherSource)
+      if (data.otherSource?.trim()) {
+        formData.append('otherSource', data.otherSource.trim());
       }
       
       // Handle file upload
       if (uploadedFile) {
-        formData.append('resume', uploadedFile)
+        // Create a new File instance with proper type
+        const file = new File([uploadedFile], uploadedFile.name, {
+          type: uploadedFile.type
+        });
+        formData.append('resume', file);
       }
 
-      const result = await execute(formData)
+      const result = await execute(formData);
+
+      if (!result) {
+        throw new Error('No response from server');
+      }
 
       if (result.success) {
-        toast.success('Application submitted successfully')
-        router.push('/careers/apply/thank-you')
+        toast.success('Application submitted successfully');
+        router.push('/careers/apply/thank-you');
       } else {
-        setSubmitError(result.message || "An error occurred during submission")
-        toast.error(result.message || "An error occurred during submission")
+        const errorMessage = result.message || "An error occurred during submission";
+        setSubmitError(errorMessage);
+        toast.error(errorMessage);
       }
     } catch (error) {
-      setSubmitError("An unexpected error occurred")
-      toast.error("An unexpected error occurred")
-      console.error(error)
+      console.error('Submission error:', error);
+      setSubmitError("An unexpected error occurred");
+      toast.error("An unexpected error occurred");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 

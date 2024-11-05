@@ -1,66 +1,76 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import Link from "next/link"
-import { motion, AnimatePresence } from 'framer-motion'
-import { JobPosting } from "@/types/jobPosting"
-import { Briefcase, MapPin, Calendar, Search, ChevronRight } from 'lucide-react'
-import Loader from '@/components/Loader'
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { JobPosting } from "@/types/jobPosting";
+import {
+  Briefcase,
+  MapPin,
+  Calendar,
+  Search,
+  ChevronRight,
+} from "lucide-react";
+import Loader from "@/components/Loader";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import JobModal from '@/components/JobModal' // Import the JobModal component
+} from "@/components/ui/select";
+import JobModal from "@/components/JobModal"; // Import the JobModal component
 
 export default function CareersPage() {
-  const [jobPostings, setJobPostings] = useState<JobPosting[]>([])
-  const [filteredJobs, setFilteredJobs] = useState<JobPosting[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [departmentFilter, setDepartmentFilter] = useState('all')
-  const [locationFilter, setLocationFilter] = useState('all')
-  const [selectedJob, setSelectedJob] = useState<JobPosting | null>(null)
+  const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<JobPosting[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [locationFilter, setLocationFilter] = useState("all");
+  const [selectedJob, setSelectedJob] = useState<JobPosting | null>(null);
 
   useEffect(() => {
     async function fetchJobPostings() {
       try {
-        const response = await fetch("/api/job-postings")
+        const response = await fetch("/api/job-postings");
         if (!response.ok) {
-          throw new Error("Failed to fetch job postings")
+          throw new Error("Failed to fetch job postings");
         }
-        const data = await response.json()
-        setJobPostings(data)
-        setFilteredJobs(data)
+        const data = await response.json();
+        setJobPostings(data);
+        setFilteredJobs(data);
       } catch (err) {
-        setError("Failed to load job postings. Please try again.")
+        setError("Failed to load job postings. Please try again.");
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
 
-    fetchJobPostings()
-  }, [])
+    fetchJobPostings();
+  }, []);
 
   useEffect(() => {
-    const filtered = jobPostings.filter(job => 
-      job.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (departmentFilter === 'all' || job.department === departmentFilter) &&
-      (locationFilter === 'all' || job.location === locationFilter)
-    )
-    setFilteredJobs(filtered)
-  }, [searchTerm, departmentFilter, locationFilter, jobPostings])
+    const filtered = jobPostings.filter(
+      (job) =>
+        job.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (departmentFilter === "all" || job.department === departmentFilter) &&
+        (locationFilter === "all" || job.location === locationFilter)
+    );
+    setFilteredJobs(filtered);
+  }, [searchTerm, departmentFilter, locationFilter, jobPostings]);
 
-  if (isLoading) return <Loader />
-  if (error) return <div className="text-center py-10 text-red-500">{error}</div>
+  if (isLoading) return <Loader />;
+  if (error)
+    return <div className="text-center py-10 text-red-500">{error}</div>;
 
-  const departments = Array.from(new Set(jobPostings.map(job => job.department)))
-  const locations = Array.from(new Set(jobPostings.map(job => job.location)))
+  const departments = Array.from(
+    new Set(jobPostings.map((job) => job.department))
+  );
+  const locations = Array.from(new Set(jobPostings.map((job) => job.location)));
 
   return (
     <div className="container mx-auto px-4 py-40">
@@ -73,23 +83,32 @@ export default function CareersPage() {
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
             <li className="inline-flex items-center">
-              <Link href="/" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+              <Link
+                href="/"
+                className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+              >
                 Home
               </Link>
             </li>
             <li>
               <div className="flex items-center">
                 <ChevronRight className="w-4 h-4 text-gray-400" />
-                <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">Careers</span>
+                <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
+                  Careers
+                </span>
               </div>
             </li>
           </ol>
         </nav>
-        <h1 className="text-4xl font-bold mb-2 text-blue-600">Careers at BQI Tech</h1>
-        <p className="text-xl text-gray-600 mb-8">Join our team and help shape the future of technology!</p>
+        <h1 className="text-4xl font-bold mb-2 text-blue-600">
+          Careers at BQI Tech
+        </h1>
+        <p className="text-xl text-gray-600 mb-8">
+          Join our team and help shape the future of technology!
+        </p>
       </motion.div>
-      
-      <motion.div 
+
+      <motion.div
         className="mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -112,8 +131,10 @@ export default function CareersPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Departments</SelectItem>
-              {departments.map(dept => (
-                <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+              {departments.map((dept) => (
+                <SelectItem key={dept} value={dept}>
+                  {dept}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -123,24 +144,26 @@ export default function CareersPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Locations</SelectItem>
-              {locations.map(loc => (
-                <SelectItem key={loc} value={loc}>{loc}</SelectItem>
+              {locations.map((loc) => (
+                <SelectItem key={loc} value={loc}>
+                  {loc}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
       </motion.div>
-      
+
       <AnimatePresence>
-        <motion.div 
+        <motion.div
           className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           {filteredJobs.map((job, index) => (
-            <motion.div 
-              key={job.id} 
+            <motion.div
+              key={job.id}
               className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -150,7 +173,9 @@ export default function CareersPage() {
               whileTap={{ scale: 0.98 }}
             >
               <div className="p-6">
-                <h2 className="text-2xl font-semibold mb-2 text-blue-600">{job.title}</h2>
+                <h2 className="text-2xl font-semibold mb-2 text-blue-600">
+                  {job.title}
+                </h2>
                 <div className="flex items-center text-gray-600 mb-4">
                   <Briefcase className="w-4 h-4 mr-2 text-blue-500" />
                   <span>{job.department}</span>
@@ -163,9 +188,11 @@ export default function CareersPage() {
                   <Calendar className="w-4 h-4 mr-2 text-blue-500" />
                   <span>{new Date(job.postedDate).toLocaleDateString()}</span>
                 </div>
-                <p className="text-gray-700 mb-6">{job.description.substring(0, 150)}...</p>
-                <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700" 
+                <p className="text-gray-700 mb-6">
+                  {job.description.substring(0, 150)}...
+                </p>
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700"
                   onClick={() => setSelectedJob(job)} // Open the job modal
                 >
                   View Job
@@ -175,7 +202,7 @@ export default function CareersPage() {
           ))}
         </motion.div>
       </AnimatePresence>
-      
+
       {filteredJobs.length === 0 && (
         <motion.p
           className="text-center text-gray-600 mt-8"
@@ -194,5 +221,5 @@ export default function CareersPage() {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }
