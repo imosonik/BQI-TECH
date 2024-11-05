@@ -13,8 +13,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 export default function Header() {
+  const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -113,6 +115,7 @@ export default function Header() {
             <div className="flex items-center gap-3">
               <Button 
                 className="bg-[#272055] hover:bg-[#31CDFF] rounded-[20px] text-[14px] font-medium px-5 h-[36px]"
+                onClick={() => router.push("/careers")}
               >
                 Apply Now
               </Button>
