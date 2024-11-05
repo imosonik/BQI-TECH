@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import JobModal from "@/components/JobModal"; // Import the JobModal component
+import { SafeHtml } from '@/components/ui/safe-html'
 
 export default function CareersPage() {
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
@@ -188,9 +189,12 @@ export default function CareersPage() {
                   <Calendar className="w-4 h-4 mr-2 text-blue-500" />
                   <span>{new Date(job.postedDate).toLocaleDateString()}</span>
                 </div>
-                <p className="text-gray-700 mb-6">
-                  {job.description.substring(0, 150)}...
-                </p>
+                <div className="text-gray-700 mb-6 prose-sm">
+                  <SafeHtml 
+                    html={`${job.description.substring(0, 150)}...`}
+                    className="line-clamp-3"
+                  />
+                </div>
                 <Button
                   className="w-full bg-blue-600 hover:bg-blue-700"
                   onClick={() => setSelectedJob(job)} // Open the job modal

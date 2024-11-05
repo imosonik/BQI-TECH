@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["your-domain.com", "another-domain.com", "new-domain.com"], // Add any new domains here
+    domains: ["bqitech.com", "img.clerk.com", "new-domain.com"], // Add any new domains here
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {

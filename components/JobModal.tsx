@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { JobPosting } from '@/types/jobPosting'
 import Link from "next/link"
+import { SafeHtml } from '@/components/ui/safe-html'
 
 interface JobModalProps {
   job: JobPosting | null;
@@ -30,19 +31,11 @@ const JobModal = ({ job, onClose }: JobModalProps) => {
 
         <div className="mb-4">
           <h3 className="text-lg font-medium">Job Description</h3>
-          <div className="text-gray-700">
-            {job.description.split('\n').map((line, index) => (
-              <p key={index} className="mb-2">
-                {line.includes('*') ? (
-                  <span className="flex items-start">
-                    <span className="mr-2">•</span>
-                    {line.replace('*', '').trim()}
-                  </span>
-                ) : (
-                  line
-                )}
-              </p>
-            ))}
+          <div className="prose max-w-none">
+            <SafeHtml 
+              html={job.description}
+              className="text-gray-700"
+            />
           </div>
         </div>
 
