@@ -4,10 +4,14 @@ import { z } from "zod";
 import type { ActionResponse, ValidationErrors } from "@/types/action";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
-import { Dropbox } from 'dropbox';
-import fetch from 'node-fetch';
-import { refreshDropboxToken } from '@/utils/dropboxAuth/route'; // Ensure this utility function is correctly imported
-import { getApplicationConfirmationEmail, getBaseEmailTemplate } from "@/lib/email-templates";
+import { Dropbox } from "dropbox";
+import fetch from "node-fetch";
+import { refreshDropboxToken } from "@/utils/dropboxAuth/route"; // Ensure this utility function is correctly imported
+import {
+  getApplicationConfirmationEmail,
+  getBaseEmailTemplate,
+} from "@/lib/email-templates";
+import { auth } from "@clerk/nextjs/server";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -24,7 +28,9 @@ const submitApplicationSchema = z.object({
   salary: z.string().min(1, "Salary expectation is required"),
 });
 
-export async function submitApplication(formData: FormData): Promise<ActionResponse> {
+export async function submitApplication(
+  formData: FormData
+): Promise<ActionResponse> {
   try {
     const resumeFile = formData.get("resume") as File | null;
 
@@ -54,22 +60,27 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
 
       try {
         const uploadResponse = await dbx.filesUpload({
-          path: `/resumes/${parsedData.name.replace(/\s+/g, "_")}_${Date.now()}.pdf`,
+          path: `/resumes/${parsedData.name.replace(
+            /\s+/g,
+            "_"
+          )}_${Date.now()}.pdf`,
           contents: buffer,
-          mode: { '.tag': 'add' },
+          mode: { ".tag": "add" },
           autorename: true,
-          mute: false
+          mute: false,
         });
 
         const path = uploadResponse.result.path_lower;
         if (!path) {
-          throw new Error('Upload path is undefined')
+          throw new Error("Upload path is undefined");
         }
-        const linkResponse = await dbx.sharingCreateSharedLinkWithSettings({ path });
+        const linkResponse = await dbx.sharingCreateSharedLinkWithSettings({
+          path,
+        });
         if (linkResponse.result.url) {
-          resumeUrl = linkResponse.result.url.replace('?dl=0', '?dl=1'); // Direct download link
+          resumeUrl = linkResponse.result.url.replace("?dl=0", "?dl=1"); // Direct download link
         } else {
-          throw new Error('Failed to create shared link: URL is undefined');
+          throw new Error("Failed to create shared link: URL is undefined");
         }
       } catch (uploadError) {
         const error = uploadError as { status?: number; message?: string };
@@ -81,22 +92,27 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
             const buffer = await resumeFile.arrayBuffer();
 
             const uploadResponse = await dbx.filesUpload({
-              path: `/resumes/${parsedData.name.replace(/\s+/g, "_")}_${Date.now()}.pdf`,
+              path: `/resumes/${parsedData.name.replace(
+                /\s+/g,
+                "_"
+              )}_${Date.now()}.pdf`,
               contents: buffer,
-              mode: { '.tag': 'add' },
+              mode: { ".tag": "add" },
               autorename: true,
-              mute: false
+              mute: false,
             });
 
             const path = uploadResponse.result.path_lower;
             if (!path) {
-              throw new Error('Upload path is undefined')
+              throw new Error("Upload path is undefined");
             }
-            const linkResponse = await dbx.sharingCreateSharedLinkWithSettings({ path });
+            const linkResponse = await dbx.sharingCreateSharedLinkWithSettings({
+              path,
+            });
             if (linkResponse.result.url) {
-              resumeUrl = linkResponse.result.url.replace('?dl=0', '?dl=1'); // Direct download link
+              resumeUrl = linkResponse.result.url.replace("?dl=0", "?dl=1"); // Direct download link
             } else {
-              throw new Error('Failed to create shared link: URL is undefined');
+              throw new Error("Failed to create shared link: URL is undefined");
             }
           } else {
             throw new Error("Failed to refresh Dropbox token.");
@@ -108,6 +124,31 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
       }
     }
 
+    const { userId } = await auth();
+
+    if (!userId) {
+      throw new Error("Unauthorized - Please sign in to submit an application");
+    }
+
+    // First, find or create the user
+    const user = await prisma.user.upsert({
+      where: {
+        clerkId: userId,
+      },
+      update: {
+        name: parsedData.name,
+        email: parsedData.email,
+        phoneNumber: parsedData.phoneNumber || null,
+      },
+      create: {
+        clerkId: userId,
+        name: parsedData.name,
+        email: parsedData.email,
+        phoneNumber: parsedData.phoneNumber || null,
+      },
+    });
+
+    // Then create the application
     const application = await prisma.application.create({
       data: {
         name: parsedData.name,
@@ -122,13 +163,7 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
         salary: parsedData.salary,
         status: "New",
         appliedDate: new Date(),
-        user: {
-          create: {
-            name: parsedData.name,
-            email: parsedData.email,
-            phoneNumber: parsedData.phoneNumber || null,
-          }
-        }
+        userId: user.id, // Connect to the user we just found/created
       },
     });
 
@@ -136,7 +171,10 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
       sendEmail({
         to: parsedData.email,
         subject: "Application Received - BQI Tech",
-        body: getApplicationConfirmationEmail(parsedData.name, parsedData.position)
+        body: getApplicationConfirmationEmail(
+          parsedData.name,
+          parsedData.position
+        ),
       }),
       sendEmail({
         to: process.env.HR_EMAIL || "",
@@ -144,23 +182,31 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
         body: getBaseEmailTemplate({
           recipientName: "HR Team",
           content: `
-            <p>A new application has been received for the ${parsedData.position} position.</p>
+            <p>A new application has been received for the ${
+              parsedData.position
+            } position.</p>
             <p><strong>Applicant Details:</strong></p>
             <ul style="padding-left: 20px; margin: 16px 0;">
               <li>Name: ${parsedData.name}</li>
               <li>Email: ${parsedData.email}</li>
-              <li>Phone: ${parsedData.phoneNumber || 'Not provided'}</li>
+              <li>Phone: ${parsedData.phoneNumber || "Not provided"}</li>
               <li>Location: ${parsedData.location}</li>
               <li>Experience Level: ${parsedData.experience}</li>
-              <li>Source: ${parsedData.hearAbout}${parsedData.otherSource ? ` - ${parsedData.otherSource}` : ''}</li>
+              <li>Source: ${parsedData.hearAbout}${
+            parsedData.otherSource ? ` - ${parsedData.otherSource}` : ""
+          }</li>
               <li>Expected Salary: ${parsedData.salary}</li>
             </ul>
-            ${resumeUrl ? `<p>Resume: <a href="${resumeUrl}" style="color: #2563eb;">Download Resume</a></p>` : ''}
+            ${
+              resumeUrl
+                ? `<p>Resume: <a href="${resumeUrl}" style="color: #2563eb;">Download Resume</a></p>`
+                : ""
+            }
           `,
           ctaLink: `${process.env.NEXT_PUBLIC_APP_URL}/admin/applications/${application.id}`,
-          ctaText: 'View Application'
-        })
-      })
+          ctaText: "View Application",
+        }),
+      }),
     ]).catch((emailError) => {
       console.error("Email sending error:", emailError);
     });
@@ -211,7 +257,6 @@ const createDropboxInstance = (accessToken: string) => {
     accessToken,
     clientId: process.env.DROPBOX_APP_KEY,
     clientSecret: process.env.DROPBOX_APP_SECRET,
-    fetch: fetch // Provide the fetch implementation
+    fetch: fetch, // Provide the fetch implementation
   });
 };
-
