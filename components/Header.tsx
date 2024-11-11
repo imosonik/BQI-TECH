@@ -27,7 +27,7 @@ export default function Header() {
     if (isSignedIn) {
       router.push("/dashboard")
     } else {
-      router.push("/sign-in")
+      router.push("/login")
     }
   }
 

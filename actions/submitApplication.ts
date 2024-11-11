@@ -7,6 +7,7 @@ import { sendEmail } from "@/lib/email";
 import { Dropbox } from 'dropbox';
 import fetch from 'node-fetch';
 import { refreshDropboxToken } from '@/utils/dropboxAuth/route'; // Ensure this utility function is correctly imported
+import { getApplicationConfirmationEmail, getBaseEmailTemplate } from "@/lib/email-templates";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -134,14 +135,32 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
     await Promise.all([
       sendEmail({
         to: parsedData.email,
-        subject: "Application Received",
-        body: `Thank you for your application for the ${parsedData.position} position.`,
+        subject: "Application Received - BQI Tech",
+        body: getApplicationConfirmationEmail(parsedData.name, parsedData.position)
       }),
       sendEmail({
-        to: process.env.HR_EMAIL || "hr@company.com",
-        subject: "New Application Received",
-        body: `A new application for ${parsedData.position} has been received from ${parsedData.name}.`,
-      }),
+        to: process.env.HR_EMAIL || "",
+        subject: "New Application Received - BQI Tech",
+        body: getBaseEmailTemplate({
+          recipientName: "HR Team",
+          content: `
+            <p>A new application has been received for the ${parsedData.position} position.</p>
+            <p><strong>Applicant Details:</strong></p>
+            <ul style="padding-left: 20px; margin: 16px 0;">
+              <li>Name: ${parsedData.name}</li>
+              <li>Email: ${parsedData.email}</li>
+              <li>Phone: ${parsedData.phoneNumber || 'Not provided'}</li>
+              <li>Location: ${parsedData.location}</li>
+              <li>Experience Level: ${parsedData.experience}</li>
+              <li>Source: ${parsedData.hearAbout}${parsedData.otherSource ? ` - ${parsedData.otherSource}` : ''}</li>
+              <li>Expected Salary: ${parsedData.salary}</li>
+            </ul>
+            ${resumeUrl ? `<p>Resume: <a href="${resumeUrl}" style="color: #2563eb;">Download Resume</a></p>` : ''}
+          `,
+          ctaLink: `${process.env.NEXT_PUBLIC_APP_URL}/admin/applications/${application.id}`,
+          ctaText: 'View Application'
+        })
+      })
     ]).catch((emailError) => {
       console.error("Email sending error:", emailError);
     });
@@ -186,7 +205,6 @@ export async function submitApplication(formData: FormData): Promise<ActionRespo
     };
   }
 }
-
 // Function to create a new Dropbox instance
 const createDropboxInstance = (accessToken: string) => {
   return new Dropbox({
@@ -196,3 +214,4 @@ const createDropboxInstance = (accessToken: string) => {
     fetch: fetch // Provide the fetch implementation
   });
 };
+

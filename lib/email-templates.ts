@@ -1,0 +1,121 @@
+interface EmailTemplateProps {
+  recipientName: string
+  content: string
+  ctaLink?: string
+  ctaText?: string
+}
+
+export function getBaseEmailTemplate({
+  recipientName,
+  content,
+  ctaLink,
+  ctaText
+}: EmailTemplateProps): string {
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>BQI Tech</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+      </style>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Inter', sans-serif; line-height: 1.6; background-color: #f4f4f5;">
+      <table role="presentation" style="width: 100%; border: none; border-spacing: 0; background-color: #f4f4f5; padding: 40px 20px;">
+        <tr>
+          <td align="center">
+            <table role="presentation" style="width: 100%; max-width: 600px; border: none; border-spacing: 0; background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+              <!-- Header -->
+              <tr>
+                <td style="padding: 40px 40px 20px 40px; text-align: center;">
+                  <img src="${process.env.NEXT_PUBLIC_APP_URL}/images/bqilogo.png" alt="BQI Tech Logo" style="width: 150px; height: auto;">
+                </td>
+              </tr>
+              
+              <!-- Content -->
+              <tr>
+                <td style="padding: 20px 40px;">
+                  <h1 style="color: #18181b; font-size: 24px; font-weight: 600; margin-bottom: 20px;">
+                    Hello ${recipientName},
+                  </h1>
+                  <div style="color: #3f3f46; font-size: 16px;">
+                    ${content}
+                  </div>
+                </td>
+              </tr>
+              
+              ${ctaLink && ctaText ? `
+              <!-- CTA Button -->
+              <tr>
+                <td style="padding: 20px 40px;">
+                  <table role="presentation" style="width: 100%; border: none; border-spacing: 0;">
+                    <tr>
+                      <td align="center">
+                        <a href="${ctaLink}" 
+                           style="display: inline-block; padding: 12px 24px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; transition: background-color 0.3s ease;">
+                          ${ctaText}
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              ` : ''}
+              
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 20px 40px 40px 40px; border-top: 1px solid #e4e4e7; margin-top: 20px;">
+                  <table role="presentation" style="width: 100%; border: none; border-spacing: 0;">
+                    <tr>
+                      <td style="color: #71717a; font-size: 14px; text-align: center;">
+                        <p style="margin: 0 0 8px 0;">© ${new Date().getFullYear()} BQI Tech. All rights reserved.</p>
+                        <p style="margin: 0;">
+                          <a href="${process.env.NEXT_PUBLIC_APP_URL}/privacy" style="color: #2563eb; text-decoration: none;">Privacy Policy</a>
+                          &nbsp;•&nbsp;
+                          <a href="${process.env.NEXT_PUBLIC_APP_URL}/terms" style="color: #2563eb; text-decoration: none;">Terms of Service</a>
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `
+}
+
+export function getApplicationConfirmationEmail(name: string, position: string): string {
+  return getBaseEmailTemplate({
+    recipientName: name,
+    content: `
+      <p>Thank you for applying for the ${position} position at BQI Tech.</p>
+      <p>We have received your application and our team will review it shortly. If your qualifications match our requirements, we will contact you to discuss the next steps.</p>
+      <p>In the meantime, you can track your application status through our career portal.</p>
+    `,
+    ctaLink: `${process.env.NEXT_PUBLIC_APP_URL}/careers/applications`,
+    ctaText: 'Track Your Application'
+  })
+}
+
+export function getInterviewInvitationEmail(name: string, position: string, date: string, location: string): string {
+  return getBaseEmailTemplate({
+    recipientName: name,
+    content: `
+      <p>We are pleased to invite you for an interview for the ${position} position.</p>
+      <p><strong>Interview Details:</strong></p>
+      <ul style="padding-left: 20px; margin: 16px 0;">
+        <li>Date: ${date}</li>
+        <li>Location: ${location}</li>
+      </ul>
+      <p>Please confirm your attendance by clicking the button below.</p>
+    `,
+    ctaLink: `${process.env.NEXT_PUBLIC_APP_URL}/careers/interview-confirmation`,
+    ctaText: 'Confirm Interview'
+  })
+}
