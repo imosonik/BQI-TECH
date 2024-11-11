@@ -146,6 +146,11 @@ function ApplicationForm() {
 
       const result = await execute(formData);
 
+      if (!result) {
+        toast.error("Failed to submit application");
+        return;
+      }
+
       if (result.success) {
         toast.success('Application submitted successfully');
         router.push('/careers/apply/thank-you');

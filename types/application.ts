@@ -9,8 +9,8 @@ interface User {
 export interface Application {
     id: string
     name: string
-    userId: string
-    user: User
+    userId?: string
+    user?: User
     email: string
     phoneNumber?: string
     location: string

@@ -12,7 +12,12 @@ import toast, { Toaster } from 'react-hot-toast'
 import { ArrowLeft, ArrowRight, Send } from "lucide-react"
 
 const hearAboutOptions = ["LinkedIn", "Internet search", "Other"] as const
-const experienceOptions = ["Entry Level", "Mid Level", "Senior"] as const
+const experienceOptions = [
+  "Less than 2 years",
+  "2-5 years", 
+  "6-10 years",
+  "Over 10 years"
+] as const
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -24,7 +29,10 @@ const formSchema = z.object({
   cv: z.any().optional(),
   hearAbout: z.enum(hearAboutOptions),
   otherSource: z.string().optional(),
-  experience: z.enum(experienceOptions),
+  experience: z.enum(experienceOptions, {
+    required_error: "Please select your experience level",
+    invalid_type_error: "Please select a valid experience level"
+  }),
   salary: z.string().min(1, "Salary expectation is required"),
 })
 
@@ -127,67 +135,92 @@ function ApplicationForm() {
       const formData = new FormData()
       
       // Basic form fields with trimming
-      formData.append('name', `${data.firstName.trim()} ${data.lastName.trim()}`);
-      formData.append('email', data.email.trim());
-      formData.append('phoneNumber', data.phone.trim());
-      formData.append('location', data.location.trim());
-      formData.append('hearAbout', data.hearAbout);
-      formData.append('experience', data.experience);
-      formData.append('salary', data.salary.trim());
+      formData.append('name', `${data.firstName.trim()} ${data.lastName.trim()}`)
+      formData.append('email', data.email.trim())
+      formData.append('phoneNumber', data.phone.trim())
+      formData.append('location', data.location.trim())
+      formData.append('hearAbout', data.hearAbout)
+      formData.append('experience', data.experience)
+      formData.append('salary', data.salary.trim())
       
       // Handle position
-      const selectedPosition = positions.find(pos => pos.id === data.position);
+      const selectedPosition = positions.find(pos => pos.id === data.position)
       if (!selectedPosition) {
-        throw new Error('Invalid position selected');
+        throw new Error('Invalid position selected')
       }
-      formData.append('position', selectedPosition.title);
+      formData.append('position', selectedPosition.title)
       
       // Handle optional fields
       if (data.otherSource?.trim()) {
-        formData.append('otherSource', data.otherSource.trim());
+        formData.append('otherSource', data.otherSource.trim())
       }
       
       // Handle file upload
       if (uploadedFile) {
-        // Create a new File instance with proper type
-        const file = new File([uploadedFile], uploadedFile.name, {
-          type: uploadedFile.type
-        });
-        formData.append('resume', file);
+        formData.append('resume', uploadedFile)
       }
 
-      const result = await execute(formData);
+      const result = await execute(formData)
 
       if (!result) {
-        throw new Error('No response from server');
+        toast.error("Failed to submit application. Please try again.")
+        return
       }
 
-      if (result.success) {
-        toast.success('Application submitted successfully');
-        router.push('/careers/apply/thank-you');
-      } else {
-        const errorMessage = result.message || "An error occurred during submission";
-        setSubmitError(errorMessage);
-        toast.error(errorMessage);
+      if (!result.success) {
+        toast.error(result.error || "An error occurred during submission")
+        return
       }
+
+      toast.success(result.message || 'Application submitted successfully')
+      router.push('/careers/apply/thank-you')
     } catch (error) {
-      console.error('Submission error:', error);
-      setSubmitError("An unexpected error occurred");
-      toast.error("An unexpected error occurred");
+      console.error('Application submission error:', error)
+      toast.error(error instanceof Error ? error.message : "An unexpected error occurred")
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
   }
 
+  // Define the field names type based on FormData
+  type FieldName = keyof FormData
+
+  // Create typed arrays of fields to validate for each step
+  const step1Fields: FieldName[] = ['firstName', 'lastName', 'email', 'phone']
+  const step2Fields: FieldName[] = ['location', 'position', 'hearAbout']
+  const step3Fields: FieldName[] = ['experience', 'salary']
+
+  // Update the nextStep function with proper typing
   const nextStep = async () => {
-    const isStepValid = await trigger(
-      step === 1
-        ? ["firstName", "lastName", "email", "phone"]
-        : step === 2
-        ? ["location", "cv", "hearAbout", "otherSource"]
-        : ["position", "experience", "salary"]
-    )
-    if (isStepValid) setStep((prev) => Math.min(prev + 1, 3))
+    let fieldsToValidate: FieldName[] = []
+    
+    switch (step) {
+      case 1:
+        fieldsToValidate = step1Fields
+        break
+      case 2:
+        fieldsToValidate = step2Fields
+        break
+      case 3:
+        fieldsToValidate = step3Fields
+        break
+    }
+
+    const isStepValid = await trigger(fieldsToValidate)
+    
+    if (isStepValid) {
+      setStep((prev) => Math.min(prev + 1, 3))
+    } else {
+      toast.error('Please fill in all required fields correctly', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#F9FAFB',
+          color: '#1F2937',
+          border: '1px solid #E5E7EB'
+        }
+      })
+    }
   }
 
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1))
@@ -280,7 +313,7 @@ function ApplicationForm() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Upload CV/Resume (Optional)
+                  Upload CV/Resume 
                 </label>
                 <input
                   type="file"
@@ -324,12 +357,12 @@ function ApplicationForm() {
         return (
           <motion.div
             key="step3"
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
+            exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
+            className="space-y-6"
           >
-            <h2 className="text-2xl font-semibold mb-4">Final Details</h2>
             <div className="space-y-4">
               <div>
                 <label
@@ -341,22 +374,32 @@ function ApplicationForm() {
                 <select
                   id="experience"
                   {...register("experience")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className={`mt-1 block w-full rounded-md shadow-sm 
+                            focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50
+                            ${errors.experience ? 'border-red-300' : 'border-gray-300'}`}
                 >
+                  <option value="">Select experience</option>
                   {experienceOptions.map((option) => (
                     <option key={option} value={option}>
                       {option}
                     </option>
                   ))}
                 </select>
-                {errors.experience && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.experience.message}
-                  </p>
-                )}
+                <AnimatePresence mode="wait">
+                  {errors.experience && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="mt-1 text-sm text-red-500"
+                    >
+                      Please select your experience level
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </div>
               <InputField
-                label="Salary Expectation"
+                label="Salary Expectation (In Kenyan Shillings)"
                 id="salary"
                 register={register}
                 error={errors.salary}

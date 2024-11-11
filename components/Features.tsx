@@ -1,58 +1,168 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import { Shield, Zap, Code, Users } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { MouseEvent } from "react";
 
 const features = [
   {
     icon: Shield,
     title: "Secure Solutions",
     description: "Our products are built with security at their core, ensuring your data is always protected.",
+    gradient: "from-blue-500 to-purple-500",
+    shadowColor: "rgba(99, 102, 241, 0.15)",
+    delay: 0.2
   },
   {
     icon: Zap,
     title: "High Performance",
     description: "Optimized for speed and efficiency, our solutions help you work faster and smarter.",
+    gradient: "from-[#31CDFF] to-blue-500",
+    shadowColor: "rgba(49, 205, 255, 0.15)",
+    delay: 0.3
   },
   {
     icon: Code,
     title: "Custom Development",
     description: "We create tailor-made solutions that perfectly fit your unique business needs.",
+    gradient: "from-purple-500 to-pink-500",
+    shadowColor: "rgba(168, 85, 247, 0.15)",
+    delay: 0.4
   },
   {
     icon: Users,
     title: "Collaborative Approach",
     description: "We work closely with you to ensure our solutions align with your goals and vision.",
-  },
+    gradient: "from-[#272055] to-[#31CDFF]",
+    shadowColor: "rgba(39, 32, 85, 0.15)",
+    delay: 0.5
+  }
 ];
+
+function FeatureCard({ feature }: { feature: typeof features[0] }) {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  const background = useMotionTemplate`
+    radial-gradient(
+      650px circle at ${mouseX}px ${mouseY}px,
+      ${feature.shadowColor},
+      transparent 80%
+    )
+  `;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: feature.delay }}
+      whileHover={{ 
+        scale: 1.02,
+        transition: { duration: 0.2 }
+      }}
+      className="relative group"
+    >
+      <div
+        onMouseMove={handleMouseMove}
+        className={cn(
+          "relative h-full rounded-3xl p-px",
+          "bg-gradient-to-b from-gray-200/30 to-gray-700/5",
+          "dark:from-gray-800/30 dark:to-gray-800/5",
+          "before:absolute before:inset-0 before:rounded-3xl before:bg-gradient-to-b",
+          "before:from-gray-900/5 before:to-gray-700/5",
+          "dark:before:from-gray-800/10 dark:before:to-gray-800/5",
+          "after:absolute after:inset-0 after:rounded-3xl after:bg-gradient-to-b",
+          "after:from-gray-900/5 after:to-gray-700/5",
+          "dark:after:from-gray-800/10 dark:after:to-gray-800/5"
+        )}
+      >
+        <motion.div
+          className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{ background }}
+        />
+        <div className={cn(
+          "relative h-full bg-white dark:bg-gray-900 rounded-3xl p-8",
+          "backdrop-blur-xl backdrop-filter",
+          "border border-gray-200/50 dark:border-gray-700/50",
+          "group-hover:border-gray-300 dark:group-hover:border-gray-600",
+          "transition-colors duration-500"
+        )}>
+          <div className={cn(
+            "w-14 h-14 rounded-2xl mb-8",
+            "flex items-center justify-center",
+            "bg-gradient-to-tr shadow-lg",
+            feature.gradient,
+            "transform group-hover:scale-110 group-hover:rotate-3",
+            "transition-transform duration-500"
+          )}>
+            <feature.icon className="w-7 h-7 text-white transform -rotate-3" />
+          </div>
+          
+          <h3 className={cn(
+            "text-2xl font-bold mb-4",
+            "bg-gradient-to-r bg-clip-text text-transparent",
+            feature.gradient
+          )}>
+            {feature.title}
+          </h3>
+          
+          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+            {feature.description}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Features() {
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <motion.h2 
-          className="text-3xl font-bold text-center mb-12"
+    <section className="relative py-24 overflow-hidden bg-gray-50 dark:bg-gray-900">
+      <motion.div
+        className="absolute inset-0 opacity-5"
+        initial={{ backgroundPosition: "0% 0%" }}
+        animate={{ backgroundPosition: "100% 100%" }}
+        transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
+        style={{
+          backgroundImage: "url('/grid-pattern.svg')",
+          backgroundSize: "cover"
+        }}
+      />
+      
+      <div className="container relative mx-auto px-4">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
           viewport={{ once: true }}
+          className="text-center space-y-4 mb-16"
         >
-          Why Choose BQI Tech
-        </motion.h2>
+          <motion.span 
+            className="text-sm font-bold tracking-wider text-[#31CDFF] uppercase"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            Why Choose Us
+          </motion.span>
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight bg-gradient-to-r from-[#272055] to-[#31CDFF] text-transparent bg-clip-text [background-size:200%_auto] pb-2">
+            Transforming Ideas into Reality
+          </h2>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Empowering your digital transformation with cutting-edge solutions
+          </p>
+        </motion.div>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <feature.icon className="w-12 h-12 text-teal-500 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </motion.div>
+          {features.map((feature) => (
+            <FeatureCard key={feature.title} feature={feature} />
           ))}
         </div>
       </div>

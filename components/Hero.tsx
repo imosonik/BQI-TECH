@@ -1,93 +1,159 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { TypeAnimation } from "react-type-animation"
-import Slider from "react-slick"
-import "slick-carousel/slick/slick.css"
-import "slick-carousel/slick/slick-theme.css"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { TypeAnimation } from "react-type-animation";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
-const videos = [
-  "/hero-background.mp4",
-  "/hero-background-2.mp4",
-  "/hero-background-3.mp4",
-]
+interface VideoContent {
+  url: string;
+  overlay: string;
+}
+
+const heroContent = {
+  videos: [
+    {
+      url: "/hero-background.mp4",
+      overlay: "bg-gradient-to-br from-gray-900/80 via-black/50 to-gray-900/80"
+    },
+    {
+      url: "/hero-background-2.mp4",
+      overlay: "bg-gradient-to-br from-blue-900/80 via-black/50 to-gray-900/80"
+    },
+    {
+      url: "/hero-background-3.mp4",
+      overlay: "bg-gradient-to-br from-purple-900/80 via-black/50 to-gray-900/80"
+    }
+  ] as VideoContent[],
+  typeSequence: [
+    "Gov't Technology", 3000,
+    "Secure Solutions", 3000
+  ]
+};
 
 export function Hero() {
-  const [mounted, setMounted] = useState(false)
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [currentVideo, setCurrentVideo] = useState(0);
+  const [nextVideo, setNextVideo] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    const interval = setInterval(() => {
+      setNextVideo((currentVideo + 1) % heroContent.videos.length);
+      setIsTransitioning(true);
+      
+      setTimeout(() => {
+        setCurrentVideo(nextVideo);
+        setIsTransitioning(false);
+      }, 1000); // Smooth transition duration
+    }, 8000);
 
-  if (!mounted) return null
-
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-    fade: true,
-    beforeChange: (current: number, next: number) => setActiveIndex(next),
-  }
+    return () => clearInterval(interval);
+  }, [currentVideo, nextVideo]);
 
   return (
-    <section className="relative h-screen overflow-hidden -z-20"> {/* Set z-index to -20 */}
-      <Slider {...settings} className="h-full">
-        {videos.map((video, index) => (
-          <div key={index} className="h-screen">
+    <section className="relative h-screen w-full overflow-hidden">
+      {/* Video Background with Cross-fade Transitions */}
+      <AnimatePresence mode="wait">
+        {heroContent.videos.map((video, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0 }}
+            animate={{ 
+              opacity: index === currentVideo ? 1 : 0,
+              transition: { duration: 1.5, ease: "easeInOut" }
+            }}
+            exit={{ opacity: 0 }}
+            className={`absolute inset-0 ${index === currentVideo ? 'z-10' : 'z-0'}`}
+          >
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute top-0 left-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ 
+                transform: "scale(1.1)",
+                transition: "transform 8s ease-out"
+              }}
             >
-              <source src={video} type="video/mp4" />
-              Your browser does not support the video tag.
+              <source src={video.url} type="video/mp4" />
             </video>
-          </div>
+            <div className={`absolute inset-0 ${video.overlay} transition-opacity duration-1000`} />
+          </motion.div>
         ))}
-      </Slider>
-      <div className="absolute inset-0 bg-black bg-opacity-60" />
-      <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+      </AnimatePresence>
+
+      {/* Animated Grid Pattern Overlay */}
+      <motion.div
+        className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-repeat opacity-20"
+        initial={{ backgroundPosition: "0% 0%" }}
+        animate={{ backgroundPosition: "100% 100%" }}
+        transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
+      />
+
+      {/* Hero Content */}
+      <div className="relative h-full flex flex-col justify-center items-center px-4 z-20 pt-16 sm:pt-0">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-center max-w-5xl mx-auto"
         >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
-            Welcome to{" "}
-            <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text">
-              BQI Tech
+          <motion.span
+            className="inline-block text-[#31CDFF] text-sm sm:text-base font-semibold tracking-wider mb-2 sm:mb-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            WELCOME TO BQI TECH
+          </motion.span>
+
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6 text-white">
+            Pioneering{" "}
+            <span className="bg-gradient-to-r from-[#31CDFF] to-purple-600 text-transparent bg-clip-text">
+              <TypeAnimation
+                sequence={heroContent.typeSequence}
+                wrapper="span"
+                cursor={true}
+                repeat={Infinity}
+              />
             </span>
           </h1>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-white">
-            <TypeAnimation
-              sequence={["Innovate", 2000, "Create", 2000, "Transform", 2000]}
-              wrapper="span"
-              cursor={true}
-              repeat={Infinity}
-              style={{ color: "#4F46E5" }}
-            />
-          </h2>
-          <p className="text-xl mb-8 text-gray-200">
-            Empowering businesses through cutting-edge technology solutions
+
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-8 max-w-3xl mx-auto">
+            Empowering government agencies with secure, innovative technology
+            solutions
           </p>
-          <Link
-            href="/sign-up"
-            className="bg-blue-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-blue-600 transition-colors duration-300"
-          >
-            Get Started
-          </Link>
+
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <Link
+              href="/contact-us"
+              className="group w-full sm:w-auto bg-[#31CDFF] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold 
+                       hover:bg-white hover:text-[#31CDFF] transition-all duration-300 
+                       flex items-center justify-center gap-2 shadow-lg shadow-[#31CDFF]/20"
+            >
+              Get Started
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              href="/services"
+              className="text-white hover:text-[#31CDFF] font-medium transition-colors duration-300 text-sm sm:text-base"
+            >
+              Explore Our Services
+            </Link>
+          </div>
+        </motion.div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 text-white/80" />
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import type { ActionResponse, ValidationErrors } from "@/types/action";
+import type { ActionResponse } from "@/types/action";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
 import { Dropbox } from "dropbox";
@@ -11,7 +11,6 @@ import {
   getApplicationConfirmationEmail,
   getBaseEmailTemplate,
 } from "@/lib/email-templates";
-import { auth } from "@clerk/nextjs/server";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -124,34 +123,11 @@ export async function submitApplication(
       }
     }
 
-    const { userId } = await auth();
-
-    if (!userId) {
-      throw new Error("Unauthorized - Please sign in to submit an application");
-    }
-
-    // First, find or create the user
-    const user = await prisma.user.upsert({
-      where: {
-        clerkId: userId,
-      },
-      update: {
-        name: parsedData.name,
-        email: parsedData.email,
-        phoneNumber: parsedData.phoneNumber || null,
-      },
-      create: {
-        clerkId: userId,
-        name: parsedData.name,
-        email: parsedData.email,
-        phoneNumber: parsedData.phoneNumber || null,
-      },
-    });
-
-    // Then create the application
     const application = await prisma.application.create({
       data: {
         name: parsedData.name,
+        userId: undefined,
+        user: undefined,
         email: parsedData.email,
         phoneNumber: parsedData.phoneNumber || null,
         position: parsedData.position,
@@ -163,8 +139,18 @@ export async function submitApplication(
         salary: parsedData.salary,
         status: "New",
         appliedDate: new Date(),
-        userId: user.id, // Connect to the user we just found/created
+        lastUpdated: new Date()
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        position: true,
+        location: true,
+        resumeUrl: true,
+        status: true,
+        appliedDate: true
+      }
     });
 
     await Promise.all([
@@ -218,36 +204,10 @@ export async function submitApplication(
     };
   } catch (error) {
     console.error("Application submission error:", error);
-
-    if (error instanceof z.ZodError) {
-      const validationErrors: ValidationErrors = error.errors.reduce(
-        (acc, curr) => {
-          const key = curr.path.join(".");
-          acc[key] = acc[key] ? [...acc[key], curr.message] : [curr.message];
-          return acc;
-        },
-        {} as ValidationErrors
-      );
-
-      return {
-        success: false,
-        message: "Validation error",
-        error: validationErrors,
-      };
-    }
-
-    if (error instanceof Error) {
-      return {
-        success: false,
-        message: error.message,
-        error: { general: [error.message] },
-      };
-    }
-
     return {
       success: false,
-      message: "An unexpected error occurred",
-      error: { general: ["Unknown error"] },
+      error:
+        error instanceof Error ? error.message : "Failed to submit application",
     };
   }
 }

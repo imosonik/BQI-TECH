@@ -29,7 +29,7 @@ export default function ClientHomePage({ userId }: ClientHomePageProps) {
       <Hero />
       <Features />
       <RecentProjects />
-      <BlogPreview />
+      {/* <BlogPreview /> */}
       <CallToAction />
     </motion.div>
   );

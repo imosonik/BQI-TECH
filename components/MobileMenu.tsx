@@ -1,7 +1,10 @@
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronDown, X } from "lucide-react"
+import { ChevronDown, UserCircle } from "lucide-react"
 import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -36,7 +39,7 @@ const menuItems: MenuItem[] = [
   },
 ]
 
-function MenuItem({ item }: { item: MenuItem }) {
+function MenuItem({ item, onClose }: { item: MenuItem; onClose: () => void }) {
   const [isOpen, setIsOpen] = useState(false)
 
   if (item.href) {
@@ -44,6 +47,7 @@ function MenuItem({ item }: { item: MenuItem }) {
       <Link 
         href={item.href}
         className="flex items-center py-3 px-4 border-b border-gray-200 text-[15px] font-medium hover:bg-gray-50"
+        onClick={onClose}
       >
         {item.title}
       </Link>
@@ -77,6 +81,7 @@ function MenuItem({ item }: { item: MenuItem }) {
                 key={subItem.href}
                 href={subItem.href}
                 className="block py-2 px-8 text-[14px] text-gray-600 hover:text-gray-900"
+                onClick={onClose}
               >
                 {subItem.label}
               </Link>
@@ -89,6 +94,18 @@ function MenuItem({ item }: { item: MenuItem }) {
 }
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const { isSignedIn } = useAuth()
+  const router = useRouter()
+
+  const handleAuthClick = () => {
+    if (isSignedIn) {
+      router.push("/dashboard")
+    } else {
+      router.push("/login")
+    }
+    onClose()
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -116,8 +133,26 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           >
             <nav className="py-2 max-h-[calc(100vh-104px)] overflow-y-auto">
               {menuItems.map((item) => (
-                <MenuItem key={item.title} item={item} />
+                <MenuItem key={item.title} item={item} onClose={onClose} />
               ))}
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="px-4 py-4 border-t border-gray-200 mt-2"
+              >
+                <Button 
+                  asChild
+                  className="w-full flex items-center justify-center gap-2 bg-[#272055] hover:bg-[#1D1640] text-white font-medium"
+                  onClick={handleAuthClick}
+                >
+                  <div>
+                    <UserCircle className="w-5 h-5" />
+                    <span>{isSignedIn ? "Dashboard" : "Sign In"}</span>
+                  </div>
+                </Button>
+              </motion.div>
             </nav>
           </motion.div>
         </>

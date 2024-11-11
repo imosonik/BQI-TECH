@@ -128,41 +128,18 @@ export default function Header() {
               >
                 Apply Now
               </Button>
-              <button 
-                className="md:hidden p-2 relative z-50"
+              <motion.button 
+                className="md:hidden p-2 relative z-50 hover:bg-gray-100 rounded-full transition-colors"
                 onClick={toggleMenu}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <motion.div
-                  animate={isMobileMenuOpen ? "open" : "closed"}
-                  className="relative w-6 h-6"
-                >
-                  <motion.span
-                    className="absolute w-6 h-0.5 bg-gray-800 transform-gpu"
-                    variants={{
-                      open: { rotate: 45, y: 8 },
-                      closed: { rotate: 0, y: 2 }
-                    }}
-                    transition={{ duration: 0.2 }}
-                  />
-                  <motion.span
-                    className="absolute w-6 h-0.5 bg-gray-800 transform-gpu"
-                    variants={{
-                      open: { opacity: 0 },
-                      closed: { opacity: 1 }
-                    }}
-                    transition={{ duration: 0.2 }}
-                    style={{ top: "50%", y: "-50%" }}
-                  />
-                  <motion.span
-                    className="absolute w-6 h-0.5 bg-gray-800 transform-gpu"
-                    variants={{
-                      open: { rotate: -45, y: -8 },
-                      closed: { rotate: 0, y: -2 }
-                    }}
-                    transition={{ duration: 0.2 }}
-                  />
-                </motion.div>
-              </button>
+                <Menu 
+                  className={`w-6 h-6 transition-colors duration-200 ${
+                    isMobileMenuOpen ? 'text-[#31CDFF]' : 'text-[#272055]'
+                  }`}
+                />
+              </motion.button>
             </div>
           </div>
         </header>

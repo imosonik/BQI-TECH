@@ -1,40 +1,43 @@
 import { useState } from "react";
 import type { ActionResponse } from "@/types/action";
 
-export function useActionState(
-  action: (formData: FormData) => Promise<ActionResponse>
-) {
+interface UseActionStateResult<T> {
+  execute: (data: T) => Promise<ActionResponse | undefined>;
+  isLoading: boolean;
+  error: string | null;
+}
+
+interface ErrorWithMessage {
+  message: string;
+}
+
+export function useActionState<T>(
+  action: (data: T) => Promise<ActionResponse>
+): UseActionStateResult<T> {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const execute = async (formData: FormData) => {
+  const execute = async (data: T) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await action(formData);
+      const response = await action(data);
       if (!response.success) {
         if (typeof response.error === "string") {
           setError(response.error);
-        } else if (response.error instanceof Error) {
-          setError(response.error.message);
+        } else if (response.error && typeof (response.error as ErrorWithMessage).message === 'string') {
+          setError((response.error as ErrorWithMessage).message);
         } else if (typeof response.error === "object") {
-          setError(
-            Object.entries(response.error)
-              .map(([key, messages]) => `${key}: ${messages.join(", ")}`)
-              .join("; ")
-          );
-        } else {
-          setError("An error occurred");
+          setError("An unexpected error occurred");
         }
+        return undefined;
       }
       return response;
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "An unexpected error occurred");
-      return {
-        success: false,
-        message: "Action failed",
-        error: e instanceof Error ? e.message : "Unknown error",
-      } as ActionResponse;
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      );
+      return undefined;
     } finally {
       setIsLoading(false);
     }

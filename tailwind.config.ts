@@ -88,6 +88,9 @@ const config: Config = {
           },
         },
       },
+      transitionTimingFunction: {
+        'smooth-fade': 'cubic-bezier(0.4, 0, 0.2, 1)',
+      },
     },
   },
   plugins: [
