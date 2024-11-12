@@ -15,15 +15,12 @@ const heroContent = {
   videos: [
     {
       url: "/hero-background.mp4",
-      overlay: "bg-gradient-to-br from-gray-900/80 via-black/50 to-gray-900/80"
     },
     {
-      url: "/hero-background-2.mp4",
-      overlay: "bg-gradient-to-br from-blue-900/80 via-black/50 to-gray-900/80"
+      url: "/hero2.mp4",
     },
     {
-      url: "/hero-background-3.mp4",
-      overlay: "bg-gradient-to-br from-purple-900/80 via-black/50 to-gray-900/80"
+      url: "/hero4.mp4",
     }
   ] as VideoContent[],
   typeSequence: [

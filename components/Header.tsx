@@ -59,41 +59,49 @@ export default function Header() {
 
         {/* Main Header */}
         <header className="w-full border-b border-gray-200 rounded-[20px]">
-          <div className="container flex h-[64px] items-center justify-between px-6">
+          <div className="container flex h-[80px] items-center justify-between px-6">
             <Link href="/" className="flex items-center gap-2 py-4">
               <Image
                 src="/bqilogo.png"
                 alt="BQI Logo"
-                width={150}
-                height={40}
-                className="h-10 w-auto"
+                width={190}
+                height={56}
+                className="h-14 w-auto"
               />
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
-              <Link href="/" className="flex items-center gap-1.5 text-[15px] font-medium hover:text-gray-600 rounded-md px-1 py-1.5">
+              <Link 
+                href="/" 
+                className="flex items-center gap-1.5 text-[16px] font-medium hover:text-gray-600 rounded-md px-2 py-2"
+              >
                 Home
               </Link>
 
-              <Link href="/careers" className="flex items-center gap-1.5 text-[15px] font-medium hover:text-gray-600 rounded-md px-1 py-1.5">
+              <Link 
+                href="/careers" 
+                className="flex items-center gap-1.5 text-[16px] font-medium hover:text-gray-600 rounded-md px-2 py-2"
+              >
                 Careers
               </Link>
 
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1.5 text-[15px] font-medium hover:text-gray-600 rounded-md px-1 py-1.5">
+                <DropdownMenuTrigger 
+                  className="flex items-center gap-1.5 text-[16px] font-medium hover:text-gray-600 rounded-md px-2 py-2"
+                >
                   Services
-                  <ChevronDown className="h-4 w-4 opacity-70" />
+                  <ChevronDown className="h-5 w-5 opacity-70" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="rounded-lg">
                   <Link href="/services/business-licensing">
-                    <DropdownMenuItem className="text-[14px]">Business Licensing</DropdownMenuItem>
+                    <DropdownMenuItem className="text-[15px] py-2">Business Licensing</DropdownMenuItem>
                   </Link>
                   <Link href="/services/professional-services">
-                    <DropdownMenuItem className="text-[14px]">Professional Services</DropdownMenuItem>
+                    <DropdownMenuItem className="text-[15px] py-2">Professional Services</DropdownMenuItem>
                   </Link>
                   <Link href="/services/other-services">
-                    <DropdownMenuItem className="text-[14px]">Other Services</DropdownMenuItem>
+                    <DropdownMenuItem className="text-[15px] py-2">Other Services</DropdownMenuItem>
                   </Link>
                 </DropdownMenuContent>
               </DropdownMenu>
