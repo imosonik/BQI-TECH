@@ -1,31 +1,39 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
+import { useState } from "react";
+import { MessageSquare } from "lucide-react";
 
 export function ChatbotWidget() {
-  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (iframeRef.current) {
-        iframeRef.current.style.height = `${window.innerHeight * 0.7}px`
-      }
-    }
-
-    handleResize()
-    window.addEventListener("resize", handleResize)
-
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+  const toggleChat = () => setIsOpen(!isOpen);
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 w-[400px] rounded-lg shadow-lg bg-white overflow-hidden">
-      <iframe
-        ref={iframeRef}
-        src="https://app.thinkstack.ai/bot/index.html?chatbot_id=67334193bde936bef06b2d4a"
-        className="w-full border-0"
-        style={{ minHeight: "500px" }}
-      />
+    <div className="fixed bottom-4 right-4 z-50">
+      {isOpen ? (
+        <div className="w-[400px] rounded-lg shadow-lg bg-white overflow-hidden">
+          <div className="flex justify-end p-2">
+            <button
+              onClick={toggleChat}
+              className="text-gray-600 hover:text-gray-800"
+            >
+              Close
+            </button>
+          </div>
+          <iframe
+            src="https://app.thinkstack.ai/bot/index.html?chatbot_id=67334193bde936bef06b2d4a"
+            className="w-full border-0"
+            style={{ minHeight: "500px" }}
+          />
+        </div>
+      ) : (
+        <button
+          onClick={toggleChat}
+          className="p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+        >
+          <MessageSquare className="w-6 h-6 text-white" />
+        </button>
+      )}
     </div>
-  )
+  );
 }
