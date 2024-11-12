@@ -33,9 +33,9 @@ export default function Header() {
 
   return (
     <>
-      <div className="w-full fixed border-b top-0 left-0 z-50 bg-white rounded-b-[20px] shadow-md overflow-hidden">
+      <div className="w-full fixed border-b top-0 left-0 right-0 z-50 bg-white rounded-b-[20px] shadow-md overflow-hidden">
         {/* Utility Navigation */}
-        <div className="w-full bg-white border-b border-gray-200 rounded-[15px]">
+        <div className="w-full bg-white border-b border-gray-200 ">
           <div className="container flex h-[40px] items-center justify-end px-6 max-w-[1400px] mx-auto">
             <div className="hidden md:flex items-center gap-2">
               <button className="p-2.5 hover:bg-gray-100 rounded-full transition-colors">
@@ -58,7 +58,7 @@ export default function Header() {
         </div>
 
         {/* Main Header */}
-        <header className="w-full border-b border-gray-200 rounded-[20px]">
+        <header className="w-full border-b border-gray-200">
           <div className="container flex h-[80px] items-center justify-between px-6 max-w-[1400px] mx-auto">
             <Link href="/" className="flex items-center gap-2 py-4">
               <Image
@@ -93,7 +93,11 @@ export default function Header() {
                   Services
                   <ChevronDown className="h-5 w-5 opacity-70" />
                 </DropdownMenuTrigger>
+                
                 <DropdownMenuContent className="rounded-lg">
+                <Link href="/services">
+                    <DropdownMenuItem className="text-[15px] py-2">Our Services</DropdownMenuItem>
+                  </Link>
                   <Link href="/services/business-licensing">
                     <DropdownMenuItem className="text-[15px] py-2">Business Licensing</DropdownMenuItem>
                   </Link>
@@ -156,7 +160,8 @@ export default function Header() {
         </header>
       </div>
 
-      <div className="h-[120px]" /> {/* 120px = 40px utility nav + 80px main header */}
+      {/* Spacer for fixed header */}
+      <div className="h-[120px] w-full" />
 
       <MobileMenu 
         isOpen={isMobileMenuOpen} 
