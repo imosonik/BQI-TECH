@@ -143,9 +143,40 @@ function Footer() {
                 className="flex items-start group"
                 whileHover={{ x: 5 }}
               >
-                <MapPin className="mr-2 h-5 w-5 text-[#31CDFF] mt-1" />
-                <span className="text-gray-300 group-hover:text-white transition-colors">
-                The Piano, 8th Floor, Brookside Drive, Westlands, Nairobi, Kenya                </span>
+                <MapPin className="mr-2 h-5 w-5 text-[#31CDFF] mt-1 flex-shrink-0" />
+                <Link 
+                  href="https://maps.google.com/?q=The+Piano,+Brookside+Drive,+Westlands,+Nairobi,+Kenya"
+                  target="_blank"
+                  className="text-gray-300 group-hover:text-white transition-colors"
+                >
+                  The Piano, 8th Floor, Brookside Drive, Westlands, Nairobi, Kenya
+                </Link>
+              </motion.li>
+              
+              <motion.li
+                className="flex items-center group"
+                whileHover={{ x: 5 }}
+              >
+                <Phone className="mr-2 h-5 w-5 text-[#31CDFF] flex-shrink-0" />
+                <Link 
+                  href="tel:+254011229528"
+                  className="text-gray-300 group-hover:text-white transition-colors"
+                >
+                  +254 (0)11 229 5287
+                </Link>
+              </motion.li>
+
+              <motion.li
+                className="flex items-center group"
+                whileHover={{ x: 5 }}
+              >
+                <Mail className="mr-2 h-5 w-5 text-[#31CDFF] flex-shrink-0" />
+                <Link 
+                  href="mailto:info@bqitech.com"
+                  className="text-gray-300 group-hover:text-white transition-colors"
+                >
+                  info@bqitech.com
+                </Link>
               </motion.li>
             </ul>
           </FooterCard>

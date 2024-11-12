@@ -9,7 +9,7 @@ const projects = [
   {
     title: "Government Agency Portal",
     description: "A secure and efficient portal for managing government services and citizen interactions.",
-    image: "/gov.png",
+    image: "/gov.gif",
     gradient: "from-blue-500 to-purple-500",
     shadowColor: "rgba(99, 102, 241, 0.15)",
     category: "Web Platform"
@@ -17,7 +17,7 @@ const projects = [
   {
     title: "Smart City Infrastructure",
     description: "IoT-based solution for monitoring and optimizing city resources and services.",
-    image: "/smartcity.png",
+    image: "/smart-city.gif",
     gradient: "from-[#31CDFF] to-blue-500",
     shadowColor: "rgba(49, 205, 255, 0.15)",
     category: "IoT Solution"
@@ -25,7 +25,7 @@ const projects = [
   {
     title: "Healthcare Data Management",
     description: "Centralized system for managing patient data and streamlining healthcare operations.",
-    image: "/health.png",
+    image: "/health.gif",
     gradient: "from-emerald-500 to-teal-500",
     shadowColor: "rgba(16, 185, 129, 0.15)",
     category: "Data Platform"
