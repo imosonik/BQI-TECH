@@ -33,10 +33,10 @@ export default function Header() {
 
   return (
     <>
-      <div className="w-full fixed border-b top-0 left-0 z-50 bg-white rounded-b-[20px] shadow-md">
+      <div className="w-full fixed border-b top-0 left-0 z-50 bg-white rounded-b-[20px] shadow-md overflow-hidden">
         {/* Utility Navigation */}
         <div className="w-full bg-white border-b border-gray-200 rounded-[15px]">
-          <div className="container flex h-[40px] items-center justify-end px-6">
+          <div className="container flex h-[40px] items-center justify-end px-6 max-w-[1400px] mx-auto">
             <div className="hidden md:flex items-center gap-2">
               <button className="p-2.5 hover:bg-gray-100 rounded-full transition-colors">
                 <Search className="h-[18px] w-[18px] text-gray-700" />
@@ -59,7 +59,7 @@ export default function Header() {
 
         {/* Main Header */}
         <header className="w-full border-b border-gray-200 rounded-[20px]">
-          <div className="container flex h-[80px] items-center justify-between px-6">
+          <div className="container flex h-[80px] items-center justify-between px-6 max-w-[1400px] mx-auto">
             <Link href="/" className="flex items-center gap-2 py-4">
               <Image
                 src="/bqilogo.png"
@@ -112,6 +112,9 @@ export default function Header() {
                   <ChevronDown className="h-4 w-4 opacity-70" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="rounded-lg">
+                <Link href="/about">
+                    <DropdownMenuItem className="text-[14px]">About Us</DropdownMenuItem>
+                  </Link>
                   <Link href="/about/expertise">
                     <DropdownMenuItem className="text-[14px]">Our Expertise</DropdownMenuItem>
                   </Link>
@@ -152,6 +155,8 @@ export default function Header() {
           </div>
         </header>
       </div>
+
+      <div className="h-[120px]" /> {/* 120px = 40px utility nav + 80px main header */}
 
       <MobileMenu 
         isOpen={isMobileMenuOpen} 
