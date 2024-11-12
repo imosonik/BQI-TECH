@@ -113,7 +113,7 @@ export default function Dashboard() {
         Dashboard
       </h1>
 
-      <DashboardOverview applications={applications} />
+      <DashboardOverview />
 
       <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
         Recent Applications

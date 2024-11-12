@@ -2,18 +2,22 @@
 
 import { usePathname } from 'next/navigation';
 import localFont from "next/font/local";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./globals.css";
-import "./clerk-overrides.css"; // Add this line
+import "./clerk-overrides.css";
 import ClientLayout from "@/components/ClientLayout";
 import { CookieConsentBanner } from '@/components/CookieConsentBanner';
 import { ClerkProvider } from '@clerk/nextjs';
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast';
+import { useState } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -29,22 +33,37 @@ export default function RootLayout({
   const isAdminRoute = pathname?.startsWith('/admin');
   const isDashboardRoute = pathname?.startsWith('/dashboard');
 
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 60 * 1000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      })
+  );
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <ClerkProvider>
-          {isAdminRoute || isDashboardRoute ? (
-            children
-          ) : (
-            <>
-              <ClientLayout>
-                {children}
-              </ClientLayout>
-              <CookieConsentBanner />
-            </>
-          )}
-        </ClerkProvider>
-        <Toaster position="top-right" />
+        <QueryClientProvider client={queryClient}>
+          <ClerkProvider>
+            {isAdminRoute || isDashboardRoute ? (
+              children
+            ) : (
+              <>
+                <ClientLayout>
+                  {children}
+                </ClientLayout>
+                <CookieConsentBanner />
+              </>
+            )}
+          </ClerkProvider>
+          <Toaster position="top-right" />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </body>
     </html>
   );

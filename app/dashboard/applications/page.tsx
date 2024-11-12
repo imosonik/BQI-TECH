@@ -2,28 +2,47 @@
 "use client";
 
 import { useState } from "react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import DataTable from "@/components/admin/DataTable";
-import { Application } from "@/types/application"; // Adjust the import based on your types
+import { Application } from "@/types/application";
+import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/lib/api";
+import { ViewApplicationModal } from "@/components/admin/ViewApplicationModal";
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+interface ApplicationResponse {
+  applications: Application[];
+}
 
 export default function ApplicationsPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { data: applications = [], error } = useSWR<Application[]>("/api/admin/applications", fetcher);
+  const [viewApplication, setViewApplication] = useState<Application | null>(null);
+
+  const { data, isLoading, error } = useQuery<ApplicationResponse>({
+    queryKey: ['userApplications'],
+    queryFn: () => api.get('/applications').then(res => res.data),
+  });
+
+  const handleView = (id: string) => {
+    const application = data?.applications.find(app => app.id === id);
+    setViewApplication(application || null);
+  };
 
   if (error) return <div>Failed to load applications</div>;
-  if (!applications) return <div>Loading...</div>;
+  if (isLoading) return <ApplicationsTableSkeleton />;
 
-  const filteredApplications = Array.isArray(applications) ? applications.filter(app =>
+  const applications = data?.applications || [];
+
+  const filteredApplications = applications.filter(app =>
     app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     app.position.toLowerCase().includes(searchTerm.toLowerCase())
-  ) : [];
+  );
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">My Applications</h2>
+      <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">
+        My Applications
+      </h2>
       <input
         type="text"
         placeholder="Search applications..."
@@ -37,10 +56,30 @@ export default function ApplicationsPage() {
           { header: "Email", accessor: "email" },
           { header: "Position", accessor: "position" },
           { header: "Application Date", accessor: "appliedDate" },
-          { header: "Status", accessor: "status" },
+          { header: "Status", accessor: "status" }
         ]}
         data={filteredApplications}
+        onView={handleView}
       />
+      <ViewApplicationModal
+        application={viewApplication}
+        isOpen={!!viewApplication}
+        onClose={() => setViewApplication(null)}
+      />
+    </div>
+  );
+}
+
+function ApplicationsTableSkeleton() {
+  return (
+    <div className="space-y-6">
+      <Skeleton className="h-10 w-64" />
+      <Skeleton className="h-12 w-full" />
+      <div className="space-y-4">
+        {[...Array(5)].map((_, i) => (
+          <Skeleton key={i} className="h-16 w-full" />
+        ))}
+      </div>
     </div>
   );
 }
