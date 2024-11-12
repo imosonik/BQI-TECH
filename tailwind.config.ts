@@ -67,10 +67,30 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        'float-x': {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(20px)' },
+        },
+        'scale-rotate': {
+          '0%, 100%': { transform: 'scale(1) rotate(0deg)' },
+          '50%': { transform: 'scale(1.1) rotate(90deg)' },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        'float': 'float 6s ease-in-out infinite',
+        'float-x': 'float-x 6s ease-in-out infinite',
+        'scale-rotate': 'scale-rotate 10s ease-in-out infinite',
+      },
+      backdropBlur: {
+        'sm': '4px',
+        'md': '8px',
+        'lg': '12px',
       },
       textShadow: {
         DEFAULT: '0 2px 4px rgba(0,0,0,0.1)',
