@@ -6,6 +6,7 @@ import Features from "@/components/Features";
 import RecentProjects from "@/components/RecentProjects";
 import BlogPreview from "@/components/BlogPreview";
 import CallToAction from "@/components/CallToAction";
+import { ComingSoon } from "./ComingSoon";
 
 interface ClientHomePageProps {
   userId: string | null
@@ -26,11 +27,12 @@ export default function ClientHomePage({ userId }: ClientHomePageProps) {
       variants={pageVariants}
       transition={{ duration: 0.5 }}
     >
-      <Hero />
+      {/* <Hero />
       <Features />
-      <RecentProjects />
+      {/* <RecentProjects /> */}
       {/* <BlogPreview /> */}
-      <CallToAction />
+      {/* <CallToAction /> */} 
+      <ComingSoon />
     </motion.div>
   );
 }
