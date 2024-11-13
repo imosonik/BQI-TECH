@@ -99,7 +99,7 @@ function Footer() {
               className="space-y-4"
             >
               <Image
-                src="/bqilogo.png"
+                src="/bqilogo-light.png"
                 alt="BQI Tech Logo"
                 width={120}
                 height={40}
