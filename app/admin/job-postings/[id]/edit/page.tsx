@@ -30,6 +30,9 @@ export default function EditJobPostingPage() {
           location: "",
           description: "",
           postedDate: new Date().toISOString(),
+          type: "Full-time",
+          employmentType: "",
+          category: "",
         });
         return;
       }
