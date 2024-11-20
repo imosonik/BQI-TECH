@@ -51,7 +51,7 @@ model Application {
 model JobPosting {
   id           String   @id @default(cuid())
   title        String
-  department   String
+  department   String?
   location     String
   description  String
   requirements String?

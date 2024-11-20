@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   try {
     const {
       title,
-      department,
+      department = "",
       location,
       description,
     }: Omit<JobPosting, "id" | "postedDate"> = await request.json();
