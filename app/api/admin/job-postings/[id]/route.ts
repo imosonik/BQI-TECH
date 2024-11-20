@@ -12,7 +12,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
     if (!jobPosting) {
       return NextResponse.json({ error: 'Job posting not found' }, { status: 404 });
     }
-    return NextResponse.json(jobPosting);
+    return NextResponse.json({
+      ...jobPosting,
+      requirements: jobPosting.requirements ? jobPosting.requirements.split(',') : []
+    });
   } catch (error) {
     console.error('Failed to fetch job posting:', error);
     return NextResponse.json({ error: 'Failed to fetch job posting' }, { status: 500 });
@@ -29,7 +32,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         department: data.department,
         location: data.location,
         description: data.description,
-        requirements: data.requirements,
+        requirements: data.requirements ? data.requirements.join(',') : null,
       },
     });
     return NextResponse.json(updatedJobPosting);
