@@ -13,9 +13,9 @@ export async function GET() {
 
     return NextResponse.json(notifications);
   } catch (error) {
-    console.error("Error fetching notifications:", error);
+    console.error("Failed to fetch notifications:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Failed to fetch notifications" },
       { status: 500 }
     );
   } finally {
