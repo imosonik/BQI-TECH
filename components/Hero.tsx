@@ -19,9 +19,9 @@ const heroContent = {
     {
       url: "/hero2.mp4",
     },
-    {
-      url: "/hero4.mp4",
-    }
+    // {
+    //   url: "/hero4.mp4",
+    // }
   ] as VideoContent[],
   typeSequence: [
     "Gov't Technology", 3000,
@@ -49,7 +49,7 @@ export function Hero() {
   }, [currentVideo, nextVideo]);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative h-screen w-full overflow-hidden -mt-[64px]">
       {/* Video Background with Cross-fade Transitions */}
       <AnimatePresence mode="wait">
         {heroContent.videos.map((video, index) => (
@@ -98,7 +98,7 @@ export function Hero() {
           className="text-center max-w-5xl mx-auto"
         >
           <motion.span
-            className="inline-block text-[#31CDFF] text-sm sm:text-base font-semibold tracking-wider mb-2 sm:mb-4"
+            className="inline-block text-[#31CDFF] text-base sm:text-lg md:text-xl font-semibold tracking-wider mb-2 sm:mb-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}

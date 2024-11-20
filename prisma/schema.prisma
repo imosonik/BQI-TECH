@@ -57,3 +57,15 @@ model JobPosting {
   requirements String?
   postedDate   DateTime @default(now())
 }
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  type      String   // 'info' | 'success' | 'warning' | 'error'
+  date      DateTime @default(now())
+  isRead    Boolean  @default(false)
+  userId    String?  // Optional: link to user if needed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

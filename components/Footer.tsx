@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin, ArrowUpRight } from "lucide-react";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 
@@ -40,8 +41,10 @@ function FooterCard({ children }: { children: React.ReactNode }) {
 }
 
 function Footer() {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
   const socialIcons = [
-    { Icon: Facebook, href: "#", label: "Facebook", color: "hover:bg-blue-600" },
     { Icon: Twitter, href: "#", label: "Twitter", color: "hover:bg-sky-500" },
     { Icon: Linkedin, href: "#", label: "LinkedIn", color: "hover:bg-blue-700" },
   ];
@@ -52,6 +55,23 @@ function Footer() {
     { name: "Careers", href: "/careers" },
     { name: "Contact Us", href: "/contact-us" },
   ];
+
+  const legalLinks = [
+    { name: "Terms & Conditions", href: "/about/terms" },
+    { name: "Cookie Policy", href: "/about/cookie-policy" },
+  ];
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulate API call
+    try {
+      // Replace with actual API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setMessage("Subscribed successfully!");
+    } catch (error) {
+      setMessage("Failed to subscribe. Please try again.");
+    }
+  };
 
   return (
     <footer className="relative bg-gradient-to-b from-gray-900 via-gray-900 to-black text-white py-20 overflow-hidden">
@@ -90,7 +110,7 @@ function Footer() {
       </div>
 
       <div className="container relative mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-5 gap-8">
           <FooterCard>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -133,7 +153,28 @@ function Footer() {
               ))}
             </ul>
           </FooterCard>
-
+          <FooterCard>
+            <h3 className="text-xl font-semibold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              Legal
+            </h3>
+            <ul className="space-y-3">
+              {legalLinks.map((item) => (
+                <motion.li
+                  key={item.name}
+                  className="group"
+                  whileHover={{ x: 5 }}
+                >
+                  <Link
+                    href={item.href}
+                    className="flex items-center text-gray-300 hover:text-[#31CDFF] transition-colors"
+                  >
+                    <span>{item.name}</span>
+                    <ArrowUpRight className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </Link>
+                </motion.li>
+              ))}
+            </ul>
+          </FooterCard>
           <FooterCard>
             <h3 className="text-xl font-semibold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               Contact Us
@@ -181,6 +222,8 @@ function Footer() {
             </ul>
           </FooterCard>
 
+          
+
           <FooterCard>
             <h3 className="text-xl font-semibold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               Stay Connected
@@ -201,11 +244,14 @@ function Footer() {
                 ))}
               </div>
               
-              <form className="space-y-3">
+              <form className="space-y-3" onSubmit={handleSubscribe}>
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   className="w-full bg-gray-800/50 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#31CDFF] transition-all duration-300"
+                  required
                 />
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -215,6 +261,7 @@ function Footer() {
                   Subscribe
                 </motion.button>
               </form>
+              {message && <p className="text-sm text-gray-400">{message}</p>}
             </div>
           </FooterCard>
         </div>

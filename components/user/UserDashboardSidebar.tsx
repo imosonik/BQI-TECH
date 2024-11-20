@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -40,7 +41,11 @@ const tabs = [
   },
 ];
 
-export default function UserDashboardSidebar({ onClose }: { onClose?: () => void }) {
+export default function UserDashboardSidebar({
+  onClose,
+}: {
+  onClose?: () => void;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const { signOut } = useClerk();
@@ -51,6 +56,16 @@ export default function UserDashboardSidebar({ onClose }: { onClose?: () => void
 
   return (
     <aside className="bg-white shadow-md p-6 h-full relative">
+      <div className="flex items-center mb-6 border-b pb-4">
+        <Image
+          src="/bqilogo.png"
+          alt="BQI Tech Logo"
+          width={40}
+          height={40}
+          className="mr-2"
+        />
+        <h1 className="text-xl font-bold text-gray-800">BQI Tech</h1>
+      </div>
       {onClose && (
         <button
           onClick={onClose}

@@ -27,12 +27,11 @@ export default function ClientHomePage({ userId }: ClientHomePageProps) {
       variants={pageVariants}
       transition={{ duration: 0.5 }}
     >
-      {/* <Hero />
+      <Hero />
       <Features />
       {/* <RecentProjects /> */}
       {/* <BlogPreview /> */}
-      {/* <CallToAction /> */} 
-      <ComingSoon />
+      <CallToAction /> 
     </motion.div>
   );
 }

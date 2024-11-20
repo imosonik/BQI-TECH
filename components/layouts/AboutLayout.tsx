@@ -9,9 +9,10 @@ interface AboutLayoutProps {
   title: string
   subtitle: string
   breadcrumbItems: Array<{ label: string; href?: string }>
+  className?: string
 }
 
-export function AboutLayout({ children, title, subtitle, breadcrumbItems }: AboutLayoutProps) {
+export function AboutLayout({ children, title, subtitle, breadcrumbItems, className }: AboutLayoutProps) {
   return (
     <div className="min-h-screen pt-32 pb-16 px-4">
       <motion.div

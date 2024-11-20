@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -92,9 +93,18 @@ export default function DashboardSidebar({
         isOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out md:relative md:translate-x-0`}
     >
-      <div className="flex justify-between items-center p-4 md:hidden">
-        <h1 className="text-xl font-bold text-gray-800">BQI Tech HR</h1>
-        <button onClick={onClose} className="text-gray-500">
+      <div className="flex justify-between items-center p-4 border-b">
+        <div className="flex items-center">
+          <Image
+            src="/bqilogo.png"
+            alt="BQI Tech Logo"
+            width={40}
+            height={40}
+            className="mr-2"
+          />
+          <h1 className="text-xl font-bold text-gray-800">BQI Tech HR</h1>
+        </div>
+        <button onClick={onClose} className="text-gray-500 md:hidden">
           <X size={24} />
         </button>
       </div>

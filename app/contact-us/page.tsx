@@ -12,7 +12,7 @@ export default function ContactUsPage() {
 
   return (
     <motion.main 
-      className="container mx-auto px-4 py-8 mt-32"
+      className="container mx-auto px-4 py-8 mt-6"
       initial="initial"
       animate="animate"
       exit="exit"

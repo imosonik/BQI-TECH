@@ -116,7 +116,7 @@ export default function CallToAction() {
                 <Sparkles className="w-5 h-5 text-[#31CDFF]" />
                 <span className="bg-gradient-to-r from-[#31CDFF] to-blue-400 text-transparent bg-clip-text 
                                font-semibold uppercase tracking-wider text-sm">
-                  Your Trusted Partner in Government Technology
+                  Empowering Government Digital Transformation
                 </span>
               </motion.div>
 
@@ -125,15 +125,24 @@ export default function CallToAction() {
                 variants={itemVariants}
               >
                 <span className="bg-gradient-to-r from-white via-white to-gray-300 text-transparent bg-clip-text">
-                  The team you trust
+                  Modernize your agency
                 </span>{" "}
                 <span className="bg-gradient-to-r from-[#31CDFF] to-blue-400 text-transparent bg-clip-text">
-                  and the products to enhance
+                  with cutting-edge solutions
                 </span>{" "}
                 <span className="bg-gradient-to-r from-white via-white to-gray-300 text-transparent bg-clip-text">
-                  your agencies' enterprise solution.
+                  built for tomorrow.
                 </span>
               </motion.h2>
+
+              <motion.p
+                variants={itemVariants}
+                className="text-gray-300 text-lg max-w-2xl mx-auto"
+              >
+                From custom software development to enterprise system integration, 
+                we deliver secure, scalable, and innovative solutions tailored for 
+                government agencies.
+              </motion.p>
 
               <motion.div
                 variants={itemVariants}
@@ -149,7 +158,7 @@ export default function CallToAction() {
                            shadow-lg shadow-[#31CDFF]/20
                            border border-transparent hover:border-[#31CDFF]"
                 >
-                  Contact us
+                  Start Your Transformation
                   <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
@@ -163,7 +172,6 @@ export default function CallToAction() {
     </section>
   );
 }
-
 // Add these styles to your global CSS
 const globalStyles = `
   @keyframes float {
@@ -176,3 +184,4 @@ const globalStyles = `
     background: radial-gradient(circle at center, var(--tw-gradient-from) 0%, var(--tw-gradient-via) 50%, var(--tw-gradient-to) 100%);
   }
 `;
+

@@ -4,6 +4,9 @@ import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import { Shield, Zap, Code, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MouseEvent } from "react";
+import Spline from '@splinetool/react-spline'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei'
 
 const features = [
   {
@@ -123,19 +126,48 @@ function FeatureCard({ feature }: { feature: typeof features[0] }) {
   );
 }
 
+function Background() {
+  return (
+    <mesh>
+      <Sphere args={[1.5, 128, 128]}>
+        <MeshDistortMaterial
+          color="#31CDFF"
+          attach="material"
+          distort={0.5}
+          speed={2}
+          roughness={0.2}
+          metalness={0.9}
+          bumpScale={0.005}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
+          radius={1}
+          depthWrite={false}
+        />
+      </Sphere>
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[10, 10, 5]} intensity={1.5} />
+      <pointLight position={[-10, -10, -5]} intensity={1} color="#31CDFF" />
+    </mesh>
+  )
+}
+
 export default function Features() {
   return (
     <section className="relative py-24 overflow-hidden bg-gray-50 dark:bg-gray-900">
-      <motion.div
-        className="absolute inset-0 opacity-5"
-        initial={{ backgroundPosition: "0% 0%" }}
-        animate={{ backgroundPosition: "100% 100%" }}
-        transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
-        style={{
-          backgroundImage: "url('/grid-pattern.svg')",
-          backgroundSize: "cover"
-        }}
-      />
+      <div className="absolute inset-0 w-full h-full opacity-40">
+        <Canvas camera={{ position: [0, 0, 4] }}>
+          <OrbitControls 
+            enableZoom={false} 
+            autoRotate 
+            autoRotateSpeed={1.5}
+            maxPolarAngle={Math.PI / 2}
+            minPolarAngle={Math.PI / 2}
+          />
+          <Background />
+        </Canvas>
+      </div>
+      
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-50/80 to-gray-50 dark:via-gray-900/80 dark:to-gray-900" />
       
       <div className="container relative mx-auto px-4">
         <motion.div

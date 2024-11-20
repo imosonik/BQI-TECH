@@ -4,20 +4,46 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { Shield, Lightbulb, Code, Users, Target, Award } from 'lucide-react'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { useRouter } from 'next/navigation'
 
 const expertise = [
-  { icon: Code, title: 'Software Development', description: 'Custom solutions tailored to government needs' },
-  { icon: Shield, title: 'Secure Integration', description: 'Ensuring data protection and compliance' },
-  { icon: Lightbulb, title: 'Innovative Solutions', description: 'Cutting-edge technology for modern challenges' },
+  { 
+    icon: Code, 
+    title: 'Software Development', 
+    description: 'Custom solutions tailored to your needs, including web applications, mobile solutions, and enterprise systems. Our development process follows federal security standards and best practices.',
+    features: [
+      'Custom Application Development',
+      'Legacy System Modernization',
+      'Cloud-Native Solutions',
+      'API Development & Integration'
+    ]
+  },
+  { 
+    icon: Shield, 
+    title: 'Secure Integration', 
+    description: 'Enterprise-grade security implementation with FedRAMP compliance. We ensure seamless integration while maintaining the highest levels of data protection and regulatory compliance.',
+    features: [
+      'FedRAMP Compliance',
+      'Zero Trust Architecture',
+      'Secure Data Management',
+      'Access Control Systems'
+    ]
+  },
+  { 
+    icon: Lightbulb, 
+    title: 'Configuration Services', 
+    description: 'Expert configuration and customization of enterprise platforms and government systems. We optimize your technology infrastructure for maximum efficiency and performance.',
+    features: [
+      'Enterprise Platform Setup',
+      'System Optimization',
+      'Workflow Automation',
+      'Performance Tuning'
+    ]
+  },
 ]
 
 const leadership = [
-  {
-    title: "Our Leadership",
-    description: "Our leadership team brings decades of combined experience in government technology solutions and digital transformation.",
-    image: "/leadership.jpg",
-    link: "Meet the team"
-  },
+ 
   {
     title: "Our Community",
     description: "We actively participate in technology conferences and government innovation forums to stay at the forefront of public sector solutions.",
@@ -37,9 +63,11 @@ export default function AboutPage() {
     exit: { opacity: 0, y: -20 }
   }
 
+  const router = useRouter()
+
   return (
     <motion.main 
-      className="container mx-auto px-4 py-16 mt-20"
+      className="container mx-auto px-4 py-16 -mt-16"
       initial="initial"
       animate="animate"
       exit="exit"
@@ -97,15 +125,36 @@ export default function AboutPage() {
           {expertise.map((item, index) => (
             <motion.div
               key={item.title}
-              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-              whileHover={{ scale: 1.05 }}
+              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300
+                         border border-gray-100 hover:border-[#31CDFF]/30"
+              whileHover={{ scale: 1.02 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <item.icon className="w-12 h-12 text-teal-500 mb-4 mx-auto" />
-              <h3 className="text-xl font-semibold mb-2 text-gray-800">{item.title}</h3>
-              <p className="text-gray-600">{item.description}</p>
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-gradient-to-br from-[#31CDFF]/10 to-blue-500/10 p-4 rounded-2xl mb-6">
+                  <item.icon className="w-12 h-12 text-[#31CDFF] mb-4 mx-auto" />
+                </div>
+                <h3 className="text-2xl font-semibold mb-4 text-gray-800">{item.title}</h3>
+                <p className="text-gray-600 mb-6">{item.description}</p>
+                
+                {/* Features List */}
+                <div className="w-full space-y-3 mt-4">
+                  {item.features.map((feature, i) => (
+                    <motion.div
+                      key={feature}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 + (i * 0.1) }}
+                      className="flex items-center gap-2 text-left"
+                    >
+                      <div className="h-2 w-2 rounded-full bg-[#31CDFF]" />
+                      <span className="text-gray-700">{feature}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -144,31 +193,7 @@ export default function AboutPage() {
         </motion.section>
       ))}
 
-      {/* Stats Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        className="mb-24 py-16 bg-gray-50 rounded-2xl"
-      >
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto px-4">
-          <div className="text-center">
-            <Users className="w-12 h-12 text-teal-500 mb-4 mx-auto" />
-            <h3 className="text-4xl font-bold text-gray-800 mb-2">100+</h3>
-            <p className="text-gray-600">Government Clients</p>
-          </div>
-          <div className="text-center">
-            <Target className="w-12 h-12 text-teal-500 mb-4 mx-auto" />
-            <h3 className="text-4xl font-bold text-gray-800 mb-2">95%</h3>
-            <p className="text-gray-600">Project Success Rate</p>
-          </div>
-          <div className="text-center">
-            <Award className="w-12 h-12 text-teal-500 mb-4 mx-auto" />
-            <h3 className="text-4xl font-bold text-gray-800 mb-2">15+</h3>
-            <p className="text-gray-600">Years Experience</p>
-          </div>
-        </div>
-      </motion.section>
+    
 
       {/* Commitment Section */}
       <motion.section
@@ -186,6 +211,7 @@ export default function AboutPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="bg-white text-teal-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-300"
+            onClick={() => router.push('/services')}
           >
             Learn More About Our Services
           </motion.button>

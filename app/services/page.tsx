@@ -1,74 +1,148 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Zap, Shield, Briefcase } from 'lucide-react'
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Breadcrumb } from "@/components/Breadcrumb"
+import Image from 'next/image'
+import { Briefcase, Code } from 'lucide-react'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Sphere } from '@react-three/drei'
+import { Suspense } from 'react'
+
+function AnimatedBackground() {
+  return (
+    <div className="fixed inset-0 -z-10 ">
+      <Canvas camera={{ position: [0, 0, 5] }}>
+        <Suspense fallback={null}>
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[10, 10, 5]} intensity={1} />
+          <pointLight position={[-10, -10, -5]} intensity={1} />
+          
+          {/* Add multiple spheres for a dynamic background */}
+          {Array.from({ length: 50 }).map((_, i) => (
+            <Sphere
+              key={i}
+              position={[
+                Math.random() * 20 - 10,
+                Math.random() * 20 - 10,
+                Math.random() * 20 - 10
+              ]}
+              scale={Math.random() * 0.2}
+            >
+              <meshStandardMaterial
+                color={`hsl(${Math.random() * 90 + 180}, 50%, 50%)`}
+                transparent
+                opacity={0.6}
+              />
+            </Sphere>
+          ))}
+
+          <OrbitControls
+            enableZoom={false}
+            enablePan={false}
+            autoRotate
+            autoRotateSpeed={0.5}
+          />
+        </Suspense>
+      </Canvas>
+    </div>
+  )
+}
+
+const services = [
+  {
+    icon: Briefcase,
+    title: 'Professional and Implementation Services',
+    description: `BQI Tech provides the technical expertise and hands-on experience essential for tackling today’s complex IT projects. With in-depth knowledge of enterprise platforms and the latest emerging technologies, we deliver solutions with precision and efficiency.`,
+    details: [
+      'Configuration - Our team are experts in configuration and can support you to set up and customize your enterprise platform.',
+      'Report writing - Writing and customizing reports can be rough. Let BQI Tech use our knowledge of writing SSRS, Crystal, and other types of reports make your life easier.'
+    ],
+    image: '/implementation.jpg'
+  },
+  {
+    icon: Code,
+    title: 'Software Engineering Services',
+    description: `Our software engineering team, along with experience design and DevOps experts, supports the full lifecycle of web and mobile application development—from project initiation and development through testing, deployment, maintenance, and support.`,
+    details: [
+      'Our engineering expertise enables clients to create, enhance, and manage core systems, including commercial off-the-shelf (COTS) software, equipping their teams with a future-ready digital foundation.',
+      'Through platform engineering, we address challenges, achieve economies of scale, and foster synergies across products and business lines.'
+    ],
+    image: '/software.jpg'
+  }
+]
 
 export default function ServicesPage() {
   const breadcrumbItems = [
     { label: "Services" }
   ]
 
-  const services = [
-    {
-      icon: <Briefcase className="h-6 w-6" />,
-      title: "Business Licensing",
-      description: "Streamlined licensing solutions",
-      href: "/services/business-licensing"
-    },
-    {
-      icon: <Zap className="h-6 w-6" />,
-      title: "Professional Services",
-      description: "Expert consulting and implementation",
-      href: "/services/professional-services"
-    },
-    {
-      icon: <Shield className="h-6 w-6" />,
-      title: "Other Services",
-      description: "Additional business support services",
-      href: "/services/other-services"
-    }
-  ]
-
   return (
-    <div className="min-h-screen pt-32 pb-16 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+    <>
+      <AnimatedBackground />
+      <motion.main 
+        className="container mx-auto px-4 py-16 -mt-16 relative"
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={{
+          initial: { opacity: 0, y: 20 },
+          animate: { opacity: 1, y: 0 },
+          exit: { opacity: 0, y: -20 }
+        }}
         transition={{ duration: 0.5 }}
-        className="max-w-7xl mx-auto"
       >
         <Breadcrumb items={breadcrumbItems} />
-        <h1 className="text-4xl md:text-5xl font-bold text-[#272055] mb-4">Our Services</h1>
-        <p className="text-xl text-gray-600 mb-12">
-          Comprehensive solutions to help your business succeed
-        </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <motion.div
-              key={service.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <div className="mb-4 text-[#31CDFF]">{service.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                <p className="text-gray-600 mb-4">{service.description}</p>
-                <Button 
-                  className="bg-[#272055] hover:bg-[#31CDFF] text-white w-full"
-                  onClick={() => window.location.href = service.href}
-                >
-                  Learn More
-                </Button>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-    </div>
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative mb-16 py-24 overflow-hidden rounded-2xl"
+        >
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#272055]/70 to-[#31CDFF]/60" />
+          </div>
+
+          <div className="relative z-10 text-center px-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-white">
+              Our Services
+            </h1>
+            <p className="text-xl text-gray-100 max-w-3xl mx-auto">
+              Comprehensive solutions to help your business succeed
+            </p>
+          </div>
+        </motion.section>
+
+        {services.map((service, index) => (
+          <motion.section
+            key={service.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 * index }}
+            className="mb-24 p-8 rounded-2xl bg-white/90 backdrop-blur-sm"
+          >
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className={`space-y-6 ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
+                <h2 className="text-3xl font-bold text-gray-800">{service.title}</h2>
+                <p className="text-lg text-gray-600">{service.description}</p>
+                <ul className="list-disc pl-5 text-gray-600">
+                  {service.details.map((detail, i) => (
+                    <li key={i}>{detail}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className={`relative h-[400px] ${index % 2 === 0 ? 'md:order-2' : 'md:order-1'}`}>
+                <Image
+                  src={service.image}
+                  alt={service.title}
+                  fill
+                  className="object-cover rounded-lg shadow-xl"
+                />
+              </div>
+            </div>
+          </motion.section>
+        ))}
+      </motion.main>
+    </>
   )
 }

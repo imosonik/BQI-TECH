@@ -70,18 +70,18 @@ export default function Dashboard() {
 
   const statusColor = (status: string) => {
     switch (status) {
-      case "Applied":
-        return "bg-blue-100 text-blue-800";
+      case "New":
+        return "bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-700/10";
       case "Under Review":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-50 text-yellow-700 ring-1 ring-inset ring-yellow-700/10";
       case "Interview Scheduled":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-700/10";
       case "Offer Extended":
-        return "bg-green-100 text-green-800";
+        return "bg-green-50 text-green-700 ring-1 ring-inset ring-green-700/10";
       case "Rejected":
-        return "bg-red-100 text-red-800";
+        return "bg-red-50 text-red-700 ring-1 ring-inset ring-red-700/10";
       default:
-        return "";
+        return "bg-gray-50 text-gray-700 ring-1 ring-inset ring-gray-700/10";
     }
   };
 
@@ -109,9 +109,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-        Dashboard
-      </h1>
+     
 
       <DashboardOverview />
 
@@ -122,33 +120,54 @@ export default function Dashboard() {
         {applications.slice(0, 3).map((app, index) => (
           <motion.div
             key={app.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden"
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
           >
             <div className="p-6">
-              <h2 className="text-xl font-semibold mb-2">{app.position}</h2>
-              <div className="flex items-center justify-between mb-4">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold flex items-center ${statusColor(
-                    app.status
-                  )}`}
-                >
-                  {statusIcon(app.status)}
-                  <span className="ml-1">{app.status}</span>
-                </span>
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-semibold text-gray-800 line-clamp-1">
+                  {app.position}
+                </h2>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleViewApplication(app.id)}
+                  className="hover:bg-gray-100"
                 >
                   <Eye className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="text-sm text-gray-600">
-                <p>Applied: {new Date(app.appliedDate).toLocaleDateString()}</p>
-                <p>Last Updated: {new Date(app.lastUpdated).toLocaleDateString()}</p>
+              
+              <div className="space-y-4">
+                <span
+                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${statusColor(
+                    app.status
+                  )} transition-colors duration-200`}
+                >
+                  {statusIcon(app.status)}
+                  <span className="ml-2">{app.status}</span>
+                </span>
+
+                <div className="text-sm text-gray-600 space-y-1">
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                    <p>Applied: {new Date(app.appliedDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}</p>
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-2 text-gray-400" />
+                    <p>Last Updated: {new Date(app.lastUpdated || app.appliedDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
