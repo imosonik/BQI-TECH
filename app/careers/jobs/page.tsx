@@ -14,12 +14,10 @@ import { useUser } from "@clerk/nextjs";
 export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedJob, setSelectedJob] = useState<JobPosting | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<string>('')
-  const [selectedType, setSelectedType] = useState<string>('')
-  const [selectedDepartment, setSelectedDepartment] = useState<string>('')
-  const [isLocationOpen, setIsLocationOpen] = useState(false)
-  const [isTypeOpen, setIsTypeOpen] = useState(false)
-  const [isDepartmentOpen, setIsDepartmentOpen] = useState(false)
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [selectedDepartment, setSelectedDepartment] = useState<string>("");
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [isDepartmentOpen, setIsDepartmentOpen] = useState(false);
   const router = useRouter();
   const { isSignedIn } = useUser();
 
@@ -32,27 +30,33 @@ export default function JobsPage() {
     queryFn: () => fetch("/api/job-postings").then((res) => res.json()),
   });
 
-  const uniqueLocations = Array.from(new Set(jobs?.map(job => job.location) || []))
-  const uniqueDepartments = Array.from(new Set(jobs?.map(job => job.department).filter(Boolean) || []))
-  const jobTypes = ['Full-time', 'Part-time', 'Contract'] // Add your actual job types here
+  const uniqueLocations = Array.from(
+    new Set(jobs?.map((job) => job.location) || [])
+  );
+  const uniqueDepartments = Array.from(
+    new Set(jobs?.map((job) => job.department).filter(Boolean) || [])
+  );
 
-  const filteredJobs = jobs?.filter(job => {
-    const matchesSearch = 
+  const filteredJobs = jobs?.filter((job) => {
+    const matchesSearch =
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (job.department?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      job.location.toLowerCase().includes(searchTerm.toLowerCase())
+      (job.department?.toLowerCase() || "").includes(
+        searchTerm.toLowerCase()
+      ) ||
+      job.location.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesLocation = !selectedLocation || job.location === selectedLocation
-    const matchesType = !selectedType || job.type === selectedType
-    const matchesDepartment = !selectedDepartment || job.department === selectedDepartment
+    const matchesLocation =
+      !selectedLocation || job.location === selectedLocation;
+    const matchesDepartment =
+      !selectedDepartment || job.department === selectedDepartment;
 
-    return matchesSearch && matchesLocation && matchesType && matchesDepartment
-  })
+    return matchesSearch && matchesLocation && matchesDepartment;
+  });
 
   const handleApply = (jobId: string) => {
     if (!isSignedIn) {
-      sessionStorage.setItem('pendingJobApplication', jobId);
-      router.push('/login?redirect=/dashboard/apply');
+      sessionStorage.setItem("pendingJobApplication", jobId);
+      router.push("/login?redirect=/dashboard/apply");
       return;
     }
 
@@ -66,9 +70,12 @@ export default function JobsPage() {
     <div className="min-h-screen bg-white -mt-[60px]">
       <div className="bg-gradient-to-r from-[#272055] to-[#1D1840] text-white py-12 mb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4">Open Positions</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4">
+            Open Positions
+          </h1>
           <p className="text-lg text-gray-200 max-w-2xl">
-            Join our team and help build the future of technology. Explore our current opportunities below.
+            Join our team and help build the future of technology. Explore our
+            current opportunities below.
           </p>
         </div>
       </div>
@@ -95,22 +102,22 @@ export default function JobsPage() {
           {/* Filters */}
           <div className="flex flex-wrap gap-2 sm:gap-4">
             <div className="relative flex-1 sm:flex-none">
-              <button 
+              <button
                 onClick={() => setIsLocationOpen(!isLocationOpen)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md flex items-center justify-center gap-2 hover:bg-gray-50"
               >
                 <MapPin className="w-4 h-4" />
-                {selectedLocation || 'Location'}
+                {selectedLocation || "Location"}
                 <ChevronDown className="w-4 h-4" />
               </button>
               {isLocationOpen && uniqueLocations.length > 0 && (
                 <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
-                  {uniqueLocations.map(location => (
+                  {uniqueLocations.map((location) => (
                     <button
                       key={location}
                       onClick={() => {
-                        setSelectedLocation(location)
-                        setIsLocationOpen(false)
+                        setSelectedLocation(location);
+                        setIsLocationOpen(false);
                       }}
                       className="w-full px-4 py-2 text-left hover:bg-gray-50"
                     >
@@ -122,47 +129,21 @@ export default function JobsPage() {
             </div>
 
             <div className="relative flex-1 sm:flex-none">
-              <button 
-                onClick={() => setIsTypeOpen(!isTypeOpen)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md flex items-center justify-center gap-2 hover:bg-gray-50"
-              >
-                {selectedType || 'Full/Part-time'}
-                <ChevronDown className="w-4 h-4" />
-              </button>
-              {isTypeOpen && (
-                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
-                  {jobTypes.map(type => (
-                    <button
-                      key={type}
-                      onClick={() => {
-                        setSelectedType(type)
-                        setIsTypeOpen(false)
-                      }}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-50"
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="relative flex-1 sm:flex-none">
-              <button 
+              <button
                 onClick={() => setIsDepartmentOpen(!isDepartmentOpen)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md flex items-center justify-center gap-2 hover:bg-gray-50"
               >
-                {selectedDepartment || 'Department'}
+                {selectedDepartment || "Department"}
                 <ChevronDown className="w-4 h-4" />
               </button>
               {isDepartmentOpen && uniqueDepartments.length > 0 && (
                 <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
-                  {uniqueDepartments.map(department => (
+                  {uniqueDepartments.map((department) => (
                     <button
                       key={department}
                       onClick={() => {
-                        setSelectedDepartment(department || '')
-                        setIsDepartmentOpen(false)
+                        setSelectedDepartment(department || "");
+                        setIsDepartmentOpen(false);
                       }}
                       className="w-full px-4 py-2 text-left hover:bg-gray-50"
                     >
@@ -173,12 +154,11 @@ export default function JobsPage() {
               )}
             </div>
 
-            {(selectedLocation || selectedType || selectedDepartment) && (
+            {(selectedLocation || selectedDepartment) && (
               <button
                 onClick={() => {
-                  setSelectedLocation('')
-                  setSelectedType('')
-                  setSelectedDepartment('')
+                  setSelectedLocation("");
+                  setSelectedDepartment("");
                 }}
                 className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 rounded-md flex items-center justify-center gap-2 hover:bg-gray-50 text-red-500"
               >
