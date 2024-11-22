@@ -1,13 +1,77 @@
 "use client";
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, ChevronRight } from 'lucide-react';
+
+// Define an interface for the form data
+interface FormData {
+  name: string
+  role: string
+  phone: string
+  organization: string
+  service: string
+  email: string
+  message: string
+}
+
+function Breadcrumb() {
+  return (
+    <nav className="flex mb-4" aria-label="Breadcrumb">
+      <ol className="inline-flex items-center space-x-1 md:space-x-3">
+        <li className="inline-flex items-center">
+          <a href="/" className="text-sm font-medium text-gray-700 hover:text-teal-500">
+            Home
+          </a>
+        </li>
+        <li>
+          <div className="flex items-center">
+            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <a href="/contact-us" className="ml-1 text-sm font-medium text-gray-700 hover:text-teal-500">
+              Contact Us
+            </a>
+          </div>
+        </li>
+      </ol>
+    </nav>
+  )
+}
 
 export default function ContactUsPage() {
-  const pageVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 }
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    role: '',
+    phone: '',
+    organization: '',
+    service: '',
+    email: '',
+    message: ''
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/contact-us', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) throw new Error('Failed to send message');
+
+      window.location.href = '/contact-us/confirmation';
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -16,11 +80,16 @@ export default function ContactUsPage() {
       initial="initial"
       animate="animate"
       exit="exit"
-      variants={pageVariants}
+      variants={{
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -20 }
+      }}
       transition={{ duration: 0.5 }}
     >
+      <Breadcrumb />
       <motion.h1 
-        className="text-4xl font-bold mb-6"
+        className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-500"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -38,50 +107,53 @@ export default function ContactUsPage() {
             We&apos;d love to hear from you. Please fill out the form below and we&apos;ll
             get back to you as soon as possible.
           </p>
-          <form className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="message" className="block mb-1">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={4}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                required
-              ></textarea>
-            </div>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            {['name', 'role', 'service', 'phone', 'organization', 'email', 'message'].map((field) => (
+              <div key={field}>
+                <label htmlFor={field} className="block mb-1 capitalize">
+                  {field.replace(/([A-Z])/g, ' $1')}
+                </label>
+                {field === 'service' ? (
+                  <select
+                    id="service"
+                    name="service"
+                    className="w-full p-2 border rounded focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    required
+                    onChange={handleChange}
+                  >
+                    <option value="">Select a service</option>
+                    <option value="Software Engineering Services">Software Engineering Services</option>
+                    <option value="Professional and Implementation Services">Professional and Implementation Services</option>
+                  </select>
+                ) : field !== 'message' ? (
+                  <input
+                    type={field === 'email' ? 'email' : 'text'}
+                    id={field}
+                    name={field}
+                    className="w-full p-2 border rounded focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    required
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <textarea
+                    id={field}
+                    name={field}
+                    rows={4}
+                    className="w-full p-2 border rounded focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    required
+                    onChange={handleChange}
+                  ></textarea>
+                )}
+              </div>
+            ))}
             <motion.button
               type="submit"
-              className="bg-teal-500 text-white px-6 py-2 rounded hover:bg-teal-600 transition-colors duration-300"
+              className="bg-gradient-to-r from-teal-500 to-blue-500 text-white px-6 py-2 rounded hover:bg-teal-600 transition-colors duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              disabled={isLoading}
             >
-              Send Message
+              {isLoading ? 'Sending...' : 'Send Message'}
             </motion.button>
           </form>
         </motion.div>

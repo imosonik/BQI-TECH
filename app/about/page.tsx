@@ -48,7 +48,7 @@ const leadership = [
     title: "Our Community",
     description: "We actively participate in technology conferences and government innovation forums to stay at the forefront of public sector solutions.",
     image: "/community.jpg",
-    link: "Join our events"
+    link: "Join our Community"
   }
 ]
 
@@ -177,6 +177,7 @@ export default function AboutPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-teal-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-teal-600 transition-colors duration-300"
+                onClick={() => router.push('https://www.linkedin.com/company/bqi-technologies')}
               >
                 {section.link}
               </motion.button>

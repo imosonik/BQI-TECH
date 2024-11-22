@@ -30,7 +30,7 @@ export function getBaseEmailTemplate({
               <!-- Header -->
               <tr>
                 <td style="padding: 40px 40px 20px 40px; text-align: center;">
-                  <img src="${process.env.NEXT_PUBLIC_APP_URL}/images/bqilogo.png" alt="BQI Tech Logo" style="width: 150px; height: auto;">
+                  <img src="${process.env.NEXT_PUBLIC_APP_URL}/bqilogo.png" alt="BQI Tech Logo" style="width: 150px; height: auto;">
                 </td>
               </tr>
               
