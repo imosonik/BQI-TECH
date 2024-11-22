@@ -144,12 +144,7 @@ export default function CareersPage() {
         >
           <circle cx="50%" cy="50%" r="50%" fill="#31CDFF" />
         </svg>
-        <svg
-          className="absolute w-24 h-24 opacity-20 animate-float"
-          style={{ top: "40%", right: "15%" }}
-        >
-          <rect width="100%" height="100%" fill="#272055" />
-        </svg>
+      
         <svg
           className="absolute w-28 h-28 opacity-20 animate-float"
           style={{ bottom: "25%", left: "20%" }}
