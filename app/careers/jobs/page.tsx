@@ -262,7 +262,7 @@ export default function JobsPage() {
                     </div>
                     <Button
                       onClick={() => handleApply(selectedJob.id)}
-                      className="w-full bg-[#272055] hover:bg-[#272055]/90 text-white"
+                      className="w-full bg-[#33CCFF] hover:bg-[#272055]/90 text-white"
                     >
                       Apply
                     </Button>

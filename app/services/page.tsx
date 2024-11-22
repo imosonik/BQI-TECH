@@ -7,6 +7,7 @@ import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Sphere } from '@react-three/drei'
 import { Suspense } from 'react'
+import Link from 'next/link'
 
 function AnimatedBackground() {
   return (
@@ -17,7 +18,6 @@ function AnimatedBackground() {
           <directionalLight position={[10, 10, 5]} intensity={1} />
           <pointLight position={[-10, -10, -5]} intensity={1} />
           
-          {/* Add multiple spheres for a dynamic background */}
           {Array.from({ length: 50 }).map((_, i) => (
             <Sphere
               key={i}
@@ -142,6 +142,27 @@ export default function ServicesPage() {
             </div>
           </motion.section>
         ))}
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="text-center mt-12"
+        >
+          <h2 className="text-2xl font-semibold mb-4">Interested in Our Services?</h2>
+          <p className="text-gray-600 mb-6">
+            Contact us to learn more about how we can help your business.
+          </p>
+          <Link href="/contact-us">
+            <motion.button
+              whileHover={{ scale: 1.05, backgroundColor: '#31CDFF' }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-[#272055] hover:bg-[#31CDFF] text-white rounded-full px-8 py-4 inline-block shadow-lg transition-all duration-300"
+            >
+              Contact Us
+            </motion.button>
+          </Link>
+        </motion.div>
       </motion.main>
     </>
   )
