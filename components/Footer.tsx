@@ -45,8 +45,7 @@ function Footer() {
   const [message, setMessage] = useState("");
 
   const socialIcons = [
-    { Icon: Twitter, href: "#", label: "Twitter", color: "hover:bg-sky-500" },
-    { Icon: Linkedin, href: "#", label: "LinkedIn", color: "hover:bg-blue-700" },
+    { Icon: Linkedin, href: "https://www.linkedin.com/company/bqi-technologies", label: "LinkedIn", color: "hover:bg-blue-700" },
   ];
 
   const quickLinks = [
