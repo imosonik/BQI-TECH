@@ -20,23 +20,8 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { title: "Home", href: "/" },
   { title: "Careers", href: "/careers" },
-  {
-    title: "Services",
-    items: [
-      { label: "Business Licensing", href: "/services/business-licensing" },
-      { label: "Professional Services", href: "/services/professional-services" },
-      { label: "Other Services", href: "/services/other-services" },
-    ],
-  },
-  {
-    title: "About",
-    items: [
-      { label: "Our Expertise", href: "/about/expertise" },
-      { label: "Terms & Conditions", href: "/about/terms" },
-      { label: "Cookie Policy", href: "/about/cookie-policy" },
-      { label: "Contact Us", href: "/about/contact" },
-    ],
-  },
+  { title: "Services",href: "/services" },
+  { title: "About", href: "/about" },
 ]
 
 function MenuItem({ item, onClose }: { item: MenuItem; onClose: () => void }) {
@@ -142,16 +127,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 transition={{ delay: 0.2 }}
                 className="px-4 py-4 border-t border-gray-200 mt-2"
               >
-                <Button 
-                  asChild
-                  className="w-full flex items-center justify-center gap-2 bg-[#272055] hover:bg-[#1D1640] text-white font-medium"
-                  onClick={handleAuthClick}
-                >
-                  <div>
-                    <UserCircle className="w-5 h-5" />
-                    <span>{isSignedIn ? "Dashboard" : "Sign In"}</span>
-                  </div>
-                </Button>
+          
               </motion.div>
             </nav>
           </motion.div>
