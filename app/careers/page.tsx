@@ -49,7 +49,7 @@ export default function CareersPage() {
         "Independent problem-solving.",
         "Clear communication.",
       ],
-      image: "/whatwelookfor.jpg",
+      image: "/software.png",
     },
     {
       title: "Benefits",
