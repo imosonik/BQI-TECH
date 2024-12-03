@@ -63,7 +63,7 @@ export default function CareersPage() {
         "Employee Assistance Program",
         "Amazing Office Space",
       ],
-      image: "/benefits.png",
+      image: "/benefits1.jpg",
     },
   ];
 
