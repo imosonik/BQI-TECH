@@ -19,17 +19,6 @@ const expertise = [
     ]
   },
   { 
-    icon: Shield, 
-    title: 'Secure Integration', 
-    description: 'Enterprise-grade security implementation with FedRAMP compliance. We ensure seamless integration while maintaining the highest levels of data protection and regulatory compliance.',
-    features: [
-      'FedRAMP Compliance',
-      'Zero Trust Architecture',
-      'Secure Data Management',
-      'Access Control Systems'
-    ]
-  },
-  { 
     icon: Lightbulb, 
     title: 'Configuration Services', 
     description: 'Expert configuration and customization of enterprise platforms and government systems. We optimize your technology infrastructure for maximum efficiency and performance.',
@@ -121,7 +110,7 @@ export default function AboutPage() {
       {/* Expertise Section */}
       <motion.section className="mb-24">
         <h2 className="text-3xl font-semibold mb-8 text-center text-gray-800">Our Expertise</h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {expertise.map((item, index) => (
             <motion.div
               key={item.title}
