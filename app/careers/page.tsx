@@ -39,7 +39,7 @@ export default function CareersPage() {
         "Stay Curious, Stay Hungry",
         "Innovation is our DNA",
       ],
-      image: "/culture1.jpg",
+      image: "/culture10.jpg",
     },
     {
       title: "What We Look For",
