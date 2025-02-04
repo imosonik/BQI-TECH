@@ -143,8 +143,8 @@ function ApplicationForm() {
       formData.append('experience', data.experience)
       formData.append('salary', data.salary.trim())
       
-      // Handle position
-      const selectedPosition = positions.find(pos => pos.id === data.position)
+      // Handle position validation by title
+      const selectedPosition = positions.find(pos => pos.title === data.position)
       if (!selectedPosition) {
         throw new Error('Invalid position selected')
       }
@@ -302,7 +302,7 @@ function ApplicationForm() {
                 >
                   <option value="">Select a position</option>
                   {positions.map((pos) => (
-                    <option key={pos.id} value={pos.id}>
+                    <option key={pos.id} value={pos.title}>
                       {pos.title}
                     </option>
                   ))}

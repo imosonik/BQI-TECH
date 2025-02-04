@@ -89,72 +89,6 @@ function AdvancedLoader() {
   )
 }
 
-function SnakeProgressBar({ step }: { step: number }) {
-  return (
-    <div className="mb-20 relative">
-      <svg className="w-full h-24" viewBox="0 0 600 50">
-        {/* Background path */}
-        <path
-          d="M 50 25 C 100 25, 100 25, 150 25 C 200 25, 200 25, 300 25 C 400 25, 400 25, 450 25 C 500 25, 500 25, 550 25"
-          fill="none"
-          stroke="#E5E7EB"
-          strokeWidth="2"
-          className="path-bg"
-        />
-        {/* Animated progress path */}
-        <motion.path
-          d="M 50 25 C 100 25, 100 25, 150 25 C 200 25, 200 25, 300 25 C 400 25, 400 25, 450 25 C 500 25, 500 25, 550 25"
-          fill="none"
-          stroke="#3B82F6"
-          strokeWidth="2"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: (step - 1) / 2 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="path-progress"
-        />
-        
-        {/* Step circles */}
-        {[1, 2, 3].map((i) => (
-          <motion.g key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: i * 0.2 }}>
-            <motion.circle
-              cx={50 + (i - 1) * 250}
-              cy="25"
-              r="20"
-              className={`${
-                step >= i 
-                  ? "fill-blue-600" 
-                  : "fill-white stroke-2 stroke-gray-200"
-              }`}
-              whileHover={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            />
-            <text
-              x={50 + (i - 1) * 250}
-              y="30"
-              textAnchor="middle"
-              className={`text-sm font-semibold ${
-                step >= i ? "fill-white" : "fill-gray-400"
-              }`}
-            >
-              {i}
-            </text>
-            <text
-              x={50 + (i - 1) * 250}
-              y="60"
-              textAnchor="middle"
-              className={`text-xs font-medium ${
-                step >= i ? "fill-blue-600" : "fill-gray-400"
-              }`}
-            >
-              {i === 1 ? "Personal Info" : i === 2 ? "Details" : "Experience"}
-            </text>
-          </motion.g>
-        ))}
-      </svg>
-    </div>
-  );
-}
-
 function ApplicationForm() {
   const { id } = useParams()
   const router = useRouter()
@@ -209,8 +143,8 @@ function ApplicationForm() {
       formData.append('experience', data.experience)
       formData.append('salary', data.salary.trim())
       
-      // Handle position
-      const selectedPosition = positions.find(pos => pos.id === data.position)
+      // Handle position validation by title
+      const selectedPosition = positions.find(pos => pos.title === data.position)
       if (!selectedPosition) {
         throw new Error('Invalid position selected')
       }
@@ -239,7 +173,7 @@ function ApplicationForm() {
       }
 
       toast.success(result.message || 'Application submitted successfully')
-      router.push('/dashboard/apply/thank-you')
+      router.push('/careers/apply/thank-you')
     } catch (error) {
       console.error('Application submission error:', error)
       toast.error(error instanceof Error ? error.message : "An unexpected error occurred")
@@ -368,7 +302,7 @@ function ApplicationForm() {
                 >
                   <option value="">Select a position</option>
                   {positions.map((pos) => (
-                    <option key={pos.id} value={pos.id}>
+                    <option key={pos.id} value={pos.title}>
                       {pos.title}
                     </option>
                   ))}
@@ -478,83 +412,73 @@ function ApplicationForm() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
+      className="container mx-auto px-4 py-8 mt-32"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Toaster position="top-center" reverseOrder={false} />
-        
-        {/* Header Section */}
-        <motion.div 
-          className="text-center mb-12"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Application Form</h1>
-          <p className="text-gray-600">Complete all steps to submit your application</p>
-        </motion.div>
-
-        {/* Replace old progress bar with new SnakeProgressBar */}
-        <SnakeProgressBar step={step} />
-
-        {/* Form Content */}
-        <motion.div
-          className="bg-white rounded-2xl shadow-lg p-8"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data" className="space-y-6">
-            <AnimatePresence mode="wait">
-              {renderStep()}
-            </AnimatePresence>
-            
-            {/* Navigation Buttons */}
-            <motion.div 
-              className="flex justify-between mt-12"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
+      <Toaster position="top-center" reverseOrder={false} />
+      <h1 className="text-3xl font-bold mb-6">Application Form</h1>
+      {submitError && <p className="text-red-500 mb-4">{submitError}</p>}
+      <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data" className="space-y-6">
+        <div className="mb-8">
+          <div className="flex items-center">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    step >= i ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-600"
+                  }`}
+                >
+                  {i}
+                </div>
+                {i < 3 && (
+                  <div
+                    className={`h-1 w-12 ${
+                      step > i ? "bg-blue-600" : "bg-gray-300"
+                    }`}
+                  ></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+        <AnimatePresence mode="wait">
+          {renderStep()}
+        </AnimatePresence>
+        <div className="flex justify-between mt-8">
+          {step > 1 && (
+            <button
+              type="button"
+              onClick={prevStep}
+              className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-300"
             >
-              {step > 1 && (
-                <motion.button
-                  type="button"
-                  onClick={prevStep}
-                  className="flex items-center px-6 py-3 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-all duration-300 group"
-                  whileHover={{ x: -5 }}
-                >
-                  <ArrowLeft className="mr-2 h-5 w-5 group-hover:animate-pulse" />
-                  Back
-                </motion.button>
-              )}
-              {step < 3 ? (
-                <motion.button
-                  type="button"
-                  onClick={nextStep}
-                  className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300 ml-auto group"
-                  whileHover={{ x: 5 }}
-                >
-                  Next
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:animate-pulse" />
-                </motion.button>
-              ) : (
-                <motion.button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex items-center px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-all duration-300 ml-auto disabled:bg-green-400 group"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  {isSubmitting ? "Submitting..." : "Submit Application"}
-                  <Send className="ml-2 h-5 w-5 group-hover:animate-pulse" />
-                </motion.button>
-              )}
-            </motion.div>
-          </form>
-        </motion.div>
-      </div>
+              <ArrowLeft className="mr-2 h-5 w-5" />
+              Back
+            </button>
+          )}
+          {step < 3 ? (
+            <button
+              type="button"
+              onClick={nextStep}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300 ml-auto"
+            >
+              Next
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300 ml-auto disabled:bg-green-400"
+            >
+              {isSubmitting ? "Submitting..." : "Submit Application"}
+              <Send className="ml-2 h-5 w-5" />
+            </button>
+          )}
+        </div>
+      </form>
+      {error && <p className="text-red-500 mt-4">{error}</p>}
       {isSubmitting && <AdvancedLoader />}
     </motion.div>
   )
