@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
+
 import DataTable from "@/components/admin/DataTable";
 import useSWR from "swr";
 import { EditApplicationModal } from "@/components/admin/EditApplicationModal";
@@ -21,6 +21,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function ApplicationsPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedPosition, setSelectedPosition] = useState("");
   const { data, error, isLoading } = useSWR<
     Application[] | { applications: Application[] }
   >("/api/admin/applications", fetcher);
@@ -45,13 +46,12 @@ export default function ApplicationsPage() {
   if (error) return <div>Failed to load applications</div>;
   if (isLoading) return <div>Loading...</div>;
 
-  const filteredApplications = Array.isArray(applications) 
-    ? applications.filter((app) =>
-        Object.values(app).some((value) =>
-          String(value).toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      )
-    : [];
+  const filteredApplications = applications.filter((app) =>
+    (selectedPosition ? app.position === selectedPosition : true) &&
+    (app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.position.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   function handleView(id: string) {
     const application = applications.find((app) => app.id === id);
@@ -100,15 +100,26 @@ export default function ApplicationsPage() {
       <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">
         Applications
       </h2>
-      <div className="relative">
+      <div className="flex space-x-4">
         <input
           type="text"
           placeholder="Search applications..."
-          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-2 border rounded"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <Search className="absolute left-3 top-2.5 text-gray-400" />
+        <select
+          className="p-2 border rounded"
+          value={selectedPosition}
+          onChange={(e) => setSelectedPosition(e.target.value)}
+        >
+          <option value="">All Positions</option>
+          {[...new Set(applications.map((app) => app.position))].map((position) => (
+            <option key={position} value={position}>
+              {position}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="overflow-x-auto">
         <DataTable

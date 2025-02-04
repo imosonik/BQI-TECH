@@ -54,6 +54,10 @@ export function ViewApplicationModal({
             <p>{application.email}</p>
           </div>
           <div>
+            <h3 className="font-semibold">Phone Number</h3>
+            <p>{application.phoneNumber}</p>
+          </div>
+          <div>
             <h3 className="font-semibold">Position</h3>
             <p>{application.position}</p>
           </div>
