@@ -12,6 +12,7 @@ import { Application } from "@/types/application";
 const columns = [
   { header: "Name", accessor: "name" },
   { header: "Email", accessor: "email" },
+  { header: "Phone Number", accessor: "phoneNumber" },
   { header: "Position", accessor: "position" },
   { header: "Applied Date", accessor: "appliedDate" },
   { header: "Status", accessor: "status" },

@@ -1,4 +1,3 @@
-
 interface User {
   id: string
   email: string
@@ -12,7 +11,7 @@ export interface Application {
     userId?: string
     user?: User
     email: string
-    phoneNumber?: string
+    phoneNumber: string
     location: string
     position: string
     resumeUrl: string

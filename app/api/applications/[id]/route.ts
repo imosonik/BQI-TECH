@@ -32,6 +32,7 @@ export async function GET(
         id: true,
         name: true,
         email: true,
+        phoneNumber: true,
         position: true,
         status: true,
         appliedDate: true,
