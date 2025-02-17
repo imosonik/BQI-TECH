@@ -27,4 +27,5 @@ export async function GET() {
   } finally {
     await prisma.$disconnect();
   }
+  
 }
