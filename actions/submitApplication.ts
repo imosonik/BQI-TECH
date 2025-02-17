@@ -189,7 +189,7 @@ export async function submitApplication(
                 : ""
             }
           `,
-          ctaLink: `${process.env.NEXT_PUBLIC_APP_URL}/admin/applications/${application.id}`,
+          ctaLink: `${process.env.NEXT_PUBLIC_APP_URL}/admin/applications}`,
           ctaText: "View Application",
         }),
       }),
