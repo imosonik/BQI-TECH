@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { UserButton } from "@clerk/nextjs"
 import { NotificationButton } from "@/components/NotificationButton"
 import { useUser } from "@clerk/nextjs"
+import Link from "next/link";
 
 // Separate fetchers for different endpoints
 const overviewFetcher = async (url: string) => {
@@ -50,37 +51,43 @@ export default function OverviewPage() {
       title: 'Total Applications', 
       value: overviewData?.totalApplications || 0, 
       icon: FileText, 
-      color: 'from-blue-400 to-blue-600' 
+      color: 'from-blue-400 to-blue-600',
+      href: '/admin/applications'
     },
     { 
       title: 'Shortlisted', 
       value: overviewData?.shortlisted || 0, 
       icon: CheckCircle, 
-      color: 'from-green-400 to-green-600' 
+      color: 'from-green-400 to-green-600',
+      href: '/admin/shortlisted'
     },
     { 
       title: 'Technical Assessment', 
       value: overviewData?.technicalAssessment || 0, 
       icon: Code, 
-      color: 'from-yellow-400 to-yellow-600' 
+      color: 'from-yellow-400 to-yellow-600',
+      href: '/admin/technical-assessment'
     },
     { 
       title: 'Interviewing', 
       value: overviewData?.interviewing || 0, 
       icon: MessageSquare, 
-      color: 'from-purple-400 to-purple-600' 
+      color: 'from-purple-400 to-purple-600',
+      href: '/admin/interviewing'
     },
     { 
       title: 'Hired', 
       value: overviewData?.hired || 0, 
       icon: UserCheck, 
-      color: 'from-indigo-400 to-indigo-600' 
+      color: 'from-indigo-400 to-indigo-600',
+      href: '/admin/hired'
     },
     { 
       title: 'Disqualified', 
       value: overviewData?.disqualified || 0, 
       icon: XCircle, 
-      color: 'from-red-400 to-red-600' 
+      color: 'from-red-400 to-red-600',
+      href: '/admin/disqualified'
     },
   ];
 
@@ -152,29 +159,30 @@ export default function OverviewPage() {
       {/* Stats Grid - Already Responsive */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {overviewItems.map((item, index) => (
-          <motion.div
-            key={item.title}
-            className={`relative overflow-hidden rounded-2xl shadow-lg bg-gradient-to-br ${item.color}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-          >
-            <div className="absolute top-0 right-0 w-32 h-32 transform translate-x-16 -translate-y-16">
-              <div className="absolute inset-0 rounded-full bg-white opacity-10" />
-            </div>
-            <div className="relative p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-4">
-                  <div className="p-3 bg-white/10 rounded-lg w-fit">
-                    <item.icon className="w-6 h-6 text-white" />
+          <Link key={item.title} href={item.href}>
+            <motion.div
+              className={`relative overflow-hidden rounded-2xl shadow-lg bg-gradient-to-br ${item.color} cursor-pointer`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }}
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 transform translate-x-16 -translate-y-16">
+                <div className="absolute inset-0 rounded-full bg-white opacity-10" />
+              </div>
+              <div className="relative p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-4">
+                    <div className="p-3 bg-white/10 rounded-lg w-fit">
+                      <item.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <p className="text-lg font-medium text-white/80">{item.title}</p>
+                    <h3 className="text-4xl font-bold text-white">{item.value}</h3>
                   </div>
-                  <p className="text-lg font-medium text-white/80">{item.title}</p>
-                  <h3 className="text-4xl font-bold text-white">{item.value}</h3>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </Link>
         ))}
       </div>
 
