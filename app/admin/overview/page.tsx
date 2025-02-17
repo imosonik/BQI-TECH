@@ -44,6 +44,7 @@ export default function OverviewPage() {
   if (isOverviewLoading || isApplicationsLoading) return <div>Loading...</div>;
   if (!overviewData || !recentApplications) return <div>No data available</div>;
 
+  
   const overviewItems = [
     { 
       title: 'Total Applications', 
