@@ -19,6 +19,7 @@ export async function GET() {
         status: true
       }
     });
+    
     return NextResponse.json({ applications: interviewing });
   } catch (error) {
     console.error('Error fetching interviewing candidates:', error);
