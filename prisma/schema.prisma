@@ -46,9 +46,9 @@ model Application {
   startDate                   DateTime?
   disqualifiedDate            DateTime?
   disqualifiedReason          String?
-  cotsExperience              String   // New field for COTS software experience
-  sqlJavaScriptExperience     String   // New field for SQL and JavaScript experience
-  reportDevelopmentExperience String   // New field for report development experience
+  cotsExperience              String?  // Make this field optional
+  sqlJavaScriptExperience     String?  // Make this field optional
+  reportDevelopmentExperience String?  // Make this field optional
 }
 
 model JobPosting {

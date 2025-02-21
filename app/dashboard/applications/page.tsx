@@ -57,7 +57,10 @@ export default function ApplicationsPage() {
           { header: "Phone Number", accessor: "phoneNumber" },
           { header: "Position", accessor: "position" },
           { header: "Application Date", accessor: "appliedDate" },
-          { header: "Status", accessor: "status" }
+          { header: "Status", accessor: "status" },
+          { header: "COTS Experience", accessor: "cotsExperience" },
+          { header: "SQL/JS Experience", accessor: "sqlJavaScriptExperience" },
+          { header: "Report Dev Experience", accessor: "reportDevelopmentExperience" }
         ]}
         data={filteredApplications}
         onView={handleView}
