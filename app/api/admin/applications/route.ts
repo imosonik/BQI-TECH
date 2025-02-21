@@ -22,6 +22,10 @@ export async function GET(request: NextRequest) {
           status: true,
           shortlistedDate: true,
           resumeUrl: true,
+          hearAbout: true,
+          otherSource: true,
+          experience: true,
+          salary: true,
         }
       });
     } else {
@@ -36,6 +40,10 @@ export async function GET(request: NextRequest) {
           status: true,
           shortlistedDate: true,
           resumeUrl: true,
+          hearAbout: true,
+          otherSource: true,
+          experience: true,
+          salary: true,
         }
       });
     }

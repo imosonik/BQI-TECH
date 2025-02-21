@@ -16,6 +16,10 @@ const columns = [
   { header: "Position", accessor: "position" },
   { header: "Applied Date", accessor: "appliedDate" },
   { header: "Status", accessor: "status" },
+  { header: "Hear About", accessor: "hearAbout" },
+  { header: "Other Source", accessor: "otherSource" },
+  { header: "Experience", accessor: "experience" },
+  { header: "Salary", accessor: "salary" },
 ];
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
