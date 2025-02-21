@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -34,6 +34,9 @@ const formSchema = z.object({
     invalid_type_error: "Please select a valid experience level"
   }),
   salary: z.string().min(1, "Salary expectation is required"),
+  cotsExperience: z.enum(["Yes", "No"]),
+  sqlJavaScriptExperience: z.enum(["Yes", "No"]),
+  reportDevelopmentExperience: z.enum(["Yes", "No"]),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -90,7 +93,6 @@ function AdvancedLoader() {
 }
 
 function ApplicationForm() {
-  const { id } = useParams()
   const router = useRouter()
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -397,6 +399,81 @@ function ApplicationForm() {
                     </motion.p>
                   )}
                 </AnimatePresence>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Do you have at least 2 years of experience in configuration COTS software?
+                </label>
+                <div className="mt-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      {...register("cotsExperience")}
+                      value="Yes"
+                      className="form-radio h-4 w-4 text-blue-600"
+                    />
+                    <span className="ml-2">Yes</span>
+                  </label>
+                  <label className="inline-flex items-center ml-4">
+                    <input
+                      type="radio"
+                      {...register("cotsExperience")}
+                      value="No"
+                      className="form-radio h-4 w-4 text-blue-600"
+                    />
+                    <span className="ml-2">No</span>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Do you have experience in SQL scripting (Oracle or SQL Server) and JavaScript?
+                </label>
+                <div className="mt-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      {...register("sqlJavaScriptExperience")}
+                      value="Yes"
+                      className="form-radio h-4 w-4 text-blue-600"
+                    />
+                    <span className="ml-2">Yes</span>
+                  </label>
+                  <label className="inline-flex items-center ml-4">
+                    <input
+                      type="radio"
+                      {...register("sqlJavaScriptExperience")}
+                      value="No"
+                      className="form-radio h-4 w-4 text-blue-600"
+                    />
+                    <span className="ml-2">No</span>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Have you worked on report development using SSRS or Crystal Reports?
+                </label>
+                <div className="mt-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      {...register("reportDevelopmentExperience")}
+                      value="Yes"
+                      className="form-radio h-4 w-4 text-blue-600"
+                    />
+                    <span className="ml-2">Yes</span>
+                  </label>
+                  <label className="inline-flex items-center ml-4">
+                    <input
+                      type="radio"
+                      {...register("reportDevelopmentExperience")}
+                      value="No"
+                      className="form-radio h-4 w-4 text-blue-600"
+                    />
+                    <span className="ml-2">No</span>
+                  </label>
+                </div>
               </div>
               <InputField
                 label="Salary Expectation (In Kenyan Shillings)"
