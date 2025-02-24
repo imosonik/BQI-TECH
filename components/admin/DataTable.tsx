@@ -25,10 +25,10 @@ export default function DataTable({ columns, data, onView, onEdit, onDelete, onA
       className="overflow-x-auto"
     >
       <table className="min-w-full bg-white">
-        <thead className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+        <thead className="bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 uppercase text-sm leading-normal">
           <tr>
             {columns.map((column, index) => (
-              <th key={index} className={`py-3 px-6 text-left ${index === 0 ? 'sticky left-0 bg-white z-10' : ''}`}>{column.header}</th>
+              <th key={index} className={`py-3 px-6 text-left ${index === 0 ? 'sticky left-0 bg-blue-300 z-10' : ''}`}>{column.header}</th>
             ))}
             <th className="py-3 px-6 text-center">Actions</th>
           </tr>
