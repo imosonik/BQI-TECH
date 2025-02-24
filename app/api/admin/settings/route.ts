@@ -46,7 +46,7 @@ export async function PUT(request: Request) {
 
     // Update settings and notification preferences in a transaction
     await prisma.$transaction([
-      prisma.UserSettings.upsert({
+      prisma.userSettings.upsert({
         where: { userId: dbUser.id },
         update: {
           emailNotifications: settings.emailNotifications,
@@ -64,7 +64,7 @@ export async function PUT(request: Request) {
           sidebarCollapsed: settings.sidebarCollapsed,
         },
       }),
-      prisma.NotificationPreference.upsert({
+      prisma.notificationPreference.upsert({
         where: { userId: dbUser.id },
         update: { emailEnabled: settings.emailNotifications },
         create: {
