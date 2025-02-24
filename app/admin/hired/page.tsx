@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { AdminPageLayout } from "@/components/admin/AdminPageLayout";
 import DataTable from "@/components/admin/DataTable";
 import useSWR from "swr";
 import { EditApplicationModal } from "@/components/admin/EditApplicationModal";
@@ -9,13 +9,10 @@ import { ViewApplicationModal } from "@/components/admin/ViewApplicationModal";
 import { DeleteApplicationModal } from "@/components/admin/DeleteApplicationModal";
 import { Application } from "@/types/application";
 
-interface HiredCandidate extends Application {
+interface HiredApplication extends Application {
   hireDate: string;
   startDate: string;
-}
-
-interface ApiResponse {
-  applications: HiredCandidate[];
+  salary: string;
 }
 
 const columns = [
@@ -24,24 +21,30 @@ const columns = [
   { header: "Position", accessor: "position" },
   { header: "Hire Date", accessor: "hireDate" },
   { header: "Start Date", accessor: "startDate" },
+  { header: "Salary", accessor: "salary" },
+  { header: "Status", accessor: "status" },
 ];
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function HiredPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { data, error, isLoading } = useSWR<ApiResponse>("/api/admin/hired", fetcher);
-  const [viewApplication, setViewApplication] = useState<HiredCandidate | null>(null);
-  const [editApplication, setEditApplication] = useState<HiredCandidate | null>(null);
+  const { data, error, isLoading } = useSWR<{ applications: HiredApplication[] }>(
+    "/api/admin/applications?status=Hired",
+    fetcher
+  );
+
+  const [viewApplication, setViewApplication] = useState<HiredApplication | null>(null);
+  const [editApplication, setEditApplication] = useState<Application | null>(null);
   const [deleteApplicationId, setDeleteApplicationId] = useState<string | null>(null);
 
   const handleView = (id: string) => {
-    const application = hiredCandidates.find((app) => app.id === id);
+    const application = data?.applications.find((app: HiredApplication) => app.id === id);
     setViewApplication(application || null);
   };
 
   const handleEdit = (id: string) => {
-    const application = hiredCandidates.find((app) => app.id === id);
+    const application = data?.applications.find((app: HiredApplication) => app.id === id);
     setEditApplication(application || null);
   };
 
@@ -57,7 +60,6 @@ export default function HiredPage() {
         body: JSON.stringify(updatedApplication),
       });
       setEditApplication(null);
-      // Optionally, you can refetch the data here to update the UI
     } catch (error) {
       console.error("Failed to update application:", error);
     }
@@ -72,35 +74,22 @@ export default function HiredPage() {
     }
   };
 
-  const hiredCandidates = data?.applications || [];
-
-  const filteredData = hiredCandidates.filter((item: HiredCandidate) =>
-    Object.values(item).some((value) => {
-      if (typeof value === "string") {
-        return value.toLowerCase().includes(searchTerm.toLowerCase());
-      }
-      return false;
-    })
-  );
+  const filteredData = data?.applications.filter((app: HiredApplication) =>
+    Object.values(app).some((value) =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  ) ?? [];
 
   if (error) return <div>Failed to load hired candidates</div>;
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">
-        Hired Candidates
-      </h2>
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Search hired candidates..."
-          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <Search className="absolute left-3 top-2.5 text-gray-400" />
-      </div>
+    <AdminPageLayout
+      title="Hired"
+      searchPlaceholder="Search hired candidates..."
+      searchValue={searchTerm}
+      onSearch={setSearchTerm}
+    >
       <div className="overflow-x-auto">
         <DataTable
           columns={columns}
@@ -110,13 +99,14 @@ export default function HiredPage() {
           onDelete={handleDelete}
         />
       </div>
+
       <ViewApplicationModal
         application={viewApplication}
         isOpen={!!viewApplication}
         onClose={() => setViewApplication(null)}
       />
       <EditApplicationModal
-        application={editApplication ? toApplication(editApplication) : null}
+        application={editApplication}
         isOpen={!!editApplication}
         onClose={() => setEditApplication(null)}
         onSave={handleSaveEdit}
@@ -127,16 +117,6 @@ export default function HiredPage() {
         onClose={() => setDeleteApplicationId(null)}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </AdminPageLayout>
   );
-}
-
-// Helper function to convert HiredCandidate to Application
-function toApplication(candidate: HiredCandidate): Application {
-  const { hireDate, startDate, ...applicationData } = candidate;
-  return {
-    ...applicationData,
-    hireDate: hireDate || '',
-    startDate: startDate || ''
-  }
 }

@@ -23,7 +23,15 @@ interface DataTableProps {
   onStatusChange?: (ids: string[], status: string) => void;
 }
 
-export default function DataTable({ columns, data, onView, onEdit, onDelete, onApply, onStatusChange }: DataTableProps) {
+export default function DataTable({ 
+  columns, 
+  data, 
+  onView, 
+  onEdit, 
+  onDelete, 
+  onApply, 
+  onStatusChange 
+}: DataTableProps) {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
 
   const toggleSelectAll = () => {

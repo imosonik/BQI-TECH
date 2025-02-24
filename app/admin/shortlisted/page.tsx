@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { AdminPageLayout } from "@/components/admin/AdminPageLayout";
 import DataTable from "@/components/admin/DataTable";
 import useSWR from "swr";
 import { EditApplicationModal } from "@/components/admin/EditApplicationModal";
@@ -38,12 +38,12 @@ export default function ShortlistedPage() {
   );
 
   const handleView = (id: string) => {
-    const application = shortlistedCandidates.find((app) => app.id === id);
+    const application = data?.applications.find((app: Application) => app.id === id);
     setViewApplication(application || null);
   };
 
   const handleEdit = (id: string) => {
-    const application = shortlistedCandidates.find((app) => app.id === id);
+    const application = data?.applications.find((app: Application) => app.id === id);
     setEditApplication(application || null);
   };
 
@@ -73,36 +73,22 @@ export default function ShortlistedPage() {
     }
   };
 
-  const shortlistedCandidates = data?.applications || [];
-
-  const filteredData = shortlistedCandidates.filter(
-    (item: ShortlistedCandidate) =>
-      Object.values(item).some((value) => {
-        if (typeof value === "string") {
-          return value.toLowerCase().includes(searchTerm.toLowerCase());
-        }
-        return false;
-      })
-  );
+  const filteredData = data?.applications.filter((app: Application) =>
+    Object.values(app).some((value) =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  ) ?? [];
 
   if (error) return <div>Failed to load shortlisted candidates</div>;
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">
-        Shortlisted Candidates
-      </h2>
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Search shortlisted candidates..."
-          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <Search className="absolute left-3 top-2.5 text-gray-400" />
-      </div>
+    <AdminPageLayout
+      title="Shortlisted"
+      searchPlaceholder="Search shortlisted candidates..."
+      searchValue={searchTerm}
+      onSearch={setSearchTerm}
+    >
       <div className="overflow-x-auto">
         <DataTable
           columns={columns}
@@ -112,6 +98,7 @@ export default function ShortlistedPage() {
           onDelete={handleDelete}
         />
       </div>
+
       <ViewApplicationModal
         application={viewApplication}
         isOpen={!!viewApplication}
@@ -129,6 +116,6 @@ export default function ShortlistedPage() {
         onClose={() => setDeleteApplicationId(null)}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </AdminPageLayout>
   );
 }

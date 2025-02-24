@@ -8,6 +8,7 @@ import { EditApplicationModal } from "@/components/admin/EditApplicationModal";
 import { ViewApplicationModal } from "@/components/admin/ViewApplicationModal";
 import { DeleteApplicationModal } from "@/components/admin/DeleteApplicationModal";
 import { Application } from "@/types/application";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 const columns = [
   { header: "Name", accessor: "name" },
@@ -106,69 +107,98 @@ export default function ApplicationsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">
-        Applications
-      </h2>
-      <div className="flex space-x-4">
-        <input
-          type="text"
-          placeholder="Search applications..."
-          className="w-full p-2 border rounded"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select
-          className="p-2 border rounded"
-          value={selectedPosition}
-          onChange={(e) => setSelectedPosition(e.target.value)}
-        >
-          <option value="">All Positions</option>
-          {[...new Set(applications.map((app) => app.position))].map((position) => (
-            <option key={position} value={position}>
-              {position}
-            </option>
-          ))}
-        </select>
-        <select
-          className="p-2 border rounded"
-          value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
-        >
-          <option value="">All Statuses</option>
-          <option value="New">New</option>
-          <option value="Interviewing">Interviewing</option>
-          <option value="Application">Application</option>
-          <option value="Disqualified">Disqualified</option>
-          <option value="Hired">Hired</option>
-        </select>
+    <>
+      <AdminPageHeader title="Applications" breadcrumb="Applications" />
+      
+      {/* Sticky Search and Filter Section */}
+      <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-sm border-b">
+        <div className="p-4 max-w-[2000px] mx-auto">
+          <div className="flex flex-col md:flex-row gap-3">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Search by name, email or position..."
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <svg
+                className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+            
+            <div className="flex flex-row gap-3 md:w-auto">
+              <select
+                className="w-full md:w-48 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+                value={selectedPosition}
+                onChange={(e) => setSelectedPosition(e.target.value)}
+              >
+                <option value="">All Positions</option>
+                {[...new Set(applications.map((app) => app.position))].map((position) => (
+                  <option key={position} value={position}>
+                    {position}
+                  </option>
+                ))}
+              </select>
+              
+              <select
+                className="w-full md:w-48 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <option value="">All Statuses</option>
+                <option value="New">New</option>
+                <option value="Interviewing">Interviewing</option>
+                <option value="Application">Application</option>
+                <option value="Disqualified">Disqualified</option>
+                <option value="Hired">Hired</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="overflow-x-auto">
-        <DataTable
-          columns={columns}
-          data={filteredApplications}
-          onView={handleView}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+
+      {/* Content Area */}
+      <div className="p-6">
+        <div className="overflow-x-auto">
+          <DataTable
+            columns={columns}
+            data={filteredApplications}
+            onView={handleView}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
+
+        {/* Modals */}
+        <ViewApplicationModal
+          application={viewApplication}
+          isOpen={!!viewApplication}
+          onClose={() => setViewApplication(null)}
+        />
+        <EditApplicationModal
+          application={editApplication}
+          isOpen={!!editApplication}
+          onClose={() => setEditApplication(null)}
+          onSave={handleSaveEdit}
+        />
+        <DeleteApplicationModal
+          applicationId={deleteApplicationId}
+          isOpen={!!deleteApplicationId}
+          onClose={() => setDeleteApplicationId(null)}
+          onConfirm={handleConfirmDelete}
         />
       </div>
-      <ViewApplicationModal
-        application={viewApplication}
-        isOpen={!!viewApplication}
-        onClose={() => setViewApplication(null)}
-      />
-      <EditApplicationModal
-        application={editApplication}
-        isOpen={!!editApplication}
-        onClose={() => setEditApplication(null)}
-        onSave={handleSaveEdit}
-      />
-      <DeleteApplicationModal
-        applicationId={deleteApplicationId}
-        isOpen={!!deleteApplicationId}
-        onClose={() => setDeleteApplicationId(null)}
-        onConfirm={handleConfirmDelete}
-      />
-    </div>
+    </>
   );
 }

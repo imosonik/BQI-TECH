@@ -1,43 +1,46 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { AdminPageLayout } from "@/components/admin/AdminPageLayout";
 import DataTable from "@/components/admin/DataTable";
 import useSWR from "swr";
 import { EditApplicationModal } from "@/components/admin/EditApplicationModal";
 import { ViewApplicationModal } from "@/components/admin/ViewApplicationModal";
 import { DeleteApplicationModal } from "@/components/admin/DeleteApplicationModal";
-import { TechnicalAssessmentCandidate } from "@/types/application";
 import { Application } from "@/types/application";
 
-
-interface ApiResponse {
-  applications: TechnicalAssessmentCandidate[];
+interface TechnicalAssessmentApplication extends Application {
+  technicalAssessmentDate: string;
 }
 
 const columns = [
   { header: "Name", accessor: "name" },
   { header: "Email", accessor: "email" },
   { header: "Position", accessor: "position" },
-  { header: "Assessment Date", accessor: "assessmentDate" },
+  { header: "Assessment Date", accessor: "technicalAssessmentDate" },
+  { header: "Status", accessor: "status" },
 ];
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function TechnicalAssessmentPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { data, error, isLoading } = useSWR<ApiResponse>("/api/admin/applications?status=Technical Assessment", fetcher);
-  const [viewApplication, setViewApplication] = useState<TechnicalAssessmentCandidate | null>(null);
-  const [editApplication, setEditApplication] = useState<TechnicalAssessmentCandidate | null>(null);
+  const { data, error, isLoading } = useSWR<{ applications: TechnicalAssessmentApplication[] }>(
+    "/api/admin/applications?status=Technical Assessment",
+    fetcher
+  );
+
+  const [viewApplication, setViewApplication] = useState<TechnicalAssessmentApplication | null>(null);
+  const [editApplication, setEditApplication] = useState<Application | null>(null);
   const [deleteApplicationId, setDeleteApplicationId] = useState<string | null>(null);
 
   const handleView = (id: string) => {
-    const application = technicalAssessmentCandidates.find((app) => app.id === id);
+    const application = data?.applications.find((app: TechnicalAssessmentApplication) => app.id === id);
     setViewApplication(application || null);
   };
 
   const handleEdit = (id: string) => {
-    const application = technicalAssessmentCandidates.find((app) => app.id === id);
+    const application = data?.applications.find((app: TechnicalAssessmentApplication) => app.id === id);
     setEditApplication(application || null);
   };
 
@@ -46,21 +49,17 @@ export default function TechnicalAssessmentPage() {
   };
 
   const handleSaveEdit = async (updatedApplication: Application) => {
-    if (!updatedApplication.assessmentDate) {
-      console.error('Assessment date is required')
-      return
-    }
-    
-    const candidate: TechnicalAssessmentCandidate = {
-      ...updatedApplication,
-      assessmentDate: updatedApplication.assessmentDate as string // Ensure it's a string
+    const typedApplication = updatedApplication as TechnicalAssessmentApplication;
+    if (!typedApplication.technicalAssessmentDate) {
+      console.error('Assessment date is required');
+      return;
     }
     
     try {
-      await fetch(`/api/admin/applications/${candidate.id}`, {
+      await fetch(`/api/admin/applications/${updatedApplication.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(candidate),
+        body: JSON.stringify(updatedApplication),
       });
       setEditApplication(null);
     } catch (error) {
@@ -77,35 +76,22 @@ export default function TechnicalAssessmentPage() {
     }
   };
 
-  const technicalAssessmentCandidates = data?.applications || [];
-
-  const filteredData = technicalAssessmentCandidates.filter((item: TechnicalAssessmentCandidate) =>
-    Object.values(item).some((value) => {
-      if (typeof value === 'string') {
-        return value.toLowerCase().includes(searchTerm.toLowerCase());
-      }
-      return false;
-    })
-  );
+  const filteredData = data?.applications.filter((app: TechnicalAssessmentApplication) =>
+    Object.values(app).some((value) =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  ) ?? [];
 
   if (error) return <div>Failed to load technical assessment candidates</div>;
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">
-        Technical Assessment Candidates
-      </h2>
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Search technical assessment candidates..."
-          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <Search className="absolute left-3 top-2.5 text-gray-400" />
-      </div>
+    <AdminPageLayout
+      title="Technical Assessment"
+      searchPlaceholder="Search technical assessment candidates..."
+      searchValue={searchTerm}
+      onSearch={setSearchTerm}
+    >
       <div className="overflow-x-auto">
         <DataTable
           columns={columns}
@@ -115,6 +101,7 @@ export default function TechnicalAssessmentPage() {
           onDelete={handleDelete}
         />
       </div>
+
       <ViewApplicationModal
         application={viewApplication}
         isOpen={!!viewApplication}
@@ -132,6 +119,6 @@ export default function TechnicalAssessmentPage() {
         onClose={() => setDeleteApplicationId(null)}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </AdminPageLayout>
   );
 }

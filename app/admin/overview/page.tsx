@@ -9,6 +9,7 @@ import { UserButton } from "@clerk/nextjs"
 import { NotificationButton } from "@/components/NotificationButton"
 import { useUser } from "@clerk/nextjs"
 import Link from "next/link";
+import { AdminPageLayout } from "@/components/admin/AdminPageLayout";
 
 // Separate fetchers for different endpoints
 const overviewFetcher = async (url: string) => {
@@ -93,71 +94,11 @@ export default function OverviewPage() {
   ];
 
   return (
-    <div className="p-4 md:p-8 space-y-6 md:space-y-8">
-      {/* Header Section - Mobile Responsive */}
-      <div className="flex flex-col gap-4 mb-6 md:mb-8">
-        {/* Top Bar with Profile - Always Visible */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Overview</h1>
-          
-          {/* Mobile Menu Button */}
-          <div className="flex items-center gap-3 md:hidden">
-            <NotificationButton variant="ghost" />
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-gray-700">
-                {user?.firstName || ''}
-              </span>
-              <UserButton 
-                afterSignOutUrl="/"
-                appearance={{
-                  elements: {
-                    avatarBox: "h-8 w-8",
-                    footer: "hidden",
-                    userPreviewMainIdentifier: "hidden",
-                    userButtonPopoverFooter: "hidden",
-                    userButtonPopoverCard: "!mb-0",
-                    developmentModeText: "hidden",
-                    userButtonPopoverSecurityBox: "hidden"
-                  }
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Breadcrumb - Hidden on Mobile */}
-        <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Admin</span>
-          <ChevronRight className="h-4 w-4" />
-          <span>Overview</span>
-        </div>
-
-        {/* Desktop Header Actions - Hidden on Mobile */}
-        <div className="hidden md:flex items-center gap-4 absolute top-8 right-8">
-          <NotificationButton />
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-700">
-              {user?.firstName || ''}
-            </span>
-            <UserButton 
-              afterSignOutUrl="/"
-              appearance={{
-                elements: {
-                  avatarBox: "h-8 w-8",
-                  footer: "hidden",
-                  userPreviewMainIdentifier: "hidden",
-                  userButtonPopoverFooter: "hidden",
-                  userButtonPopoverCard: "!mb-0",
-                  developmentModeText: "hidden",
-                  userButtonPopoverSecurityBox: "hidden"
-                }
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Grid - Already Responsive */}
+    <AdminPageLayout
+      title="Overview"
+      showSearch={false}
+    >
+      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {overviewItems.map((item, index) => (
           <Link key={item.title} href={item.href}>
@@ -187,12 +128,12 @@ export default function OverviewPage() {
         ))}
       </div>
 
-      {/* Recent Applications - Mobile Responsive */}
+      {/* Recent Applications Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
-        className="bg-white rounded-2xl shadow-lg p-4 md:p-6"
+        className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mt-6"
       >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h2 className="text-xl md:text-2xl font-bold text-gray-800">Recent Applications</h2>
@@ -249,7 +190,7 @@ export default function OverviewPage() {
           </div>
         )}
       </motion.div>
-    </div>
+    </AdminPageLayout>
   );
 }
 

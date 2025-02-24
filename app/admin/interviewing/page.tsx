@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { AdminPageLayout } from "@/components/admin/AdminPageLayout";
 import DataTable from "@/components/admin/DataTable";
 import useSWR from "swr";
 import { EditApplicationModal } from "@/components/admin/EditApplicationModal";
@@ -9,10 +9,8 @@ import { ViewApplicationModal } from "@/components/admin/ViewApplicationModal";
 import { DeleteApplicationModal } from "@/components/admin/DeleteApplicationModal";
 import { Application } from "@/types/application";
 
-
-
-interface ApiResponse {
-  applications: Application[];
+interface InterviewingApplication extends Application {
+  interviewDate: string;
 }
 
 const columns = [
@@ -20,28 +18,29 @@ const columns = [
   { header: "Email", accessor: "email" },
   { header: "Position", accessor: "position" },
   { header: "Interview Date", accessor: "interviewDate" },
-  { header: "Interviewer", accessor: "interviewer" },
   { header: "Status", accessor: "status" },
 ];
-
-
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function InterviewingPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { data, error, isLoading } = useSWR<ApiResponse>("/api/admin/interviewing", fetcher);
+  const { data, error, isLoading } = useSWR<{ applications: InterviewingApplication[] }>(
+    "/api/admin/applications?status=Interviewing",
+    fetcher
+  );
+
   const [viewApplication, setViewApplication] = useState<Application | null>(null);
   const [editApplication, setEditApplication] = useState<Application | null>(null);
   const [deleteApplicationId, setDeleteApplicationId] = useState<string | null>(null);
 
   const handleView = (id: string) => {
-    const application = data?.applications.find((app) => app.id === id);
+    const application = data?.applications.find((app: InterviewingApplication) => app.id === id);
     setViewApplication(application || null);
   };
 
   const handleEdit = (id: string) => {
-    const application = data?.applications.find((app) => app.id === id);
+    const application = data?.applications.find((app: InterviewingApplication) => app.id === id);
     setEditApplication(application || null);
   };
 
@@ -72,36 +71,22 @@ export default function InterviewingPage() {
     }
   };
 
-  const interviewingCandidates = data?.applications || [];
-
-  const filteredData = interviewingCandidates.filter(
-    (item: Application) =>
-      Object.values(item).some((value) => {
-        if (typeof value === "string") {
-          return value.toLowerCase().includes(searchTerm.toLowerCase());
-        }
-        return false;
-      })
-  );
+  const filteredData = data?.applications.filter((app: Application) =>
+    Object.values(app).some((value) =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  ) ?? [];
 
   if (error) return <div>Failed to load interviewing candidates</div>;
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">
-        Interviewing
-      </h2>
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Search candidates in interview process..."
-          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <Search className="absolute left-3 top-2.5 text-gray-400" />
-      </div>
+    <AdminPageLayout
+      title="Interviewing"
+      searchPlaceholder="Search interviewing candidates..."
+      searchValue={searchTerm}
+      onSearch={setSearchTerm}
+    >
       <div className="overflow-x-auto">
         <DataTable
           columns={columns}
@@ -111,6 +96,7 @@ export default function InterviewingPage() {
           onDelete={handleDelete}
         />
       </div>
+
       <ViewApplicationModal
         application={viewApplication}
         isOpen={!!viewApplication}
@@ -128,7 +114,6 @@ export default function InterviewingPage() {
         onClose={() => setDeleteApplicationId(null)}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </AdminPageLayout>
   );
-
 }
