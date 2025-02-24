@@ -11,6 +11,7 @@ import { CookieConsentBanner } from '@/components/CookieConsentBanner';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from 'react-hot-toast';
 import { useState } from "react";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -48,22 +49,24 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <ClerkProvider>
-            {isAdminRoute || isDashboardRoute ? (
-              children
-            ) : (
-              <>
-                <ClientLayout>
-                  {children}
-                </ClientLayout>
-                <CookieConsentBanner />
-              </>
-            )}
-          </ClerkProvider>
-          <Toaster position="top-right" />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <SettingsProvider>
+          <QueryClientProvider client={queryClient}>
+            <ClerkProvider>
+              {isAdminRoute || isDashboardRoute ? (
+                children
+              ) : (
+                <>
+                  <ClientLayout>
+                    {children}
+                  </ClientLayout>
+                  <CookieConsentBanner />
+                </>
+              )}
+            </ClerkProvider>
+            <Toaster position="top-right" />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </SettingsProvider>
       </body>
     </html>
   );
