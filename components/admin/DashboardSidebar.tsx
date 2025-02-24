@@ -15,6 +15,7 @@ import {
   LogOut,
   X,
   Briefcase,
+  Sparkles,
 } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
 
@@ -25,6 +26,7 @@ const tabs = [
     label: "Overview",
     href: "/admin/overview",
   },
+ 
   {
     id: "applications",
     icon: FileText,
@@ -61,6 +63,12 @@ const tabs = [
     icon: Briefcase,
     label: "Job Postings",
     href: "/admin/job-postings",
+  },
+  {
+    id: "whats-new",
+    icon: Sparkles,
+    label: "What's New",
+    href: "/admin/whats-new",
   },
 ];
 
