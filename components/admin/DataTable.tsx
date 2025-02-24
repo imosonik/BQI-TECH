@@ -28,7 +28,7 @@ export default function DataTable({ columns, data, onView, onEdit, onDelete, onA
         <thead className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
           <tr>
             {columns.map((column, index) => (
-              <th key={index} className="py-3 px-6 text-left">{column.header}</th>
+              <th key={index} className={`py-3 px-6 text-left ${index === 0 ? 'sticky left-0 bg-white z-10' : ''}`}>{column.header}</th>
             ))}
             <th className="py-3 px-6 text-center">Actions</th>
           </tr>
@@ -43,7 +43,7 @@ export default function DataTable({ columns, data, onView, onEdit, onDelete, onA
               transition={{ duration: 0.3, delay: rowIndex * 0.05 }}
             >
               {columns.map((column, colIndex) => (
-                <td key={colIndex} className="py-3 px-6 text-left whitespace-nowrap">
+                <td key={colIndex} className={`py-3 px-6 text-left whitespace-nowrap ${colIndex === 0 ? 'sticky left-0 bg-white z-10' : ''}`}>
                   <div className="flex items-center">
                     {typeof column.accessor === 'function'
                       ? column.accessor(row)
