@@ -8,45 +8,28 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get('status');
 
   try {
-    let applications;
-    if (status) {
-      applications = await prisma.application.findMany({
-        where: { status },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          phoneNumber: true,
-          position: true,
-          appliedDate: true,
-          status: true,
-          shortlistedDate: true,
-          resumeUrl: true,
-          hearAbout: true,
-          otherSource: true,
-          experience: true,
-          salary: true,
-        }
-      });
-    } else {
-      applications = await prisma.application.findMany({
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          phoneNumber: true,
-          position: true,
-          appliedDate: true,
-          status: true,
-          shortlistedDate: true,
-          resumeUrl: true,
-          hearAbout: true,
-          otherSource: true,
-          experience: true,
-          salary: true,
-        }
-      });
-    }
+    const applications = await prisma.application.findMany({
+      where: status ? { status } : {},
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phoneNumber: true,
+        position: true,
+        appliedDate: true,
+        status: true,
+        shortlistedDate: true,
+        resumeUrl: true,
+        cotsExperience: true,
+        sqlJavaScriptExperience: true,
+        reportDevelopmentExperience: true,
+        hearAbout: true,
+        otherSource: true,
+        experience: true,
+        salary: true
+      },
+      
+    });
     return NextResponse.json({ applications });
   } catch (error) {
     console.error('Error fetching applications:', error);
