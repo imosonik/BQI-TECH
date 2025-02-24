@@ -16,10 +16,13 @@ const columns = [
   { header: "Position", accessor: "position" },
   { header: "Applied Date", accessor: "appliedDate" },
   { header: "Status", accessor: "status" },
+  { header: "COTS Experience", accessor: "cotsExperience" },
+  { header: "SQL/JS Experience", accessor: "sqlJavaScriptExperience" },
+  { header: "Report Dev Experience", accessor: "reportDevelopmentExperience" },
   { header: "Hear About", accessor: "hearAbout" },
   { header: "Other Source", accessor: "otherSource" },
   { header: "Experience", accessor: "experience" },
-  { header: "Salary", accessor: "salary" },
+  { header: "Salary", accessor: "salary" }
 ];
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -27,6 +30,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function ApplicationsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPosition, setSelectedPosition] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const { data, error, isLoading } = useSWR<
     Application[] | { applications: Application[] }
   >("/api/admin/applications", fetcher);
@@ -53,6 +57,7 @@ export default function ApplicationsPage() {
 
   const filteredApplications = applications.filter((app) =>
     (selectedPosition ? app.position === selectedPosition : true) &&
+    (selectedStatus ? app.status === selectedStatus : true) &&
     (app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.position.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -124,6 +129,18 @@ export default function ApplicationsPage() {
               {position}
             </option>
           ))}
+        </select>
+        <select
+          className="p-2 border rounded"
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+        >
+          <option value="">All Statuses</option>
+          <option value="New">New</option>
+          <option value="Interviewing">Interviewing</option>
+          <option value="Application">Application</option>
+          <option value="Disqualified">Disqualified</option>
+          <option value="Hired">Hired</option>
         </select>
       </div>
       <div className="overflow-x-auto">
