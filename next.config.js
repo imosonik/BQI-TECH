@@ -4,7 +4,7 @@ const nextConfig = {
   compress: true,
   reactStrictMode: true,
   images: {
-    domains: ["bqitech.com", "img.clerk.com", "new-domain.com"], // Add any new domains here
+    domains: ["bqitech.com", "img.clerk.com", "new-domain.com", "images.unsplash.com"], // Add any new domains here
   },
   async headers() {
     return [
