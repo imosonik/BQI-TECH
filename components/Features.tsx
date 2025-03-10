@@ -11,32 +11,32 @@ import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei'
 const features = [
   {
     icon: Shield,
-    title: "Secure Solutions",
-    description: "Our products are built with security at their core, ensuring your data is always protected.",
+    title: "Security-First Approach",
+    description: "Our solutions are built with security at their core, ensuring compliance and protecting sensitive data.",
     gradient: "from-blue-500 to-purple-500",
     shadowColor: "rgba(99, 102, 241, 0.15)",
     delay: 0.2
   },
   {
     icon: Zap,
-    title: "High Performance",
-    description: "Optimized for speed and efficiency, our solutions help you work faster and smarter.",
+    title: "Optimized for Performance",
+    description: "Our high-speed, scalable software ensures efficiency, helping you work smarter and faster.",
     gradient: "from-[#31CDFF] to-blue-500",
     shadowColor: "rgba(49, 205, 255, 0.15)",
     delay: 0.3
   },
   {
     icon: Code,
-    title: "Custom Development",
-    description: "We create tailor-made solutions that perfectly fit your unique business needs.",
+    title: "Custom Development, Tailored for You",
+    description: "We build bespoke software solutions to match your unique business or government agency needs.",
     gradient: "from-purple-500 to-pink-500",
     shadowColor: "rgba(168, 85, 247, 0.15)",
     delay: 0.4
   },
   {
     icon: Users,
-    title: "Collaborative Approach",
-    description: "We work closely with you to ensure our solutions align with your goals and vision.",
+    title: "Collaborative & Client-Focused",
+    description: "We work closely with you to align technology solutions with your goals, ensuring seamless implementation.",
     gradient: "from-[#272055] to-[#31CDFF]",
     shadowColor: "rgba(39, 32, 85, 0.15)",
     delay: 0.5
@@ -188,7 +188,7 @@ export default function Features() {
             Transforming Ideas into Reality
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Empowering your digital transformation with cutting-edge solutions
+            Accelerate your digital transformation with cutting-edge solutions designed for maximum impact.
           </p>
         </motion.div>
 

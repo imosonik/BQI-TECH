@@ -125,10 +125,10 @@ export default function CallToAction() {
                 variants={itemVariants}
               >
                 <span className="bg-gradient-to-r from-white via-white to-gray-300 text-transparent bg-clip-text">
-                  Modernize your agency
+                  Modernize your agency with
                 </span>{" "}
                 <span className="bg-gradient-to-r from-[#31CDFF] to-blue-400 text-transparent bg-clip-text">
-                  with cutting-edge solutions
+                  cutting-edge solutions
                 </span>{" "}
                 <span className="bg-gradient-to-r from-white via-white to-gray-300 text-transparent bg-clip-text">
                   built for tomorrow.
@@ -139,9 +139,8 @@ export default function CallToAction() {
                 variants={itemVariants}
                 className="text-gray-300 text-lg max-w-2xl mx-auto"
               >
-                From custom software development to enterprise system integration, 
-                we deliver secure, scalable, and innovative solutions tailored for 
-                government agencies.
+                From custom software development to enterprise system integration, we deliver 
+                secure, scalable, and high-performance solutions tailored for government agencies.
               </motion.p>
 
               <motion.div
@@ -158,7 +157,7 @@ export default function CallToAction() {
                            shadow-lg shadow-[#31CDFF]/20
                            border border-transparent hover:border-[#31CDFF]"
                 >
-                  Start Your Transformation
+                  Start Your Transformation Today!
                   <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
