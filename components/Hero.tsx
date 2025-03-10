@@ -24,8 +24,9 @@ const heroContent = {
     // }
   ] as VideoContent[],
   typeSequence: [
-    "Gov't Technology", 3000,
-    "Secure Solutions", 3000
+    
+    "IT Solutions", 3000,
+    "Gov't Technology", 3000
   ]
 };
 
@@ -119,7 +120,7 @@ export function Hero() {
           </h1>
 
           <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-8 max-w-3xl mx-auto">
-            Empowering government agencies with secure, innovative technology
+            Empowering government agencies with secure,scalable and innovative IT solutions to drive digital transformation.
             solutions
           </p>
 
@@ -130,7 +131,7 @@ export function Hero() {
                        hover:bg-white hover:text-[#31CDFF] transition-all duration-300 
                        flex items-center justify-center gap-2 shadow-lg shadow-[#31CDFF]/20"
             >
-              Get Started
+              Get Started Today
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link

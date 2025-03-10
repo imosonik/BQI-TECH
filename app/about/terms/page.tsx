@@ -178,15 +178,3 @@ const sections = [
     )
   }
 ];
-
-export const metadata = {
-  title: 'Terms and Conditions | BQI Tech',
-  description: 'Read BQI Tech\'s terms and conditions for using our services and website.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: {
-    canonical: 'https://bqitech.com/about/terms'
-  }
-}

@@ -2,12 +2,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bqitech.com'),
-  title: {
-    default: 'BQI Tech - Innovating for a Better World',
-    template: '%s | BQI Tech'
-  },
-  description: 'BQI Tech provides innovative solutions across industries to improve quality of life worldwide.',
-  keywords: ['software development', 'technology services', 'government solutions', 'IT consulting'],
+  title: 'Custom Software Development & IT Solutions | BQITech',
+  description: 'BQITech offers custom software development, DevOps consultancy, and IT solutions for governments. Partner with top offshore software development experts today!',
+  keywords: ['custom software development', 'IT solutions', 'DevOps consultancy', 'government software', 'offshore development'],
   authors: [{ name: 'BQI Tech' }],
   creator: 'BQI Tech',
   publisher: 'BQI Tech',
@@ -15,22 +12,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://bqitech.com',
-    siteName: 'BQI Tech',
-    title: 'BQI Tech - Innovating for a Better World',
-    description: 'BQI Tech provides innovative solutions across industries to improve quality of life worldwide.',
+    siteName: 'BQITech',
+    title: 'Custom Software Development & IT Solutions | BQITech',
+    description: 'BQITech offers custom software development, DevOps consultancy, and IT solutions for governments. Partner with top offshore software development experts today!',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'BQI Tech',
+        alt: 'BQITech - Custom Software Development & IT Solutions',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BQI Tech - Innovating for a Better World',
-    description: 'BQI Tech provides innovative solutions across industries to improve quality of life worldwide.',
+    title: 'Custom Software Development & IT Solutions | BQITech',
+    description: 'BQITech offers custom software development, DevOps consultancy, and IT solutions for governments. Partner with top offshore software development experts today!',
     images: ['/og-image.jpg'],
   },
   verification: {
