@@ -47,6 +47,22 @@ export function JsonLd({ organizationData = true, websiteData = true, pageData =
     url: `${baseUrl}${pathname}`,
   }
 
+  const partnership = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'BQI Tech Partnership Program',
+    provider: {
+      '@type': 'Organization',
+      name: 'BQI Tech'
+    },
+    description: 'Technology partnership program for government digital transformation solutions.',
+    url: `${baseUrl}/about/backlinks`,
+    areaServed: {
+      '@type': 'Country',
+      name: 'Kenya'
+    }
+  }
+
   return (
     <>
       {organizationData && (
@@ -65,6 +81,12 @@ export function JsonLd({ organizationData = true, websiteData = true, pageData =
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(page) }}
+        />
+      )}
+      {pathname === '/about/backlinks' && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(partnership) }}
         />
       )}
     </>

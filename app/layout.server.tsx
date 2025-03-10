@@ -22,6 +22,12 @@ export const metadata: Metadata = {
         height: 630,
         alt: 'BQITech - Custom Software Development & IT Solutions',
       },
+      {
+        url: '/partnership-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'BQI Tech Partnership Program',
+      },
     ],
   },
   twitter: {
