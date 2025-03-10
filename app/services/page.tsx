@@ -167,12 +167,3 @@ export default function ServicesPage() {
     </>
   )
 }
-
-export const metadata = {
-  title: 'Our Services | BQI Tech',
-  description: 'Explore BQI Tech\'s comprehensive range of technology services including software development, consulting, and digital transformation solutions.',
-  keywords: ['tech services', 'software development', 'IT consulting', 'digital transformation'],
-  alternates: {
-    canonical: 'https://bqitech.com/services'
-  }
-}
