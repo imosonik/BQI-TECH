@@ -6,15 +6,12 @@ import DashboardSidebar from '@/components/admin/DashboardSidebar';
 import { Menu } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from "react-hot-toast";
-import { useAutoLogout } from '@/hooks/useAutoLogout';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const { isLoaded, user } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-
-  useAutoLogout();
 
   useEffect(() => {
     if (isLoaded) {

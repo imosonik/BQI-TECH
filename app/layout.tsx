@@ -12,6 +12,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from 'react-hot-toast';
 import { useState } from "react";
 import { SettingsProvider } from "@/contexts/SettingsContext";
+import { JsonLd } from '@/components/JsonLd'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -65,9 +66,11 @@ export default function RootLayout({
             </ClerkProvider>
             <Toaster position="top-right" />
             <ReactQueryDevtools initialIsOpen={false} />
+            <JsonLd />
           </QueryClientProvider>
         </SettingsProvider>
       </body>
     </html>
   );
 }
+

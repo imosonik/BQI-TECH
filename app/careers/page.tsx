@@ -9,7 +9,7 @@ const recruitmentSteps = [
   {
     title: "HR Screening",
     description:
-      "Candidates are invited to a phone interview. Interviews typically run for 15-30 minutes, and you’ll have time to ask questions throughout the process.",
+      "Candidates are invited to a phone interview. Interviews typically run for 15-30 minutes, and you'll have time to ask questions throughout the process.",
   },
   {
     title: "1st Stage Interview",
@@ -19,7 +19,7 @@ const recruitmentSteps = [
   {
     title: "Practical Assessment",
     description:
-      "Expect to complete at least one practical exercise that tests your technical skills. The test will help you understand the job and help us learn how you’d perform in the role.",
+      "Expect to complete at least one practical exercise that tests your technical skills. The test will help you understand the job and help us learn how you'd perform in the role.",
   },
   {
     title: "Final Interview",
@@ -43,7 +43,7 @@ export default function CareersPage() {
     },
     {
       title: "What We Look For",
-      content: `Our people come from a broad range of industries and backgrounds, but generally share a few qualities that we value. We’re interested not only in your resume and past experience, but also in your ability to lead change and thrive in our culture.`,
+      content: `Our people come from a broad range of industries and backgrounds, but generally share a few qualities that we value. We're interested not only in your resume and past experience, but also in your ability to lead change and thrive in our culture.`,
       points: [
         "Diverse experiences and perspectives.",
         "Independent problem-solving.",
@@ -287,4 +287,13 @@ export default function CareersPage() {
       </motion.section>
     </motion.main>
   );
+}
+
+export const metadata = {
+  title: 'Careers at BQI Tech | Join Our Team',
+  description: 'Join BQI Tech and be part of a team dedicated to transforming government technology. Explore our current job openings and opportunities.',
+  keywords: ['tech jobs', 'IT careers', 'software jobs', 'government tech careers'],
+  alternates: {
+    canonical: 'https://bqitech.com/careers'
+  }
 }

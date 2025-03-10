@@ -52,7 +52,7 @@ const services = [
   {
     icon: Briefcase,
     title: 'Professional and Implementation Services',
-    description: `BQI Tech provides the technical expertise and hands-on experience essential for tackling today’s complex IT projects. With in-depth knowledge of enterprise platforms and the latest emerging technologies, we deliver solutions with precision and efficiency.`,
+    description: `BQI Tech provides the technical expertise and hands-on experience essential for tackling today's complex IT projects. With in-depth knowledge of enterprise platforms and the latest emerging technologies, we deliver solutions with precision and efficiency.`,
     details: [
       'Configuration - Our team are experts in configuration and can support you to set up and customize your enterprise platform.',
       'Report writing - Writing and customizing reports can be rough. Let BQI Tech use our knowledge of writing SSRS, Crystal, and other types of reports make your life easier.'
@@ -166,4 +166,13 @@ export default function ServicesPage() {
       </motion.main>
     </>
   )
+}
+
+export const metadata = {
+  title: 'Our Services | BQI Tech',
+  description: 'Explore BQI Tech\'s comprehensive range of technology services including software development, consulting, and digital transformation solutions.',
+  keywords: ['tech services', 'software development', 'IT consulting', 'digital transformation'],
+  alternates: {
+    canonical: 'https://bqitech.com/services'
+  }
 }

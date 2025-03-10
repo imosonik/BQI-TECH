@@ -215,3 +215,15 @@ const cookieSections = [
     )
   }
 ];
+
+export const metadata = {
+  title: 'Cookie Policy | BQI Tech',
+  description: 'Learn about how BQI Tech uses cookies and your privacy choices on our website.',
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: 'https://bqitech.com/about/cookie-policy'
+  }
+}
