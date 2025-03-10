@@ -78,6 +78,8 @@ function BlogCard({ post }: { post: typeof blogPosts[0] }) {
             alt={post.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={post.id <= 3}
           />
           <div className="absolute top-4 left-4">
             <span className="px-3 py-1 text-sm font-medium text-white bg-[#31CDFF] rounded-full">
@@ -88,8 +90,8 @@ function BlogCard({ post }: { post: typeof blogPosts[0] }) {
         
         <div className="p-6">
           <div className="flex items-center gap-4 mb-3 text-sm text-gray-600 dark:text-gray-400">
-            <span>{post.date}</span>
-            <span>•</span>
+            <time dateTime={post.date}>{post.date}</time>
+            <span aria-hidden="true">•</span>
             <span>{post.readTime}</span>
           </div>
           
@@ -109,20 +111,40 @@ function BlogCard({ post }: { post: typeof blogPosts[0] }) {
 export default async function BlogPage() {
   return (
     <div className="container mx-auto px-4 py-16">
-      <div className="max-w-2xl mx-auto text-center mb-16">
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-[#272055] to-[#31CDFF] text-transparent bg-clip-text">
+      <header className="max-w-2xl mx-auto text-center mb-16">
+        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#272055] to-[#31CDFF] text-transparent bg-clip-text">
           Blog & Insights
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-xl text-gray-600 dark:text-gray-400">
           Stay updated with the latest insights in government technology and digital transformation
         </p>
-      </div>
+      </header>
 
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {blogPosts.map((post) => (
-          <BlogCard key={post.id} post={post} />
-        ))}
-      </div>
+      <section>
+        <h2 className="sr-only">Latest Articles</h2>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {blogPosts.map((post) => (
+            <BlogCard key={post.id} post={post} />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-16">
+        <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-[#272055] to-[#31CDFF] text-transparent bg-clip-text">
+          Popular Categories
+        </h2>
+        <div className="flex flex-wrap justify-center gap-4">
+          {Array.from(new Set(blogPosts.map(post => post.category))).map((category) => (
+            <Link
+              key={category}
+              href={`/blog/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+              className="px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-[#31CDFF] hover:text-white transition-colors duration-300"
+            >
+              {category}
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   )
 } 
