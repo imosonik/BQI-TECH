@@ -151,8 +151,8 @@ While our team comes from diverse backgrounds, we all share key qualities:`,
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Join our team and help shape the future of technology!
-          </motion.p>
+Join a team where innovation meets impact and shape the
+future of technology!          </motion.p>
           <Button
             className="bg-teal-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-teal-600 transition-colors duration-300 mr-4"
             onClick={() => (window.location.href = "/careers/jobs")}
@@ -242,20 +242,20 @@ While our team comes from diverse backgrounds, we all share key qualities:`,
                   <div className="space-y-4">
                     <h3 className="text-xl font-semibold text-gray-800">Our Culture and Core Values:</h3>
                     <ul className="space-y-3 text-gray-600">
-                      <li className="flex items-start">
-                        <span className="font-semibold mr-2">Agility & Adaptability -</span>
+                      <li>
+                        <span className="font-semibold">Agility & Adaptability:</span>{" "}
                         We embrace change and stay ahead of industry trends.
                       </li>
-                      <li className="flex items-start">
-                        <span className="font-semibold mr-2">Impact-Driven Excellence -</span>
+                      <li>
+                        <span className="font-semibold">Impact-Driven Excellence:</span>{" "}
                         We deliver top-tier solutions that make a difference.
                       </li>
-                      <li className="flex items-start">
-                        <span className="font-semibold mr-2">Innovation at Our Core -</span>
+                      <li>
+                        <span className="font-semibold">Innovation at Our Core:</span>{" "}
                         We challenge the status quo and push boundaries.
                       </li>
-                      <li className="flex items-start">
-                        <span className="font-semibold mr-2">Stay Curious, Stay Hungry -</span>
+                      <li>
+                        <span className="font-semibold">Stay Curious, Stay Hungry:</span>{" "}
                         Continuous learning fuels our growth.
                       </li>
                     </ul>
