@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { useState, useEffect } from "react";
+import Loader from "@/components/Loader";
 
 const recruitmentSteps = [
   {
@@ -29,6 +31,35 @@ const recruitmentSteps = [
 ];
 
 export default function CareersPage() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Create an array of promises for all images
+    const imagesToLoad = [
+      "/images/careers-hero-bg.jpg",
+      "/culture10.jpg", 
+      "/software.png", 
+      "/benefits1.jpg", 
+      "/footerbg.gif"
+    ].map(src => {
+      return new Promise((resolve, reject) => {
+        const img = new window.Image();
+        img.src = src;
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+    });
+
+    // Wait for all images to load
+    Promise.all(imagesToLoad)
+      .then(() => setIsLoading(false))
+      .catch(() => setIsLoading(false)); // Still show content if images fail to load
+  }, []);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   const sections = [
     {
       title: "Our Culture and Values",
