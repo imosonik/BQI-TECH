@@ -14,6 +14,7 @@ import { useState } from "react";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import { JsonLd } from '@/components/JsonLd'
 import Script from 'next/script'
+import type { Metadata } from "next"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,6 +27,21 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://bqitech.com'),
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-snippet': -1,
+      'max-image-preview': 'large',
+      'max-video-preview': -1
+    },
+  }
+}
 
 export default function RootLayout({
   children,
@@ -67,6 +83,7 @@ export default function RootLayout({
             `,
           }}
         />
+        <meta name="robots" content="index,follow" />
       </head>
       <body>
         <SettingsProvider>

@@ -50,7 +50,7 @@ const nextConfig = {
           },
           {
             key: 'X-Robots-Tag',
-            value: 'index, follow'
+            value: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
           }
         ]
       }
@@ -93,6 +93,14 @@ const nextConfig = {
     ];
   },
   transpilePackages: ['@uiw/react-md-editor'],
+  async rewrites() {
+    return [
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap',
+      },
+    ]
+  },
 };
 
 module.exports = nextConfig;
