@@ -183,71 +183,117 @@ While our team comes from diverse backgrounds, we all share key qualities:`,
         }
       `}</style>
 
-      {sections.map((section, index) => (
-        <motion.section
-          key={section.title}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 * index }}
-          className="mb-24"
-        >
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              className={`space-y-6 ${
-                index % 2 === 0 ? "md:order-1" : "md:order-2"
-              }`}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-              animate={{ opacity: 1, x: 0 }}
+      {sections.map((section, index) => {
+        if (index === 0) {
+          return (
+            <motion.section
+              key={section.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 * index }}
+              className="mb-24"
             >
-              <h2 className="text-3xl font-bold text-gray-800">
-                Why Work at BQI Tech?
-              </h2>
-              <p className="text-lg text-gray-600">
-                At BQI Tech, we don't just build software-we drive digital transformation. Our teams work on cutting-edge projects that power
-                businesses and governments worldwide. We believe in a culture of innovation, collaboration, and continuous learning, where every
-                team member plays a crucial role in our success.
-              </p>
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-gray-800">Our Culture and Core Values:</h3>
-                <ul className="space-y-3 text-gray-600">
-                  <li className="flex items-start">
-                    <span className="font-semibold mr-2">Agility & Adaptability -</span>
-                    We embrace change and stay ahead of industry trends.
-                  </li>
-                  <li className="flex items-start">
-                    <span className="font-semibold mr-2">Impact-Driven Excellence -</span>
-                    We deliver top-tier solutions that make a difference.
-                  </li>
-                  <li className="flex items-start">
-                    <span className="font-semibold mr-2">Innovation at Our Core -</span>
-                    We challenge the status quo and push boundaries.
-                  </li>
-                  <li className="flex items-start">
-                    <span className="font-semibold mr-2">Stay Curious, Stay Hungry -</span>
-                    Continuous learning fuels our growth.
-                  </li>
-                </ul>
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <motion.div
+                  className="space-y-6 md:order-1"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 * index }}
+                >
+                  <h2 className="text-3xl font-bold text-gray-800">
+                    Why Work at BQI Tech?
+                  </h2>
+                  <p className="text-lg text-gray-600">
+                    At BQI Tech, we don't just build software-we drive digital transformation. Our teams work on cutting-edge projects that power
+                    businesses and governments worldwide. We believe in a culture of innovation, collaboration, and continuous learning, where every
+                    team member plays a crucial role in our success.
+                  </p>
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-gray-800">Our Culture and Core Values:</h3>
+                    <ul className="space-y-3 text-gray-600">
+                      <li className="flex items-start">
+                        <span className="font-semibold mr-2">Agility & Adaptability -</span>
+                        We embrace change and stay ahead of industry trends.
+                      </li>
+                      <li className="flex items-start">
+                        <span className="font-semibold mr-2">Impact-Driven Excellence -</span>
+                        We deliver top-tier solutions that make a difference.
+                      </li>
+                      <li className="flex items-start">
+                        <span className="font-semibold mr-2">Innovation at Our Core -</span>
+                        We challenge the status quo and push boundaries.
+                      </li>
+                      <li className="flex items-start">
+                        <span className="font-semibold mr-2">Stay Curious, Stay Hungry -</span>
+                        Continuous learning fuels our growth.
+                      </li>
+                    </ul>
+                  </div>
+                </motion.div>
+                <motion.div
+                  className="relative h-[400px] md:order-2"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 0.2 * index }}
+                >
+                  <Image
+                    src={section.image}
+                    alt={section.title}
+                    fill
+                    className="object-cover rounded-lg shadow-xl"
+                  />
+                </motion.div>
               </div>
-            </motion.div>
-            <motion.div
-              className={`relative h-[400px] ${
-                index % 2 === 0 ? "md:order-2" : "md:order-1"
-              }`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 * index }}
-            >
-              <Image
-                src={section.image}
-                alt={section.title}
-                fill
-                className="object-cover rounded-lg shadow-xl"
-              />
-            </motion.div>
-          </div>
-        </motion.section>
-      ))}
+            </motion.section>
+          )
+        }
+
+        return (
+          <motion.section
+            key={section.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 * index }}
+            className="mb-24"
+          >
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <motion.div
+                className={`space-y-6 ${
+                  index % 2 === 0 ? "md:order-1" : "md:order-2"
+                }`}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 * index }}
+              >
+                <h2 className="text-3xl font-bold text-gray-800">
+                  {section.title}
+                </h2>
+                <p className="text-lg text-gray-600">{section.content}</p>
+                <ul className="list-disc pl-5 text-gray-600">
+                  {section.points.map((point, i) => (
+                    <li key={i}>{point}</li>
+                  ))}
+                </ul>
+              </motion.div>
+              <motion.div
+                className={`relative h-[400px] ${
+                  index % 2 === 0 ? "md:order-2" : "md:order-1"
+                }`}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 * index }}
+              >
+                <Image
+                  src={section.image}
+                  alt={section.title}
+                  fill
+                  className="object-cover rounded-lg shadow-xl"
+                />
+              </motion.div>
+            </div>
+          </motion.section>
+        )
+      })}
 
       <motion.section
         initial={{ opacity: 0, y: 20 }}
