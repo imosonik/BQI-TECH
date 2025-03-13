@@ -89,7 +89,11 @@ const nextConfig = {
         destination: '/admin/overview',
         permanent: true,
       },
-     
+      {
+        source: '/dashboard',
+        destination: '/dashboard/overview',
+        permanent: true,
+      }
     ];
   },
   transpilePackages: ['@uiw/react-md-editor'],
