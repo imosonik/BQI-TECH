@@ -157,7 +157,8 @@ future of technology!          </motion.p>
             className="bg-teal-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-teal-600 transition-colors duration-300 mr-4"
             onClick={() => (window.location.href = "/careers/jobs")}
           >
-            View Current Vacancies
+            View Current 
+            Vacancies
           </Button>
           <Button
             className="bg-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-purple-600 transition-colors duration-300"
