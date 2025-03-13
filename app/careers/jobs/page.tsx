@@ -74,8 +74,8 @@ export default function JobsPage() {
             Open Positions
           </h1>
           <p className="text-lg text-gray-200 max-w-2xl">
-            Join our team and help build the future of technology. Explore our
-            current opportunities below.
+          Join a team where innovation meets impact and shape the
+           future of technology!
           </p>
         </div>
       </div>

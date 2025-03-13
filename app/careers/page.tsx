@@ -43,11 +43,12 @@ export default function CareersPage() {
     },
     {
       title: "What We Look For",
-      content: `Our people come from a broad range of industries and backgrounds, but generally share a few qualities that we value. We're interested not only in your resume and past experience, but also in your ability to lead change and thrive in our culture.`,
+      content: `We seek talented, driven professionals who thrive in a fast-paced, tech-focused environment.
+While our team comes from diverse backgrounds, we all share key qualities:`,
       points: [
-        "Diverse experiences and perspectives.",
-        "Independent problem-solving.",
-        "Clear communication.",
+        "Diverse Experiences & Perspectives - We value different viewpoints and ideas.",
+        "Problem-Solving Mindset - We seek proactive thinkers who embrace challenges.",
+        "Clear & Effective Communication - Collaboration is key to our success.",
       ],
       image: "/software.png",
     },
@@ -200,14 +201,34 @@ export default function CareersPage() {
               transition={{ duration: 0.8, delay: 0.2 * index }}
             >
               <h2 className="text-3xl font-bold text-gray-800">
-                {section.title}
+                Why Work at BQI Tech?
               </h2>
-              <p className="text-lg text-gray-600">{section.content}</p>
-              <ul className="list-disc pl-5 text-gray-600">
-                {section.points.map((point, i) => (
-                  <li key={i}>{point}</li>
-                ))}
-              </ul>
+              <p className="text-lg text-gray-600">
+                At BQI Tech, we don't just build software-we drive digital transformation. Our teams work on cutting-edge projects that power
+                businesses and governments worldwide. We believe in a culture of innovation, collaboration, and continuous learning, where every
+                team member plays a crucial role in our success.
+              </p>
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-800">Our Culture and Core Values:</h3>
+                <ul className="space-y-3 text-gray-600">
+                  <li className="flex items-start">
+                    <span className="font-semibold mr-2">Agility & Adaptability -</span>
+                    We embrace change and stay ahead of industry trends.
+                  </li>
+                  <li className="flex items-start">
+                    <span className="font-semibold mr-2">Impact-Driven Excellence -</span>
+                    We deliver top-tier solutions that make a difference.
+                  </li>
+                  <li className="flex items-start">
+                    <span className="font-semibold mr-2">Innovation at Our Core -</span>
+                    We challenge the status quo and push boundaries.
+                  </li>
+                  <li className="flex items-start">
+                    <span className="font-semibold mr-2">Stay Curious, Stay Hungry -</span>
+                    Continuous learning fuels our growth.
+                  </li>
+                </ul>
+              </div>
             </motion.div>
             <motion.div
               className={`relative h-[400px] ${
@@ -267,7 +288,7 @@ export default function CareersPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Join Our Team
+            Join Us Today!
           </motion.h2>
           <motion.p
             className="text-lg text-white mb-6"
@@ -275,7 +296,8 @@ export default function CareersPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Apply for our current vacancies and Get Hired.
+Are you ready to take your career to the next level? Explore our open positions and become
+part of a team that's redefining tech solutions.
           </motion.p>
           <Button
             className="bg-teal-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-teal-600 transition-colors duration-300"

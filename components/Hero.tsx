@@ -120,8 +120,8 @@ export function Hero() {
           </h1>
 
           <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-8 max-w-3xl mx-auto">
-            Empowering government agencies with secure,scalable and innovative IT solutions to drive digital transformation.
-            solutions
+            Empowering government agencies with secure,scalable and innovative IT solutions to drive digital transformation
+            
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
