@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { Briefcase, Code } from 'lucide-react'
+import { Briefcase, Code, CheckCircle, ArrowRight } from 'lucide-react'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Sphere } from '@react-three/drei'
@@ -51,21 +51,22 @@ function AnimatedBackground() {
 const services = [
   {
     icon: Briefcase,
-    title: 'Professional and Implementation Services',
-    description: `BQI Tech provides the technical expertise and hands-on experience essential for tackling today's complex IT projects. With in-depth knowledge of enterprise platforms and the latest emerging technologies, we deliver solutions with precision and efficiency.`,
+    title: 'Professional IT Implementation Services',
+    description: `Our team of technical experts brings hands-on experience to tackle complex IT projects. We specialize in configuring enterprise platforms, ensuring smooth integration and optimized performance.`,
     details: [
-      'Configuration - Our team are experts in configuration and can support you to set up and customize your enterprise platform.',
-      'Report writing - Writing and customizing reports can be rough. Let BQI Tech use our knowledge of writing SSRS, Crystal, and other types of reports make your life easier.'
+      'Enterprise Platform Configuration – Our experts customize and configure your enterprise systems to enhance performance and usability.',
+      'Advanced Report Writing – We simplify the process of generating custom reports using SSRS, Crystal Reports, and other reporting tools, helping you gain valuable business insights.'
     ],
     image: '/implementation.jpg'
   },
   {
     icon: Code,
-    title: 'Software Engineering Services',
-    description: `Our software engineering team, along with experience design and DevOps experts, supports the full lifecycle of web and mobile application development—from project initiation and development through testing, deployment, maintenance, and support.`,
+    title: 'Software Engineering & Development Services',
+    description: `BQI Tech offers full-cycle software development services, from concept and design to deployment and maintenance. Our team of software engineers, DevOps professionals, and UX designers ensures innovative, high-quality solutions that meet your business needs.`,
     details: [
-      'Our engineering expertise enables clients to create, enhance, and manage core systems, including commercial off-the-shelf (COTS) software, equipping their teams with a future-ready digital foundation.',
-      'Through platform engineering, we address challenges, achieve economies of scale, and foster synergies across products and business lines.'
+      'Custom Software Development - We build tailor-made web and mobile applications that align with your business objectives.',
+      'COTS Software Optimization - We enhance, manage, and integrate commercial off-the-shelf (COTS) software, providing a scalable and future-ready foundation for your business.',
+      'Platform Engineering & DevOps - Our DevOps expertise ensures efficient CI/CD pipelines, automation, and cloud optimization, enhancing operational efficiency and cost-effectiveness.'
     ],
     image: '/software.jpg'
   }
@@ -108,7 +109,23 @@ export default function ServicesPage() {
               Our Services
             </h1>
             <p className="text-xl text-gray-100 max-w-3xl mx-auto">
-              Comprehensive solutions to help your business succeed
+              Comprehensive IT Solutions to Drive Business Success
+            </p>
+          </div>
+        </motion.section>
+
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-16 p-8 rounded-2xl bg-white/90 backdrop-blur-sm"
+        >
+          <div className="max-w-4xl mx-auto">
+            <p className="text-lg text-gray-700 leading-relaxed">
+              At BQI Tech, we provide end-to-end software development, IT consulting, and DevOps solutions to help 
+              businesses optimize operations and achieve digital transformation. Our expertise spans custom software 
+              development, enterprise platform engineering, and IT implementation, ensuring seamless and scalable 
+              solutions for every industry.
             </p>
           </div>
         </motion.section>
@@ -143,26 +160,67 @@ export default function ServicesPage() {
           </motion.section>
         ))}
 
-        <motion.div
+        {/* Why Choose BQI Tech Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-16 p-8 rounded-2xl bg-gradient-to-r from-[#272055] to-[#31CDFF] text-white"
+        >
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8">Why Choose BQI Tech?</h2>
+            <div className="space-y-6">
+              <div className="flex items-start space-x-4">
+                <CheckCircle className="w-6 h-6 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Industry-Leading Expertise</h3>
+                  <p>Our team stays ahead of industry trends, delivering cutting-edge solutions.</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <CheckCircle className="w-6 h-6 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Scalable & Secure Solutions</h3>
+                  <p>We implement future-proof, security-focused IT strategies.</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <CheckCircle className="w-6 h-6 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">End-to-End IT Services</h3>
+                  <p>From implementation to maintenance, we provide seamless IT solutions.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Contact Section */}
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="text-center mt-12"
+          className="text-center mt-12 mb-24 p-12 rounded-2xl bg-white/90 backdrop-blur-sm"
         >
-          <h2 className="text-2xl font-semibold mb-4">Interested in Our Services?</h2>
-          <p className="text-gray-600 mb-6">
-            Contact us to learn more about how we can help your business.
+          <h2 className="text-3xl font-bold mb-4">Interested in Our Services?</h2>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Let's discuss how BQI Tech can empower your business with advanced IT solutions.
           </p>
-          <Link href="/contact-us">
-            <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: '#31CDFF' }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-[#272055] hover:bg-[#31CDFF] text-white rounded-full px-8 py-4 inline-block shadow-lg transition-all duration-300"
-            >
-              Contact Us
-            </motion.button>
-          </Link>
-        </motion.div>
+          <div className="flex justify-center gap-6">
+            <Link href="/contact-us">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-[#272055] hover:bg-[#31CDFF] text-white rounded-full px-12 py-4 
+                         text-lg font-semibold inline-flex items-center gap-2 shadow-lg 
+                         transition-all duration-300"
+              >
+                Contact Us Today
+                <ArrowRight className="w-5 h-5" />
+              </motion.button>
+            </Link>
+          </div>
+        </motion.section>
       </motion.main>
     </>
   )
