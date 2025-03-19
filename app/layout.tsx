@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { ClientWrapper } from './ClientLayout'
 import "./globals.css"
 import "./clerk-overrides.css"
+import { ReactNode } from 'react'
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <html lang="en" className={inter.className}>

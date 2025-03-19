@@ -80,6 +80,12 @@ const tabs = [
     label: "Settings",
     href: "/admin/settings",
   },
+  {
+    id: "blog-management",
+    icon: FileText,
+    label: "Blog Management",
+    href: "/admin/blog-management",
+  },
 ];
 
 interface DashboardSidebarProps {

@@ -11,6 +11,7 @@ import {
   Settings,
   LogOut,
   X,
+  LayoutDashboard,
 } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
 
@@ -19,7 +20,7 @@ const tabs = [
     id: "overview",
     icon: BarChart2,
     label: "Overview",
-    href: "/dashboard",
+    href: "/dashboard/(dashboard)",
   },
   {
     id: "applications",

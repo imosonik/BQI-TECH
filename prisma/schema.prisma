@@ -8,38 +8,27 @@ datasource db {
 }
 
 model User {
-  id                    String                @id @default(cuid())
-  clerkId              String                @unique @map("clerk_id")
-  email                String                @unique
-  name                 String
-  phoneNumber          String?
-  applications         Application[]
-  settings             UserSettings?
+  id                     String                  @id @default(cuid())
+  email                  String                  @unique
+  name                   String
+  phoneNumber            String?
+  clerkId                String                  @unique @map("clerk_id")
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  applications           Application[]
   notificationPreference NotificationPreference?
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  isAdmin              Boolean               @default(false)
+  settings               UserSettings?
 
   @@index([clerkId])
 }
 
 model Application {
-  id                          String   @id @default(cuid())
+  id                          String    @id @default(cuid())
   name                        String
   email                       String
-  phoneNumber                 String?
-  location                    String
   position                    String
-  resumeUrl                   String
-  hearAbout                   String
-  otherSource                 String?
-  experience                  String
-  salary                      String
+  appliedDate                 DateTime  @default(now())
   status                      String
-  appliedDate                 DateTime @default(now())
-  lastUpdated                 DateTime @updatedAt
-  userId                      String?
-  user                        User?    @relation(fields: [userId], references: [id])
   shortlistedDate             DateTime?
   assessmentDate              DateTime?
   assessmentScore             Int?
@@ -49,9 +38,19 @@ model Application {
   startDate                   DateTime?
   disqualifiedDate            DateTime?
   disqualifiedReason          String?
-  cotsExperience              String?  // Make this field optional
-  sqlJavaScriptExperience     String?  // Make this field optional
-  reportDevelopmentExperience String?  // Make this field optional
+  experience                  String
+  hearAbout                   String
+  location                    String
+  otherSource                 String?
+  phoneNumber                 String?
+  resumeUrl                   String
+  salary                      String
+  userId                      String?
+  lastUpdated                 DateTime  @updatedAt
+  cotsExperience              String?
+  reportDevelopmentExperience String?
+  sqlJavaScriptExperience     String?
+  user                        User?     @relation(fields: [userId], references: [id])
 }
 
 model JobPosting {
@@ -62,32 +61,31 @@ model JobPosting {
   description  String
   requirements String?
   postedDate   DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 }
 
 model Notification {
   id        String   @id @default(cuid())
   title     String
   message   String
-  type      String   // 'info' | 'success' | 'warning' | 'error'
+  type      String
   date      DateTime @default(now())
   isRead    Boolean  @default(false)
-  userId    String?  // Optional: link to user if needed
+  userId    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model UserSettings {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-  emailNotifications Boolean @default(true)
-  pushNotifications Boolean @default(true)
-  autoLogout        Int     @default(30)
-  tableRowsPerPage  Int     @default(10)
-  sidebarCollapsed  Boolean @default(false)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  user              User     @relation(fields: [userId], references: [id])
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  emailNotifications Boolean  @default(true)
+  pushNotifications  Boolean  @default(true)
+  autoLogout         Int      @default(30)
+  tableRowsPerPage   Int      @default(10)
+  sidebarCollapsed   Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id])
 }
 
 model NotificationPreference {
@@ -97,4 +95,19 @@ model NotificationPreference {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id])
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  excerpt     String
+  content     String   @db.Text
+  imageUrl    String
+  category    String
+  readTime    String
+  slug        String   @unique
+  published   Boolean  @default(false)
+  authorId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

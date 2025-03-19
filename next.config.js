@@ -7,7 +7,8 @@ const nextConfig = {
     domains: [
       'upload.wikimedia.org',
       'images.unsplash.com',
-      'd1.awsstatic.com'
+      'd1.awsstatic.com',
+      'dl.dropboxusercontent.com'
     ],
   },
   async headers() {

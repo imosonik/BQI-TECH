@@ -11,6 +11,7 @@ import {
 interface Column {
   header: string;
   accessor: string | ((row: any) => string);
+  cell?: ({ row }: { row: any }) => React.ReactNode;
 }
 
 interface DataTableProps {
@@ -21,6 +22,7 @@ interface DataTableProps {
   onDelete?: (id: string) => void;
   onApply?: (jobId: string) => void;
   onStatusChange?: (ids: string[], status: string) => void;
+  isLoading?: boolean;
 }
 
 export default function DataTable({ 
@@ -150,11 +152,13 @@ export default function DataTable({
               </td>
               {columns.map((column, colIndex) => (
                 <td key={colIndex} className={`py-3 px-6 text-left whitespace-nowrap ${colIndex === 0 ? 'sticky left-0 bg-white z-10' : ''}`}>
-                  <div className="flex items-center">
-                    {typeof column.accessor === 'function'
+                  {column.cell ? (
+                    column.cell({ row })
+                  ) : (
+                    typeof column.accessor === 'function' 
                       ? column.accessor(row)
-                      : row[column.accessor]}
-                  </div>
+                      : row[column.accessor]
+                  )}
                 </td>
               ))}
               <td className="py-3 px-6 text-center">
