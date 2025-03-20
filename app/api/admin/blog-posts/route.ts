@@ -55,7 +55,6 @@ export async function POST(request: Request) {
     const data = await request.json()
     const validated = blogPostSchema.parse(data)
     
-    // Generate slug from title
     const baseSlug = validated.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
@@ -64,10 +63,16 @@ export async function POST(request: Request) {
 
     const post = await prisma.blogPost.create({
       data: {
-        ...validated,
+        title: validated.title,
+        content: validated.content,
+        excerpt: validated.excerpt,
+        imageUrl: validated.imageUrl,
+        category: validated.category,
+        readTime: validated.readTime,
+        published: validated.published ?? false,
         slug: baseSlug,
         authorId: "system"
-      },
+      }
     })
     
     return NextResponse.json(post)
