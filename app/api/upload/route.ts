@@ -3,7 +3,7 @@ import { Dropbox } from "dropbox"
 import { getDropboxAccessToken } from "@/lib/dropbox"
 
 export const dynamic = 'force-dynamic'
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,7 +43,9 @@ export async function POST(request: NextRequest) {
     })
 
     // Convert shared link to direct link
-    const directLink = sharedLinkResponse.result.url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('?dl=0', '')
+    const directLink = sharedLinkResponse.result.url
+      .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
+      .replace('?dl=0', '')
 
     return NextResponse.json({ url: directLink })
   } catch (error) {
