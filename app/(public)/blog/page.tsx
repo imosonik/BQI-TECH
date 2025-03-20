@@ -81,7 +81,7 @@ export default function BlogPage() {
   return (
     <div className="container mx-auto px-4 py-16">
       <header className="max-w-2xl mx-auto text-center mb-16">
-        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#272055] to-[#31CDFF] text-transparent bg-clip-text">
+        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#272055] to-[#31CDFF] text-transparent bg-clip-text pb-2">
           Blog & Insights
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-400">
