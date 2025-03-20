@@ -126,20 +126,18 @@ export async function submitApplication(
     const application = await prisma.application.create({
       data: {
         name: parsedData.name,
-        userId: undefined,
-        user: undefined,
         email: parsedData.email,
-        phoneNumber: parsedData.phoneNumber || null,
+        phoneNumber: parsedData.phoneNumber,
         position: parsedData.position,
         location: parsedData.location,
-        resumeUrl,
+        resumeUrl: resumeUrl,
         hearAbout: parsedData.hearAbout,
-        otherSource: parsedData.otherSource || null,
+        otherSource: parsedData.otherSource,
         experience: parsedData.experience,
         salary: parsedData.salary,
-        status: "New",
+        status: "Applications",
         appliedDate: new Date(),
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       },
       select: {
         id: true,
