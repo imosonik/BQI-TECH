@@ -1,10 +1,15 @@
 "use client"
 
 import { useParams } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
+import useSWR from "swr"
 import Link from "next/link"
 import { BlogCard } from "@/components/blog/blog-card"
 import type { BlogPost } from "@/types/blog"
+
+const fetcher = (url: string) => fetch(url).then(res => {
+  if (!res.ok) throw new Error('Failed to fetch posts')
+  return res.json()
+})
 
 export default function BlogCategoryPage() {
   const { category } = useParams()
@@ -14,14 +19,11 @@ export default function BlogCategoryPage() {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
 
-  const { data: posts, isLoading } = useQuery({
-    queryKey: ['blog-posts-by-category', category],
-    queryFn: async () => {
-      const res = await fetch(`/api/blog-posts?category=${category}`)
-      if (!res.ok) throw new Error('Failed to fetch posts')
-      return res.json() as Promise<BlogPost[]>
-    }
-  })
+  const { data: posts, isLoading } = useSWR<BlogPost[]>(
+    `/api/blog-posts?category=${category}`,
+    fetcher,
+    { refreshInterval: 30000 } // Auto refresh every 30 seconds
+  )
 
   if (isLoading) return <div className="container mx-auto py-12">Loading...</div>
 

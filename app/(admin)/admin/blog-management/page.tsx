@@ -1,12 +1,15 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { AdminPageLayout } from "@/components/admin/AdminPageLayout"
 import { Button } from "@/components/ui/button"
 import { PlusCircle } from "lucide-react"
-import  DataTable  from "@/components/admin/DataTable"
+import DataTable from "@/components/admin/DataTable"
 import { columns } from "./columns"
+import { DeletePostDialog } from "@/components/admin/delete-post-dialog"
+import { toast } from "sonner"
 
 interface BlogPost {
   id: string
@@ -20,6 +23,7 @@ interface BlogPost {
 }
 
 export default function BlogManagementPage() {
+  const [deletePost, setDeletePost] = useState<{ id: string; title: string } | null>(null)
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -32,23 +36,32 @@ export default function BlogManagementPage() {
     }
   })
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this post?')) return
+  const handleDelete = async (id: string, title: string) => {
+    setDeletePost({ id, title })
+  }
 
-    const res = await fetch(`/api/admin/blog-posts/${id}`, {
+  const confirmDelete = async () => {
+    if (!deletePost) return
+
+    const res = await fetch(`/api/admin/blog-posts/${deletePost.id}`, {
       method: 'DELETE',
     })
 
     if (res.ok) {
       queryClient.invalidateQueries({ queryKey: ['blog-posts'] })
+      toast.success('Post deleted successfully')
+    } else {
+      toast.error('Failed to delete post')
     }
+    
+    setDeletePost(null)
   }
 
   const postsWithActions = posts?.map(post => ({
     ...post,
-    onView: (id: string) => router.push(`/admin/blog-management/${id}`),
-    onEdit: (id: string) => router.push(`/admin/blog-management/${id}`),
-    onDelete: handleDelete
+    onView: () => router.push(`/admin/blog-management/${post.id}`),
+    onEdit: () => router.push(`/admin/blog-management/${post.id}`),
+    onDelete: () => handleDelete(post.id, post.title)
   })) || []
 
   return (
@@ -65,9 +78,13 @@ export default function BlogManagementPage() {
         columns={columns} 
         data={postsWithActions}
         isLoading={isLoading}
-        onView={(id) => router.push(`/admin/blog-management/${id}`)}
-        onEdit={(id) => router.push(`/admin/blog-management/${id}`)}
-        onDelete={handleDelete}
+      />
+
+      <DeletePostDialog
+        isOpen={!!deletePost}
+        onClose={() => setDeletePost(null)}
+        onConfirm={confirmDelete}
+        postTitle={deletePost?.title || ''}
       />
     </AdminPageLayout>
   )
