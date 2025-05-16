@@ -52,7 +52,7 @@ function FloatingShapes() {
       />
 
       {/* Grid pattern overlay */}
-      <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
+      <div className="absolute inset-0  opacity-[0.02]" />
     </>
   )
 }

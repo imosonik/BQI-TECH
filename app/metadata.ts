@@ -1,16 +1,10 @@
-import { Metadata } from "next"
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://bqitech.com'),
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-snippet': -1,
-      'max-image-preview': 'large',
-      'max-video-preview': -1
-    },
+  title: 'BQI Tech - Innovating for a Better World',
+  description: 'BQI Tech provides innovative technology solutions and professional services to help government agencies succeed in their digital transformation journey.',
+  keywords: ['government technology', 'digital transformation', 'IT solutions', 'professional services'],
+  alternates: {
+    canonical: 'https://bqitech.com'
   }
-}
+};

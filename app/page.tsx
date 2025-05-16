@@ -1,9 +1,28 @@
-import { auth } from "@clerk/nextjs/server";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useAuth } from "@clerk/nextjs";
 import ClientHomePage from "@/components/ClientHomePage";
 import { ChatbotWidget } from "@/components/ChatbotWidget";
 
-export default async function HomePage() {
-  const { userId } = await auth();
+export default function HomePage() {
+  const { userId } = useAuth();
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch data client-side after component mounts
+    fetch('/api/blog-posts')
+      .then(res => res.json())
+      .then(data => {
+        setBlogPosts(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching blog posts:', err);
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <>
@@ -13,11 +32,4 @@ export default async function HomePage() {
   );
 }
 
-export const metadata = {
-  title: 'BQI Tech - Innovating for a Better World',
-  description: 'BQI Tech provides innovative technology solutions and professional services to help government agencies succeed in their digital transformation journey.',
-  keywords: ['government technology', 'digital transformation', 'IT solutions', 'professional services'],
-  alternates: {
-    canonical: 'https://bqitech.com'
-  }
-}
+// Metadata removed from client component

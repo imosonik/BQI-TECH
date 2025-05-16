@@ -45,3 +45,6 @@ export async function GET(request: NextRequest) {
     await prisma.$disconnect();
   }
 }
+
+// Mark the route as dynamic
+export const dynamic = 'force-dynamic';

@@ -13,52 +13,7 @@ const nextConfig = {
       'd1.awsstatic.com',
       'dl.dropboxusercontent.com'
     ],
-  },
-  async headers() {
-    return [
-      {
-        source: '/sitemap.xml',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/xml',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=3600, must-revalidate',
-          },
-        ],
-      },
-      {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on'
-          },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload'
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block'
-          },
-          {
-            key: 'X-Robots-Tag',
-            value: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
-          }
-        ]
-      }
-    ]
+    unoptimized: true,
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -86,29 +41,7 @@ const nextConfig = {
 
     return config;
   },
-  async redirects() {
-    return [
-      {
-        source: '/admin',
-        destination: '/admin/overview',
-        permanent: true,
-      },
-      {
-        source: '/dashboard',
-        destination: '/dashboard/overview',
-        permanent: true,
-      }
-    ];
-  },
   transpilePackages: ['@uiw/react-md-editor'],
-  async rewrites() {
-    return [
-      {
-        source: '/sitemap.xml',
-        destination: '/api/sitemap',
-      },
-    ]
-  },
 };
 
 module.exports = nextConfig;
