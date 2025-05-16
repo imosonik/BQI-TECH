@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { Shield, Lightbulb, Code, Users, Target, Award } from 'lucide-react'
+import { Lightbulb, Code} from 'lucide-react'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { useRouter } from 'next/navigation'
 

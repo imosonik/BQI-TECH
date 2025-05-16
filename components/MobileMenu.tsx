@@ -115,7 +115,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               damping: 30,
               duration: 0.3
             }}
-            className="fixed top-[80px] left-0 right-0 bg-black/40 backdrop-blur-md z-50 overflow-hidden"
+            className="fixed top-[80px] left-0 right-0 bg-black/40 backdrop-blur-md z-50 overflow-hidden rounded-b-[15px]"
           >
             <nav className="py-2 max-h-[calc(100vh-80px)] overflow-y-auto">
               {menuItems.map((item) => (
