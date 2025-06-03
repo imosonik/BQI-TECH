@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function TermsPage() {
   return (
     <div className="-mt-32">
-      <div className="bg-gradient-to-r from-[#272055] via-[#1F1A4B] to-[#1B174E] py-7 pt-32">
+      <div className="bg-gradient-to-r from-[#0A2540] via-[#1E4D8A] to-[#0066CC] text-white pb-4 py-32 mb-12 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div 
             className="flex items-center gap-2 text-sm text-gray-300/80 mb-8"
@@ -104,7 +104,7 @@ export default function TermsPage() {
               <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm">
                 <Shield className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-bold">Contact Information</h2>
+              <h2 className="text-white/90 font-bold">Contact Information</h2>
             </div>
             <p className="text-white/90 text-lg">
               For questions about these Terms and Conditions, please contact us at{" "}
